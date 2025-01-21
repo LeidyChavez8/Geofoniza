@@ -87,7 +87,7 @@ body.dark{
 
 /* ===== Reusable code - Here ===== */
 .sidebar li{
-    height: 50px;
+    height: 40px;
     list-style: none;
     display: flex;
     align-items: center;

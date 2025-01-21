@@ -63,12 +63,13 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-submit">
-                <span>Guardar Cambios</span>
-            </button>
-            <button type="button" class="btn btn-cancel" onclick="window.location.href='{{ route('users.index') }}'"">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('users.index') }}'"">
                 Cancelar
             </button>
+            <button type="submit" class="btn btn-primary">
+                <span>Guardar Cambios</span>
+            </button>
+
         </div>
     </form>
 </div>
