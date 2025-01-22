@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+    <!----======== Favicon ======== -->
+    <link rel="icon" href="{{ asset('img/FLATICON_RIB.svg') }}" type="image/svg+xml">
+
     <!----======== CSS ======== -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <!----===== Boxicons CSS ===== -->
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 
-    <title>@yield('tittle')</title>
+    <title>@yield('title')</title>
 
     @yield('style')
 </head>
@@ -102,7 +105,7 @@
                 </li>
 
                 <li class="mode">
-                    <div class="sun-moon">
+                    <div class="sun-moon" style="margin-top: 6px;">
                         <i class='bx bx-moon icon moon'></i>
                         <i class='bx bx-sun icon sun'></i>
                     </div>
@@ -129,8 +132,6 @@
 
     @yield('scripts')
 
-    <script src="script.js"></script>
-
     <script>
         const body = document.querySelector('body'),
             sidebar = body.querySelector('nav'),
@@ -139,28 +140,66 @@
             modeSwitch = body.querySelector(".toggle-switch"),
             modeText = body.querySelector(".mode-text");
 
+        // Deshabilitar transiciones al cargar la página (para evitar parpadeo)
+        body.classList.add('no-transition');
 
+        // Función para verificar el estado inicial de la sidebar
+        function loadSidebarState() {
+            const sidebarState = localStorage.getItem('sidebarOpen'); // Obtener el estado de la barra lateral
+            if (sidebarState === 'true') {
+                sidebar.classList.remove('close'); // Mantenerla abierta si estaba abierta
+            } else {
+                sidebar.classList.add('close'); // Mantenerla cerrada si estaba cerrada
+            }
+        }
+
+        // Función para guardar el estado de la sidebar en localStorage
+        function saveSidebarState(isOpen) {
+            localStorage.setItem('sidebarOpen', isOpen);
+        }
+
+        // Llamar a la función al cargar la página
+        loadSidebarState();
+
+        // Rehabilitar las transiciones después de cargar
+        window.addEventListener('DOMContentLoaded', () => {
+            body.classList.remove('no-transition');
+        });
+
+        // Listener para el botón de toggle de la sidebar
         toggle.addEventListener("click", () => {
-            sidebar.classList.toggle("close");
-            document.querySelector('.content').classList.toggle('content-adjusted');
-        })
+            const isOpen = sidebar.classList.toggle('close'); // Alternar la clase "close"
+            saveSidebarState(!isOpen); // Guardar el estado actualizado (inverso porque `toggle` devuelve `true` si se agrega la clase)
+        });
 
         searchBtn.addEventListener("click", () => {
             sidebar.classList.remove("close");
-        })
+            saveSidebarState(true); // Guardar que la barra está abierta
+        });
+
+        // Modo oscuro (ya configurado en el ejemplo anterior)
+        if (localStorage.getItem('darkMode') === 'true') {
+            body.classList.add('dark');
+            modeText.innerText = "Light mode";
+        } else {
+            modeText.innerText = "Dark mode";
+        }
 
         modeSwitch.addEventListener("click", () => {
             body.classList.toggle("dark");
 
             if (body.classList.contains("dark")) {
+                localStorage.setItem('darkMode', 'true');
                 modeText.innerText = "Light mode";
             } else {
+                localStorage.setItem('darkMode', 'false');
                 modeText.innerText = "Dark mode";
-
             }
         });
-
     </script>
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

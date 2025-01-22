@@ -116,78 +116,90 @@ class DataController extends Controller
 
 
 
-    // --------------------------------------------------------------------------------------------
+    // =============================      ASIGNACION      =============================
 
 
     //ASIGNAR
-
-    // public function indexAsignar(Request $request)
-    // {
-    //     $data = Data::where('id_operario', null)
-    //         ->paginate(100); // Ajusta la paginación según tus necesidades
-    //     $operarios = User::orderBy('name', 'asc')
-    //         ->where('rol', 'user') // Filtra solo los operarios
-    //         ->get(); // Ordena por el nombre de A-Z
-
-    //     $totalResultados = Data::where('id_operario', null)->count();
-
-    //     return view('Asignacion.asignacion', [
-    //         'data' => $data,
-    //         'operarios' => $operarios,
-    //         'totalResultados' => $totalResultados
-    //     ]);
-    // }
-
-    public function indexAsignar(Request $request)
-{
-    // Obtener los parámetros de ordenamiento
-    $sortBy = $request->get('sortBy', 'id'); // Columna por defecto
-    $direction = $request->get('direction', 'asc'); // Dirección por defecto
-
-    // Validar que la columna y la dirección sean válidas
-    $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
-    if (!in_array($sortBy, $validColumns)) {
-        $sortBy = 'id';
-    }
-
-    if (!in_array($direction, ['asc', 'desc'])) {
-        $direction = 'asc';
-    }
-
-    // Obtener los datos ordenados
-    $data = Data::where('id_operario', null)
-        ->orderBy($sortBy, $direction)
-        ->paginate(100);
-
-    $operarios = User::where('rol', 'user')
-        ->orderBy('name', 'asc')
-        ->get();
-
-    $totalResultados = Data::where('id_operario', null)->count();
-
-    return view('Asignacion.asignacion', [
-        'data' => $data,
-        'operarios' => $operarios,
-        'totalResultados' => $totalResultados,
-        'sortBy' => $sortBy,
-        'direction' => $direction,
-    ]);
-}
-
-    public function desasignacion(Request $request)
+    public function asignarIndex(Request $request)
     {
-        $data = Data::whereNotNull('id_operario')
-            ->paginate(500); // Ajusta la paginación según tus necesidades
-        $operarios = User::orderBy('name', 'asc')->get(); // Ordena por el nombre de A-Z
+        // Obtener los parámetros de ordenamiento
+        $sortBy = $request->get('sortBy', 'id'); // Columna por defecto
+        $direction = $request->get('direction', 'asc'); // Dirección por defecto
+
+        // Validar que la columna y la dirección sean válidas
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        if (!in_array($sortBy, $validColumns)) {
+            $sortBy = 'id';
+        }
+
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        // Obtener los datos ordenados
+        $data = Data::where('id_operario', null)
+            ->orderBy($sortBy, $direction)
+            ->paginate(100);
+
+        $operarios = User::where('rol', 'user')
+            ->orderBy('name', 'asc')
+            ->get();
 
         $totalResultados = Data::where('id_operario', null)->count();
 
-        return view('Asignacion.desasignacion', [
+        return view('Asignacion.asignacion', [
             'data' => $data,
             'operarios' => $operarios,
-            'totalResultados' => $totalResultados
+            'totalResultados' => $totalResultados,
+            'sortBy' => $sortBy,
+            'direction' => $direction,
         ]);
     }
+
+    public function asignarFiltrar(Request $request)
+    {
+        $sortBy = $request->get('sortBy', 'id'); // Columna de orden por defecto
+        $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
+
+        // Validar la columna y la dirección de ordenamiento
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        if (!in_array($sortBy, $validColumns)) {
+            $sortBy = 'id';
+        }
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        // Construir la consulta con filtros
+        $query = Data::where('estado', null);
+
+        if ($request->filled('buscador-nombre')) {
+            $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
+        }
+        if ($request->filled('buscador-cuenta')) {
+            $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
+        }
+        if ($request->filled('buscador-medidor')) {
+            $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
+        }
+        if ($request->filled('buscador-ciclo')) {
+            $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
+        }
+
+        // Aplicar el ordenamiento
+        $data = $query
+            ->orderBy($sortBy, $direction)
+            ->paginate(100)
+            ->appends($request->except('page')); // Conservar parámetros en la paginación
+
+        $operarios = User::where('rol', 'user')->get();
+        $totalResultados = $query->count();
+
+        return view('Asignacion.asignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
+    }
+
+
+
 
     // Método para manejar la asignación de operarios
     public function asignarOperario(Request $request)
@@ -204,6 +216,90 @@ class DataController extends Controller
 
         return redirect()->route('asignar.index')->with('success', 'Operario asignado exitosamente');
     }
+
+
+
+    // =============================      DESASIGNACION      =============================
+
+
+    public function desasignarIndex(Request $request)
+    {
+        // Obtener los parámetros de ordenamiento
+        $sortBy = $request->get('sortBy', 'id'); // Columna por defecto
+        $direction = $request->get('direction', 'asc'); // Dirección por defecto
+
+        // Validar que la columna y la dirección sean válidas
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        if (!in_array($sortBy, $validColumns)) {
+            $sortBy = 'id';
+        }
+
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        // Obtener los datos ordenados
+        $data = Data::whereNotNull('id_operario')
+            ->orderBy($sortBy, $direction)
+            ->paginate(100);
+
+        $operarios = User::where('rol', 'user')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $totalResultados = Data::whereNotNull('id_operario')->count();
+
+        return view('Asignacion.desasignacion', [
+            'data' => $data,
+            'operarios' => $operarios,
+            'totalResultados' => $totalResultados,
+            'sortBy' => $sortBy,
+            'direction' => $direction,
+        ]);
+    }
+
+    public function desasignarFiltrar(Request $request)
+    {
+        $sortBy = $request->get('sortBy', 'id'); // Columna de orden por defecto
+        $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
+
+        // Validar la columna y la dirección de ordenamiento
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        if (!in_array($sortBy, $validColumns)) {
+            $sortBy = 'id';
+        }
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        // Construir la consulta con filtros
+        $query = Data::whereNotNull('id_operario');
+
+        if ($request->filled('buscador-nombre')) {
+            $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
+        }
+        if ($request->filled('buscador-cuenta')) {
+            $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
+        }
+        if ($request->filled('buscador-medidor')) {
+            $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
+        }
+        if ($request->filled('buscador-ciclo')) {
+            $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
+        }
+
+        // Aplicar el ordenamiento
+        $data = $query
+            ->orderBy($sortBy, $direction)
+            ->paginate(100)
+            ->appends($request->except('page')); // Conservar parámetros en la paginación
+
+        $operarios = User::where('rol', 'user')->get();
+        $totalResultados = $query->count();
+
+        return view('Asignacion.desasignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
+    }
+
     public function desasignarOperario(Request $request)
     {
         $request->validate([
@@ -214,113 +310,24 @@ class DataController extends Controller
 
         Data::whereIn('id', $programaciones)->update(['id_operario' => null]);
 
-        return redirect()->route('desasignacion')->with('success', 'Operario desasignado exitosamente!!');
+        return redirect()->route('desasignar.index')->with('success', 'Operario desasignado exitosamente');
     }
 
-    // public function filtrar(Request $request)
+
+
+    // public function desasignarOperario(Request $request)
     // {
-    //     $query = Data::where('estado', null);
+    //     $request->validate([
+    //         'Programacion' => 'required|array',
+    //     ]);
 
-    //     if ($request->filled('buscador-nombre')) {
-    //         $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
-    //     }
+    //     $programaciones = $request->input('Programacion');
 
-    //     if ($request->filled('buscador-cuenta')) {
-    //         $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
-    //     }
+    //     Data::whereIn('id', $programaciones)->update(['id_operario' => null]);
 
-    //     if ($request->filled('buscador-medidor')) {
-    //         $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
-    //     }
-    //     if ($request->filled('buscador-ciclo')) {
-    //         $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
-    //     }
-
-    //     $data = $query->where('id_operario', null)->paginate(100);
-    //     $operarios = User::where('rol', 'user')->get();
-    //     $totalResultados = $query->count();
-
-
-    //     return view('Asignacion.asignacion', compact('data', 'operarios'));
+    //     return redirect()->route('desasignacion')->with('success', 'Operario desasignado exitosamente!!');
     // }
 
-    public function filtrar(Request $request)
-{
-    $sortBy = $request->get('sortBy', 'id'); // Columna de orden por defecto
-    $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
-
-    // Validar la columna y la dirección de ordenamiento
-    $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
-    if (!in_array($sortBy, $validColumns)) {
-        $sortBy = 'id';
-    }
-    if (!in_array($direction, ['asc', 'desc'])) {
-        $direction = 'asc';
-    }
-
-    // Construir la consulta con filtros
-    $query = Data::where('estado', null);
-
-    if ($request->filled('buscador-nombre')) {
-        $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
-    }
-    if ($request->filled('buscador-cuenta')) {
-        $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
-    }
-    if ($request->filled('buscador-medidor')) {
-        $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
-    }
-    if ($request->filled('buscador-ciclo')) {
-        $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
-    }
-
-    // Aplicar el ordenamiento
-    $data = $query
-        ->orderBy($sortBy, $direction)
-        ->paginate(100)
-        ->appends($request->except('page')); // Conservar parámetros en la paginación
-
-    $operarios = User::where('rol', 'user')->get();
-    $totalResultados = $query->count();
-
-    return view('Asignacion.asignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
-}
-
-    public function filtrarDesasignacion(Request $request)
-    {
-        $query = Data::where('id_operario', '!=', null);
-
-        if ($request->filled('buscador-nombre')) {
-            $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
-        }
-
-        if ($request->filled('buscador-cuenta')) {
-            $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
-        }
-
-        if ($request->filled('buscador-medidor')) {
-            $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
-        }
-        if ($request->filled('buscador-ciclo')) {
-            $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
-        }
-
-        $registrosPorPagina = 500;
-        $paginaActual = $request->query('pagina', 1);
-        $inicio = ($paginaActual - 1) * $registrosPorPagina;
-
-        $data = $query->offset($inicio)->limit($registrosPorPagina)->get();
-
-        $totalRegistros = $query->count();
-        $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
-
-        return redirect()->route('asignar.index', [
-            'data' => $data,
-            'paginaActual' => $paginaActual,
-            'totalPaginas' => $totalPaginas
-        ]);
-        // return view('Asignacion/desasignacion', compact('data', 'paginaActual', 'totalPaginas'));
-    }
 
     public function edit($id)
     {

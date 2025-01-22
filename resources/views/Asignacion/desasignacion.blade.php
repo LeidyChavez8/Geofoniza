@@ -1,247 +1,273 @@
-@php
-    use App\Models\User;
-@endphp
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabla de Programaciones</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/css/Asignacion.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/js/Modal.js') }}">
+@section('title', 'Desasignar')
 
-    <link rel="icon" href="{{ asset('img/FLATICON_RIB.svg') }}" type="image/svg+xml">
-    <link rel="icon" href="{{ asset('img/FLATICON_RIB.jpg') }}" type="image/jpeg" sizes="48x48">
-</head>
+@section('style')
+    <link rel="stylesheet" href="{{ asset('css/Datas/asignar.css') }}">
+@endsection
 
-<body>
-    <div class="main-container">
-        <form action="{{ route('filtrar.desasignacion') }}" method="post">
+@section('content')
+    <div class="assignment-container">
+        <form action="{{ route('desasignar.filtrar') }}" method="GET" class="mb-4">
             @csrf
-            <div class="mb-3">
-                <input type="text" name="buscador-nombre" class="input" placeholder="Nombre...">
-                <input type="text" name="buscador-cuenta" class="input" placeholder="Cuenta...">
-                <input type="text" name="buscador-medidor" class="input" placeholder="Medidor...">
-                <input type="text" name="buscador-ciclo" class="input" placeholder="Ciclo...">
-            </div>
-            <div class="mb-3">
-                <button type="submit">
-                    <span class="shadow"></span>
-                    <span class="edge"></span>
-                    <span class="front text">Aplicar filtros</span>
+            <div class="filters-section">
+                <input type="text" name="buscador-nombre" class="filter-input" placeholder=" nombre..." value="{{ request('buscador-nombre') }}">
+                <input type="text" name="buscador-cuenta" class="filter-input" placeholder=" cuenta..." value="{{ request('buscador-cuenta') }}">
+                <input type="text" name="buscador-medidor" class="filter-input" placeholder=" medidor..." value="{{ request('buscador-medidor') }}">
+                <input type="text" name="buscador-ciclo" class="filter-input" placeholder=" ciclo..." value="{{ request('buscador-ciclo') }}">
+
+                <button type="submit" class="btn btn-tertiary">
+                    <i class='bx bx-filter-alt' style="margin-right: 0.2rem;"></i>
+                    <span>Filtrar</span>
                 </button>
 
-                <a href="{{ route('operario.asignacion') }}">
-
-                    <button class="custom-button"
-                        style="--btn-background-color: hsl(220deg 100% 47%); --btn-edge-color: hsl(220deg 100% 32%);"
-                        type="button">
-                        <span class="shadow"></span>
-                        <span class="edge"></span>
-                        <span class="front text">Volver</span>
-                    </button>
-
-                </a>
-
-
-
+                <button class="btn btn-primary" id="abrirModal" type="button">
+                    Desasignar
+                </button>
             </div>
         </form>
+
+        <!-- Mensajes de éxito y error -->
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">
+                <i class="bx bx-check-circle"></i> {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger" role="alert">
+                <i class="bx bx-error"></i> {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger" role="alert">
+                <i class="bx bx-error"></i> <strong>Se encontraron los siguientes errores:</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <form action="{{ route('desasignar.operario') }}" method="post">
             @csrf
-            <div class="table-container">
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr class="text-center">
-                                <th class="text-center">
-                                    <label class="container">
-                                        <input type="checkbox" id="seleccionarTodo">
-                                        <div class="checkmark"></div>
+            <div class="table-wrapper">
+                <table class="assignment-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <label class="checkbox-wrapper">
+                                    <input type="checkbox" id="seleccionarTodo">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </th>
+                            <th>ID</th>
+                            <th>Ciclo</th>
+                            <th>Nombre Cliente</th>
+                            <th>Cuenta</th>
+                            <th>Dirección</th>
+                            <th>Recorrido</th>
+                            <th>Medidor</th>
+                            <th>Año</th>
+                            <th>Mes</th>
+                            <th>Período</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data as $programacion)
+                            <tr>
+                                <td>
+                                    <label class="checkbox-wrapper">
+                                        <input type="checkbox" name="Programacion[]" value="{{ $programacion->id }}">
+                                        <span class="checkmark"></span>
                                     </label>
-                                </th>
-
-                                <th>ID</th>
-                                <th>Ciclo</th>
-                                <th>Nombre Cliente</th>
-                                <th>Operario</th>
-                                <th>Cuenta</th>
-                                <th>Dirección</th>
-                                <th>Recorrido</th>
-                                <th>Medidor</th>
-                                <th>Año</th>
-                                <th>Mes</th>
-                                <th>Período</th>
-
+                                </td>
+                                <td>{{ $programacion->id }}</td>
+                                <td>{{ $programacion->ciclo }}</td>
+                                <td>{{ $programacion->nombre_cliente }}</td>
+                                <td>{{ $programacion->cuenta }}</td>
+                                <td>{{ $programacion->direccion }}</td>
+                                <td>{{ $programacion->recorrido }}</td>
+                                <td>{{ $programacion->medidor }}</td>
+                                <td>{{ $programacion->año }}</td>
+                                <td>{{ $programacion->mes }}</td>
+                                <td>{{ $programacion->periodo }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                        <tbody>
-                            @foreach ($data as $programacion)
-                                <tr>
-                                    <td style='text-align: center; white-space: nowrap;'>
-                                        <label class='container'>
-                                            <input type='checkbox' class='form-check-input' name='Programacion[]'
-                                                value='{{ $programacion->id }}'>
-                                            <div class="checkmark"></div>
-                                        </label>
-                                    </td>
-                                    <td>{{ $programacion->id }}</td>
-                                    <td style="padding: 8px 2px;">{{ $programacion->ciclo }}</td>
-                                    <td>{{ $programacion->nombre_cliente }}</td>
-
-                                    @php
-                                        $nombre = User::find($programacion->id_operario);
-                                    @endphp
-
-                                    <td>{{ $nombre->nombre }}</td>
-                                    <td>{{ $programacion->cuenta }}</td>
-                                    <td>{{ $programacion->direccion }}</td>
-                                    <td>{{ $programacion->recorrido }}</td>
-                                    <td>{{ $programacion->medidor }}</td>
-                                    <td style="text-align: center;">{{ $programacion->año }}</td>
-                                    <td style="text-align: center;">{{ $programacion->mes }}</td>
-                                    <td style="text-align: center;">{{ $programacion->periodo }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
 
-            <section class="footer py-100">
-                <br>
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        @if ($paginaActual > 1)
-                            <li class="page-item">
-                                <a class="page-link" href="{{ route('desasignacion', ['page' => $paginaActual - 1]) }}"
-                                    aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        @endif
-
-                        @php
-                            $rangoMostrar = 3;
-                            $inicioRango = max(1, $paginaActual - $rangoMostrar);
-                            $finRango = min($totalPaginas, $paginaActual + $rangoMostrar);
-
-                            if ($inicioRango > 1) {
-                                echo '<li class="page-item"><a class="page-link" href="' .
-                                    route('desasignacion', ['page' => 1]) .
-                                    '">1</a></li>';
-                                if ($inicioRango > 2) {
-                                    echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
-                                }
-                            }
-
-                            for ($i = $inicioRango; $i <= $finRango; $i++) {
-                                $activeClass = $i == $paginaActual ? 'active' : '';
-                                echo '<li class="page-item ' .
-                                    $activeClass .
-                                    '"><a class="page-link" href="' .
-                                    route('desasignacion', ['page' => $i]) .
-                                    '">' .
-                                    $i .
-                                    '</a></li>';
-                            }
-
-                            if ($finRango < $totalPaginas) {
-                                if ($finRango < $totalPaginas - 1) {
-                                    echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
-                                }
-                                echo '<li class="page-item"><a class="page-link" href="' .
-                                    route('desasignacion', ['page' => $totalPaginas]) .
-                                    '">' .
-                                    $totalPaginas .
-                                    '</a></li>';
-                            }
-                        @endphp
-
-                        @if ($paginaActual < $totalPaginas)
-                            <li class="page-item">
-                                <a class="page-link" href="{{ route('desasignacion', ['page' => $paginaActual + 1]) }}"
-                                    aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        @endif
-                        <button class="custom-button"
-                            style="--btn-background-color: hsl(120deg 100% 47%); --btn-edge-color: hsl(120deg 100% 32%);"
-                            type="submit">
-                            <span class="shadow"></span>
-                            <span class="edge"></span>
-                            <span class="front text">Desasignar</span>
+            <!-- Modal de Desasignación -->
+            <div id="miModal" class="modal-assignment">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Desasignar Operario</h2>
+                        <button type="button" class="modal-close" title="Cerrar">
+                            <i class='bx bx-x'></i>
                         </button>
-                    </ul>
-                </nav>
+                    </div>
 
-            </section>
+                    <div class="modal-body">
+                        <p>¿Está seguro de que desea desasignar los registros seleccionados?</p>
+                    </div>
 
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class='bx bx-trash' style="margin-right: 0.2rem"></i>
+                            <span>Confirmar Desasignación</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </form>
-        <script src="{{ asset('assets/js/Modal.js') }}"></script>
-        <script>
-            document.getElementById('seleccionarTodo').addEventListener('change', function() {
-                var checkboxes = document.querySelectorAll('input[name="Programacion[]"]');
-                for (var checkbox of checkboxes) {
-                    checkbox.checked = this.checked;
-                }
-            });
-            document.addEventListener('DOMContentLoaded', adjustFooter);
-            window.addEventListener('scroll', adjustFooter);
-            window.addEventListener('resize', adjustFooter);
 
-            function adjustFooter() {
-                const footer = document.querySelector('.footer');
-                const contentHeight = document.querySelector('.content').offsetHeight;
-                const windowHeight = window.innerHeight;
 
-                if (contentHeight > windowHeight) {
-                    footer.classList.remove('footer-fixed');
-                    footer.classList.add('footer-static');
-                } else {
-                    footer.classList.remove('footer-static');
-                    footer.classList.add('footer-fixed');
-                }
-            }
-        </script>
-        {{-- SELECCION POR ZONA CON LA TECLA SHIFT --}}
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                let lastChecked = null;
+        <!-- Paginación -->
+        <div class="pagination-container">
+            {{-- @if ($data->hasPages()) --}}
+                <div class="pagination-info">
+                    Mostrando {{ $data->firstItem() }} a {{ $data->lastItem() }} de {{ $data->total() }} registros
+                </div>
+                <ul class="pagination">
+                    {{-- Botón Previous --}}
+                    @if ($data->onFirstPage())
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                <i class='bx bx-chevron-left'></i>
+                            </span>
+                        </li>
+                    @else
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ $data->appends(request()->except('page'))->previousPageUrl() }}" rel="prev">
+                                <i class='bx bx-chevron-left'></i>
+                            </a>
+                        </li>
+                    @endif
 
-                const checkboxes = document.querySelectorAll('input[name="Programacion[]"]');
-
-                checkboxes.forEach((checkbox) => {
-                    checkbox.addEventListener('click', function(event) {
-                        if (!lastChecked) {
-                            lastChecked = this;
-                            return;
+                    @php
+                        $start = $data->currentPage() - 2;
+                        $end = $data->currentPage() + 2;
+                        if ($start < 1) {
+                            $start = 1;
+                            $end = min(5, $data->lastPage());
                         }
-
-                        if (event.shiftKey) {
-                            let inBetween = false;
-                            checkboxes.forEach((currentCheckbox) => {
-                                if (currentCheckbox === this || currentCheckbox ===
-                                    lastChecked) {
-                                    inBetween = !inBetween;
-                                }
-
-                                if (inBetween) {
-                                    currentCheckbox.checked = lastChecked.checked;
-                                }
-                            });
+                        if ($end > $data->lastPage()) {
+                            $end = $data->lastPage();
+                            $start = max(1, $end - 4);
                         }
+                    @endphp
 
+                    @if ($start > 1)
+                        <li class="page-item">
+                            <a class="page-link" href="{{ $data->appends(request()->except('page'))->url(1) }}">1</a>
+                        </li>
+                        @if ($start > 2)
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        @endif
+                    @endif
+
+                    @for ($i = $start; $i <= $end; $i++)
+                        <li class="page-item {{ $data->currentPage() == $i ? 'active' : '' }}">
+                            <a class="page-link"
+                                href="{{ $data->appends(request()->except('page'))->url($i) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+
+                    @if ($end < $data->lastPage())
+                        @if ($end < $data->lastPage() - 1)
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        @endif
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ $data->appends(request()->except('page'))->url($data->lastPage()) }}">
+                                {{ $data->lastPage() }}
+                            </a>
+                        </li>
+                    @endif
+
+                    {{-- Botón Next --}}
+                    @if ($data->hasMorePages())
+                        <li class="page-item">
+                            <a class="page-link" href="{{ $data->appends(request()->except('page'))->nextPageUrl() }}"
+                                rel="next">
+                                <i class='bx bx-chevron-right'></i>
+                            </a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                <i class='bx bx-chevron-right'></i>
+                            </span>
+                        </li>
+                    @endif
+                </ul>
+            {{-- @endif --}}
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script>
+        // ------------------------ CHECKBOX ------------------------
+        document.getElementById('seleccionarTodo').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('input[name="Programacion[]"]');
+            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+        });
+
+        // Selección por zona con Shift
+        document.addEventListener('DOMContentLoaded', function() {
+            let lastChecked = null;
+            const checkboxes = document.querySelectorAll('input[name="Programacion[]"]');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function(e) {
+                    if (!lastChecked) {
                         lastChecked = this;
-                    });
+                        return;
+                    }
+
+                    if (e.shiftKey) {
+                        let inBetween = false;
+                        checkboxes.forEach(currentCheckbox => {
+                            if (currentCheckbox === this || currentCheckbox ===
+                                lastChecked) {
+                                inBetween = !inBetween;
+                            }
+                            if (inBetween) {
+                                currentCheckbox.checked = lastChecked.checked;
+                            }
+                        });
+                    }
+                    lastChecked = this;
                 });
             });
-        </script>
-</body>
+        });
 
-</html>
+        // ------------------------ MODAL ------------------------
+        const modal = document.getElementById('miModal');
+        const btnAbrir = document.getElementById('abrirModal');
+        const btnCerrar = document.querySelector('.modal-close');
+
+        btnAbrir.onclick = function() {
+            modal.style.display = "flex";
+        }
+
+        btnCerrar.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+@endsection

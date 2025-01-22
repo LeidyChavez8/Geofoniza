@@ -16,27 +16,20 @@ Route::middleware('auth')->group(function () {
     Route::resource('datos', DataController::class);
 
     // IMPORTAR EXCEL
-
-    Route::get('excel/importar', [DataController::class, 'showUploadForm'])->name('import.import');
+    Route::get('excel-importar', [DataController::class, 'showUploadForm'])->name('import.import');
     Route::post('excel/reemplazar', [DataController::class, 'replaceData'])->name('import.replace');
     // Route::post('excel/actualizar', [DataController::class, 'updateData'])->name('import.update');
     Route::post('excel/agregar', [DataController::class, 'addData'])->name('import.add');
 
-
-
     // ASIGNACION
-    Route::get('/asignar', [DataController::class, 'indexAsignar'])->name('asignar.index');
-    Route::get('/filtrar', [DataController::class, 'filtrar'])->name('asignar.filtrar');
+    Route::get('/asignar', [DataController::class, 'asignarIndex'])->name('asignar.index');
+    Route::get('/asignar-filtrar', [DataController::class, 'asignarFiltrar'])->name('asignar.filtrar');
     Route::post('/asignar-operario', [DataController::class, 'asignarOperario'])->name('asignar.operario');
 
 
-
-
-
-
-    // Routes de desasignar
-    Route::get('/desasignacion', [DataController::class, 'desasignacion'])->name('desasignar.index');
-    Route::post('/filtrar-desasignacion', [DataController::class, 'filtrarDesasignacion'])->name('desasignar.filtrar');
+    // DESASIGNAR
+    Route::get('/desasignar', [DataController::class, 'desasignarIndex'])->name('desasignar.index');
+    Route::get('/desasignar-filtrar', [DataController::class, 'desasignarFiltrar'])->name('desasignar.filtrar');
     Route::post('/desasignar-operario', [DataController::class, 'desasignarOperario'])->name('desasignar.operario');
 
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');

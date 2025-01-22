@@ -46,8 +46,8 @@
     align-items: center;
     gap: 0.8rem;
     padding: 1rem;
-    background-color: #f8f9fa;
-    border: 2px dashed var(--primary-color);
+    background-color: var(--sidebar-color) !important;
+    border: 2px dashed var(--primary-color) !important;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s;
@@ -66,6 +66,11 @@
 
 .custom-file-label i {
     margin-right: 0.5rem; /* Añade espacio entre el ícono y el texto */
+}
+
+
+.btn {
+    width: 100%;
 }
 
 /* Info Container Styles */
