@@ -28,7 +28,7 @@ class DataController extends Controller
     //IMPORTAR
     public function showUploadForm()
     {
-        return view('Excel.import');
+        return view('Data.import');
     }
 
     public function replaceData(Request $request)
@@ -147,7 +147,7 @@ class DataController extends Controller
 
         $totalResultados = Data::where('id_operario', null)->count();
 
-        return view('Asignacion.asignacion', [
+        return view('Data.Asignacion.asignacion', [
             'data' => $data,
             'operarios' => $operarios,
             'totalResultados' => $totalResultados,
@@ -195,7 +195,7 @@ class DataController extends Controller
         $operarios = User::where('rol', 'user')->get();
         $totalResultados = $query->count();
 
-        return view('Asignacion.asignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
+        return view('Data.Asignacion.asignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
     }
 
 
@@ -249,7 +249,7 @@ class DataController extends Controller
 
         $totalResultados = Data::whereNotNull('id_operario')->count();
 
-        return view('Asignacion.desasignacion', [
+        return view('Data.Asignacion.desasignacion', [
             'data' => $data,
             'operarios' => $operarios,
             'totalResultados' => $totalResultados,
@@ -297,7 +297,7 @@ class DataController extends Controller
         $operarios = User::where('rol', 'user')->get();
         $totalResultados = $query->count();
 
-        return view('Asignacion.desasignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
+        return view('Data.Asignacion.desasignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
     }
 
     public function desasignarOperario(Request $request)
@@ -315,32 +315,14 @@ class DataController extends Controller
 
 
 
-    // public function desasignarOperario(Request $request)
-    // {
-    //     $request->validate([
-    //         'Programacion' => 'required|array',
-    //     ]);
 
-    //     $programaciones = $request->input('Programacion');
-
-    //     Data::whereIn('id', $programaciones)->update(['id_operario' => null]);
-
-    //     return redirect()->route('desasignacion')->with('success', 'Operario desasignado exitosamente!!');
-    // }
-
+    // =============================      USERDATA      =============================
 
     public function edit($id)
     {
         $data = Data::findOrFail($id);
         return view('Operario.edit', compact('data'));
     }
-
-
-
-    /// OPERARIO
-
-
-
 
 
     public function listarData(Request $request)

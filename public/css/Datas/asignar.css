@@ -9,6 +9,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin: auto;
     padding: 1rem;
+    transition: var(--tran-03);
 }
 
 /* Filtros */
@@ -52,7 +53,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     height: calc(100vh - 200px);
     overflow-y: auto; /* Scrollbar vertical */
-
 }
 
 .table-wrapper a {

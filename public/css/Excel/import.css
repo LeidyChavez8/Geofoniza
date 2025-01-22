@@ -5,6 +5,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin: auto auto;
     overflow: hidden;
+    transition: var(--tran-03);
 }
 
 .card-header {
@@ -50,7 +51,6 @@
     border: 2px dashed var(--primary-color) !important;
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .custom-file-label:hover {
