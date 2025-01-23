@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,7 +81,7 @@
                     </li>
 
                     <li class="nav-link">
-                        <a href="#">
+                        <a href="{{ route('completados.index') }}">
                             <i class='bx bx-list-check icon' ></i>
                             <span class="text nav-text">Completados</span>
                         </a>
@@ -129,7 +129,6 @@
     <div class="content">
         @yield('content')
     </div>
-
 
     @yield('scripts')
 

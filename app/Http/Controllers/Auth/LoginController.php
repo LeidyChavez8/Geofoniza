@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -25,7 +27,8 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+
+     protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -37,4 +40,16 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    protected function authenticated(Request $request, $user)
+    {
+        // Verificar el valor del atributo 'rol' en el modelo User
+        if ($user->rol === 'admin') {
+            return redirect()->route('home'); // Ruta para el administrador
+        }
+
+        return redirect()->route('asignados.index'); // Ruta para el usuario normal
+    }
 }
+
+

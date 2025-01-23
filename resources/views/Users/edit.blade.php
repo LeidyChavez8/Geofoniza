@@ -63,7 +63,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('users.index') }}'"">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('users.index') }}'">
                 Cancelar
             </button>
             <button type="submit" class="btn btn-primary">

@@ -7,18 +7,27 @@
     <title>Apptualiza</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="css/LoginStyle.css">
+    <link rel="stylesheet" href="{{ asset('css/Datas/indexDataUser.css') }}">
+
+    <!----===== Boxicons CSS ===== -->
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
+
+    <div class="dark-mode-switch">
+        <label class="switch">
+            <input type="checkbox" />
+            <span class="slider round"></span>
+        </label>
+        <span class="mode-text">Dark mode</span>
+    </div>
+
     <div class="login-container">
-        <div class="login-brand-section2">
-            <img class="brand-logo" src="{{ asset('img/LOGO_RIB_R.png') }}" alt="Logo RIB Logísticas">
-        </div>
+
         <div class="login-form-section">
-            <div class="form-header">
-                <h2>Iniciar Sesión</h2>
-                <p>Bienvenido a Apptualiza</p>
-            </div>
+            <h2>Iniciar Sesión</h2><br>
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
@@ -58,7 +67,8 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="btn-login">
+                <button type="submit" class="btn btn-primary">
+                    <i class='bx bx-log-in'></i>
                     Ingresar
                 </button>
             </form>
@@ -66,11 +76,32 @@
 
         <div class="login-brand-section">
             <img class="brand-logo" src="{{ asset('img/LOGO_RIB_R.png') }}" alt="Logo RIB Logísticas">
-            {{-- <img class="brand-logo" src="{{ asset('img/LOGOTIC1.png') }}" alt="Logo TIC ltda"> --}}
-            {{-- <div class="brand-text">
-                Sistema de Gestión Empresarial
-            </div> --}}
         </div>
     </div>
+
+
+    <script>
+        const checkbox = document.querySelector('.dark-mode-switch input[type="checkbox"]');
+        const modeText = document.querySelector('.dark-mode-switch .mode-text');
+
+        // Check for existing dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark');
+            checkbox.checked = true;
+            modeText.textContent = 'Light mode';
+        }
+
+        checkbox.addEventListener('change', () => {
+            document.body.classList.toggle('dark');
+
+            if (document.body.classList.contains('dark')) {
+                localStorage.setItem('darkMode', 'true');
+                modeText.textContent = 'Light mode';
+            } else {
+                localStorage.setItem('darkMode', 'false');
+                modeText.textContent = 'Dark mode';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -9,12 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 // Grupo de rutas protegidas por el middleware 'auth'
-Route::middleware(['auth', CheckRole::class.':admin'])->group(function () {
+Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
 
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Route::resource('users', UserController::class);
-    Route::resource('datos', DataController::class);
 
     // IMPORTAR EXCEL
     Route::get('excel-importar', [DataController::class, 'showUploadForm'])->name('import.import');
@@ -32,38 +31,37 @@ Route::middleware(['auth', CheckRole::class.':admin'])->group(function () {
     Route::get('/desasignar-filtrar', [DataController::class, 'desasignarFiltrar'])->name('desasignar.filtrar');
     Route::post('/desasignar-operario', [DataController::class, 'desasignarOperario'])->name('desasignar.operario');
 
+    //USERDATA
+    Route::get('/asignados', [DataController::class, 'asignadosListar'])->name('asignados.index');
+    Route::get('/asignados/edit/{data}', [DataController::class, 'asignadosEdit'])->name('asignados.edit');
+    Route::put('/operario/update/{id}', [DataController::class, 'asignadosUpdate'])->name('asignados.update');
 
 
 
-    //OPERARIO
-    Route::get('/ordenes-asignadas', [DataController::class, 'indexAsignar'])->name('operario.index');
-    Route::get('/operario/listar', [DataController::class, 'listarData'])->name('operario.listarData');
-    Route::get('/operario/edit/{data}', [DataController::class, 'edit'])->name('operario.edit');
-    Route::put('/operario/update/{id}', [DataController::class, 'update'])->name('operario.update');
-    Route::post('/operario/volver', [DataController::class, 'volver'])->name('operario.volver');
+    //COMPLETADOS
+    Route::get('/completados', [DataController::class, 'completadosIndex'])->name('completados.index');
+    Route::get('/completados/{id}', [DataController::class, 'completadosShow'])->name('completados.show');
+
+
+    //EXPORTAR EXCEL
+    Route::get('/export', [DataController::class, 'seleccionarCiclo'])->name('export');
+    Route::get('/export-filtrar', [DataController::class, 'filter'])->name('export.filtrar');
+    Route::get('/export-data', [DataController::class, 'exportData'])->name('export.excel');
+
+
+
 
 
 
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');
 
-    Route::get('/register', [UserController::class, 'showRegistrationForm'])->middleware(['auth', 'check.role'])->name('register');
-    Route::post('/register', [UserController::class, 'register'])->middleware(['auth', 'check.role']);
-
-
-
-
-
-    //EXPORTAR EXCEL
-    // Mostrar formulario para seleccionar ciclo
-    Route::get('/seleccionarciclo', [DataController::class, 'seleccionarCiclo'])->name('data.seleccionar');
-    // Aplicar filtros
-    Route::get('/filter-data', [DataController::class, 'filter'])->name('data.filter');
-    // Exportar a Excel
-    Route::get('/export-data', [DataController::class, 'exportData'])->name('data.export');
 });
 
-Route::middleware(['auth', CheckRole::class.':user'])->group(function () {
+Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
 
-
+    //USERDATA
+    Route::get('/asignados', [DataController::class, 'asignadosListar'])->name('asignados.index');
+    Route::get('/asignados/edit/{data}', [DataController::class, 'asignadosEdit'])->name('asignados.edit');
+    Route::put('/operario/update/{id}', [DataController::class, 'asignadosUpdate'])->name('asignados.update');
 
 });

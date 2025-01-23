@@ -14,112 +14,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DataController extends Controller
 {
-    public function index()
-    {
-        $datas = Data::where('estado', 1)->get();
-        return view('Data.index', compact('datas'));
-    }
-    public function show($id)
-    {
-        $data = Data::findOrFail($id); // Encontrar el registro por ID
-        return view('Data.show', compact('data'));
-    }
-
-    //IMPORTAR
-    public function showUploadForm()
-    {
-        return view('Data.import');
-    }
-
-    public function replaceData(Request $request)
-    {
-        // dd($request->all());
-        // Validar el archivo
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls'
-        ]);
-
-        // Limpiar todos los registros existentes en la tabla Data
-        Data::truncate(); // Elimina todos los registros de la tabla
-
-        // Procesar el archivo de importación
-        Excel::import(new DataImport, $request->file('file'));
-
-        // Mensaje de éxito
-        return redirect()->back()->with('success', 'Datos reemplazados exitosamente.');
-    }
-
-    // public function updateData(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xlsx,xls',
-    //     ]);
-
-    //     // Importar datos y actualizar si ya existen
-    //     Excel::import(new DataUpdateImport, $request->file('file'));
-
-    //     return redirect()->back()->with('success', 'Datos actualizados exitosamente.');
-    // }
-
-    public function addData(Request $request)
-    {
-        // Validar el archivo
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls'
-        ]);
-
-        // Procesar el archivo de importación
-        Excel::import(new DataImport, $request->file('file'));
-
-        // Mensaje de éxito
-        return redirect()->back()->with('success', 'Datos agregados exitosamente.');
-    }
-
-
-
-    //EXPORTAR
-    public function seleccionarCiclo()
-    {
-        $ciclos = Data::select('ciclo')->distinct()->pluck('ciclo');
-        return view('Data.export', compact('ciclos'));
-    }
-
-    public function filter(Request $request)
-    {
-        // Obtener el valor del ciclo del request
-        $ciclo = $request->input('ciclo');
-
-        // Filtrar los datos donde el estado es 1 y aplicar el filtro por ciclo si se proporciona
-        $datas = Data::where('estado', 1)
-            ->when($ciclo, function ($query, $ciclo) {
-                return $query->where('ciclo', $ciclo);
-            })
-            ->paginate(10);
-
-        // Obtener ciclos únicos para el filtro en la vista
-        $ciclos = Data::select('ciclo')->distinct()->pluck('ciclo');
-
-        // Pasar los datos y ciclos a la vista
-        return view('Data.export', compact('datas', 'ciclos'));
-    }
-
-
-
-    public function exportData(Request $request)
-    {
-        $ciclo = $request->input('ciclo');
-
-        // Asegurarse de que el filtro por ciclo se aplique junto con el estado = 1
-        return Excel::download(new DataExport($ciclo), 'data_estado_1.xlsx');
-    }
-
-
-
-
     // =============================      ASIGNACION      =============================
 
-
-    //ASIGNAR
     public function asignarIndex(Request $request)
     {
         // Obtener los parámetros de ordenamiento
@@ -198,10 +94,6 @@ class DataController extends Controller
         return view('Data.Asignacion.asignacion', compact('data', 'operarios', 'sortBy', 'direction', 'totalResultados'));
     }
 
-
-
-
-    // Método para manejar la asignación de operarios
     public function asignarOperario(Request $request)
     {
         $request->validate([
@@ -219,7 +111,10 @@ class DataController extends Controller
 
 
 
+
     // =============================      DESASIGNACION      =============================
+
+
 
 
     public function desasignarIndex(Request $request)
@@ -318,14 +213,10 @@ class DataController extends Controller
 
     // =============================      USERDATA      =============================
 
-    public function edit($id)
-    {
-        $data = Data::findOrFail($id);
-        return view('Operario.edit', compact('data'));
-    }
 
 
-    public function listarData(Request $request)
+
+    public function asignadosListar(Request $request)
     {
         $operarioId = Auth::user()->id;
         session(['previous_url' => $request->fullUrl()]);
@@ -342,10 +233,17 @@ class DataController extends Controller
         // Obtener los datos paginados
         $data = $query->paginate(1);
 
-        return view('Operario.index', compact('data'));
+        return view('Data.DataUser.index', compact('data'));
     }
 
-    public function update(Request $request, $id)
+    public function asignadosEdit($id)
+    {
+        $data = Data::findOrFail($id);
+        return view('Data.DataUser.edit', compact('data'));
+    }
+
+
+    public function asignadosUpdate(Request $request, $id)
     {
         $data = Data::findOrFail($id);
 
@@ -367,14 +265,159 @@ class DataController extends Controller
 
         $data->save();
 
-        return redirect()->route('operario.listarData')->with('success', 'Datos actualizados correctamente');
+        return redirect()->route('asignados.index')->with('success', 'Datos actualizados correctamente');
     }
 
-    public function volver()
+
+
+
+
+    // =============================      IMPORTAR      =============================
+
+
+
+
+
+    public function showUploadForm()
     {
-        return redirect()->back();
+        return view('Data.import');
     }
 
+    public function replaceData(Request $request)
+    {
+        // dd($request->all());
+        // Validar el archivo
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        // Limpiar todos los registros existentes en la tabla Data
+        Data::truncate(); // Elimina todos los registros de la tabla
+
+        // Procesar el archivo de importación
+        Excel::import(new DataImport, $request->file('file'));
+
+        // Mensaje de éxito
+        return redirect()->back()->with('success', 'Datos reemplazados exitosamente.');
+    }
+
+    // Este metodo es funcional pero no se usa, permite actualizar datos existentes con el nuevo archivo excel
+
+    // public function updateData(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required|mimes:xlsx,xls',
+    //     ]);
+
+    //     // Importar datos y actualizar si ya existen
+    //     Excel::import(new DataUpdateImport, $request->file('file'));
+
+    //     return redirect()->back()->with('success', 'Datos actualizados exitosamente.');
+    // }
+
+    public function addData(Request $request)
+    {
+        // Validar el archivo
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        // Procesar el archivo de importación
+        Excel::import(new DataImport, $request->file('file'));
+
+        // Mensaje de éxito
+        return redirect()->back()->with('success', 'Datos agregados exitosamente.');
+    }
+
+
+
+
+    // =============================      COMPLETADOS      =============================
+
+
+
+
+
+    public function completadosIndex(Request $request)
+    {
+
+        // Obtener los parámetros de ordenamiento
+        $sortBy = $request->get('sortBy', 'id'); // Columna por defecto
+        $direction = $request->get('direction', 'asc'); // Dirección por defecto
+
+        // Validar que la columna y la dirección sean válidas
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'correo', 'direccion', 'año', 'mes', 'periodo'];
+        if (!in_array($sortBy, $validColumns)) {
+            $sortBy = 'id';
+        }
+
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        // Obtener los datos ordenados
+        $datas = Data::where('estado', 1)
+            ->orderBy($sortBy, $direction)
+            ->paginate(100);
+
+        $totalResultados = Data::where('id_operario', null)->count();
+
+        return view('Data.Completados.index', [
+            'datas' => $datas,
+            'totalResultados' => $totalResultados,
+            'sortBy' => $sortBy,
+            'direction' => $direction,
+        ]);
+    }
+
+    public function completadosShow($id)
+    {
+        $data = Data::findOrFail($id); // Encontrar el registro por ID
+        return view('Data.show', compact('data'));
+    }
+
+
+
+
+    // =============================      EXPORTAR      =============================
+
+
+
+
+    public function seleccionarCiclo()
+    {
+        $ciclos = Data::select('ciclo')->distinct()->pluck('ciclo');
+        return view('Data.export', compact('ciclos'));
+    }
+
+    public function filter(Request $request)
+    {
+        // Obtener el valor del ciclo del request
+        $ciclo = $request->input('ciclo');
+
+        // Filtrar los datos donde el estado es 1 y aplicar el filtro por ciclo si se proporciona
+        $datas = Data::where('estado', 1)
+            ->when($ciclo, function ($query, $ciclo) {
+                return $query->where('ciclo', $ciclo);
+            })
+            ->paginate(10);
+
+        // Obtener ciclos únicos para el filtro en la vista
+        $ciclos = Data::select('ciclo')->distinct()->pluck('ciclo');
+
+        // Pasar los datos y ciclos a la vista
+        return view('Data.export', compact('datas', 'ciclos'));
+    }
+
+
+
+    public function exportData(Request $request)
+    {
+        $ciclo = $request->input('ciclo');
+
+        // Asegurarse de que el filtro por ciclo se aplique junto con el estado = 1
+        return Excel::download(new DataExport($ciclo), 'data_estado_1.xlsx');
+    }
 
 
 }

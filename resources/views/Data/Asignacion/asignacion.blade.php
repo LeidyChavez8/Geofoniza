@@ -8,6 +8,7 @@
 
 @section('content')
     <div class="assignment-container">
+
         <form action="{{ route('asignar.filtrar') }}" method="GET" class="mb-4">
             @csrf
             <div class="filters-section">

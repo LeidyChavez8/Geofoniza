@@ -391,7 +391,7 @@ body.dark .home .text{
     transition: var(--transition);
     text-decoration: none;
     cursor: pointer;
-
+    width: 100%;
 }
 
 .btn-primary {
@@ -461,6 +461,12 @@ body.dark .home .text{
     border: 1px solid #bee5eb;
 }
 
+
+
+
+
+
+
 /* ===== Fonts ===== */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
@@ -470,5 +476,9 @@ a, button, input, p {
     font-family: 'Poppins', sans-serif;
     font-size:  1rem;
 }
+
+
+
+
 
 
