@@ -46,7 +46,7 @@
 
                 <ul class="menu-links">
                     <li class="nav-link">
-                        <a href="#">
+                        <a href="{{ route('home') }}">
                             <i class='bx bx-home-alt icon' ></i>
                             <span class="text nav-text">Inicio</span>
                         </a>
@@ -88,7 +88,7 @@
                     </li>
 
                     <li class="nav-link">
-                        <a href="#">
+                        <a href="{{ route('export') }}">
                             <i class='bx bx-download icon' ></i>
                             <span class="text nav-text">Generar Excel</span>
                         </a>

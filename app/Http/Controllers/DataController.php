@@ -280,7 +280,7 @@ class DataController extends Controller
 
     public function showUploadForm()
     {
-        return view('Data.import');
+        return view('Data.Importar.import');
     }
 
     public function replaceData(Request $request)
@@ -370,6 +370,47 @@ class DataController extends Controller
         ]);
     }
 
+    public function completadosFiltrar(Request $request)
+    {
+        $sortBy = $request->get('sortBy', 'id'); // Columna de orden por defecto
+        $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
+
+        // Validar la columna y la dirección de ordenamiento
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        if (!in_array($sortBy, $validColumns)) {
+            $sortBy = 'id';
+        }
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        // Construir la consulta con filtros
+        $query = Data::where('estado', 1);
+
+        if ($request->filled('buscador-nombre')) {
+            $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
+        }
+        if ($request->filled('buscador-cuenta')) {
+            $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
+        }
+        if ($request->filled('buscador-medidor')) {
+            $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
+        }
+        if ($request->filled('buscador-ciclo')) {
+            $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
+        }
+
+        // Aplicar el ordenamiento
+        $datas = $query
+            ->orderBy($sortBy, $direction)
+            ->paginate(100)
+            ->appends($request->except('page')); // Conservar parámetros en la paginación
+
+        $totalResultados = $query->count();
+
+        return view('Data.Completados.index', compact('datas', 'sortBy', 'direction', 'totalResultados'));
+    }
+
     public function completadosShow($id)
     {
         $data = Data::findOrFail($id); // Encontrar el registro por ID
@@ -384,39 +425,72 @@ class DataController extends Controller
 
 
 
-    public function seleccionarCiclo()
+    public function exportarIndex()
     {
         $ciclos = Data::select('ciclo')->distinct()->pluck('ciclo');
-        return view('Data.export', compact('ciclos'));
+        return view('Data.Exportar.export', compact('ciclos'));
     }
 
-    public function filter(Request $request)
+    public function exportarFiltrar(Request $request)
     {
         // Obtener el valor del ciclo del request
         $ciclo = $request->input('ciclo');
 
-        // Filtrar los datos donde el estado es 1 y aplicar el filtro por ciclo si se proporciona
-        $datas = Data::where('estado', 1)
-            ->when($ciclo, function ($query, $ciclo) {
-                return $query->where('ciclo', $ciclo);
-            })
-            ->paginate(10);
+        // Filtrar los datos según el ciclo
+        if ($ciclo == 'all') {
+            // Si el ciclo es 'all', mostrar todos los registros
+            $datas = Data::where('estado', 1)->paginate(10);
+        } elseif ($ciclo) {
+            // Si se ha seleccionado un ciclo específico, filtrar por ese ciclo
+            $datas = Data::where('estado', 1)
+                ->where('ciclo', $ciclo)
+                ->paginate(10);
+        } else {
+            // Si no se ha seleccionado ningún ciclo, no se deben mostrar resultados
+            $datas = collect(); // Esto es equivalente a una consulta vacía
+        }
 
         // Obtener ciclos únicos para el filtro en la vista
         $ciclos = Data::select('ciclo')->distinct()->pluck('ciclo');
 
-        // Pasar los datos y ciclos a la vista
-        return view('Data.export', compact('datas', 'ciclos'));
+        // Si la solicitud es AJAX, devolver los datos como JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'datas' => $datas,
+                'ciclos' => $ciclos,
+                'pagination' => [
+                    'total' => $datas->total(),
+                    'current_page' => $datas->currentPage(),
+                    'last_page' => $datas->lastPage(),
+                ]
+            ]);
+        }
+
+        // Si no es AJAX, mostrar la vista normal
+        return view('Data.Exportar.export', compact('datas', 'ciclos', 'ciclo'));
     }
-
-
 
     public function exportData(Request $request)
     {
         $ciclo = $request->input('ciclo');
 
-        // Asegurarse de que el filtro por ciclo se aplique junto con el estado = 1
-        return Excel::download(new DataExport($ciclo), 'data_estado_1.xlsx');
+        // Filtrar los registros según el ciclo y el estado = 1
+        $query = Data::where('estado', 1);
+        if ($ciclo && $ciclo !== 'all') {
+            $query->where('ciclo', $ciclo);
+        }
+
+        // Obtener la cantidad de registros que serán exportados
+        $cantidadRegistros = $query->count();
+
+        // Obtener la hora actual
+        $horaActual = now()->format('Y-m-d_H-i-s');  // Formato: año-mes-día_hora-minuto-segundo
+
+        // Crear el nombre del archivo
+        $nombreArchivo = 'Apptualiza_' . $horaActual . '_' . $cantidadRegistros . '.xlsx';
+
+        // Realizar la exportación a Excel con el nombre generado
+        return Excel::download(new DataExport($ciclo), $nombreArchivo);
     }
 
 
