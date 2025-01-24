@@ -19,11 +19,11 @@ class DataController extends Controller
     public function asignarIndex(Request $request)
     {
         // Obtener los parámetros de ordenamiento
-        $sortBy = $request->get('sortBy', 'id'); // Columna por defecto
+        $sortBy = $request->get('sortBy', 'recorrido'); // Columna por defecto
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -33,7 +33,7 @@ class DataController extends Controller
         }
 
         // Obtener los datos ordenados
-        $data = Data::where('id_operario', null)
+        $data = Data::where('id_user', null)
             ->orderBy($sortBy, $direction)
             ->paginate(100);
 
@@ -41,7 +41,7 @@ class DataController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        $totalResultados = Data::where('id_operario', null)->count();
+        $totalResultados = Data::where('id_user', null)->count();
 
         return view('Data.Asignacion.asignacion', [
             'data' => $data,
@@ -58,7 +58,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -70,10 +70,10 @@ class DataController extends Controller
         $query = Data::where('estado', null);
 
         if ($request->filled('buscador-nombre')) {
-            $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
+            $query->where('nombres', 'like', '%' . $request->input('buscador-nombre') . '%');
         }
-        if ($request->filled('buscador-cuenta')) {
-            $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
+        if ($request->filled('buscador-contrato')) {
+            $query->where('contrato', 'like', '%' . $request->input('buscador-contrato') . '%');
         }
         if ($request->filled('buscador-medidor')) {
             $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
@@ -102,9 +102,9 @@ class DataController extends Controller
         ]);
 
         $programaciones = $request->input('Programacion');
-        $operarioId = $request->input('operario');
+        $userId = $request->input('operario');
 
-        Data::whereIn('id', $programaciones)->update(['id_operario' => $operarioId]);
+        Data::whereIn('id', $programaciones)->update(['id_user' => $userId]);
 
         return redirect()->route('asignar.index')->with('success', 'Operario asignado exitosamente');
     }
@@ -124,7 +124,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -134,7 +134,7 @@ class DataController extends Controller
         }
 
         // Obtener los datos ordenados
-        $data = Data::whereNotNull('id_operario')
+        $data = Data::whereNotNull('id_user')
             ->orderBy($sortBy, $direction)
             ->paginate(100);
 
@@ -142,7 +142,7 @@ class DataController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        $totalResultados = Data::whereNotNull('id_operario')->count();
+        $totalResultados = Data::whereNotNull('id_user')->count();
 
         return view('Data.Asignacion.desasignacion', [
             'data' => $data,
@@ -159,7 +159,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'año', 'mes', 'periodo'];
+        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -168,13 +168,13 @@ class DataController extends Controller
         }
 
         // Construir la consulta con filtros
-        $query = Data::whereNotNull('id_operario');
+        $query = Data::whereNotNull('id_user');
 
         if ($request->filled('buscador-nombre')) {
-            $query->where('nombre_cliente', 'like', '%' . $request->input('buscador-nombre') . '%');
+            $query->where('nombres', 'like', '%' . $request->input('buscador-nombre') . '%');
         }
-        if ($request->filled('buscador-cuenta')) {
-            $query->where('cuenta', 'like', '%' . $request->input('buscador-cuenta') . '%');
+        if ($request->filled('buscador-contrato')) {
+            $query->where('contrato', 'like', '%' . $request->input('buscador-contrato') . '%');
         }
         if ($request->filled('buscador-medidor')) {
             $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
@@ -203,7 +203,7 @@ class DataController extends Controller
 
         $programaciones = $request->input('Programacion');
 
-        Data::whereIn('id', $programaciones)->update(['id_operario' => null]);
+        Data::whereIn('id', $programaciones)->update(['id_user' => null]);
 
         return redirect()->route('desasignar.index')->with('success', 'Operario desasignado exitosamente');
     }
@@ -218,12 +218,12 @@ class DataController extends Controller
 
     public function asignadosListar(Request $request)
     {
-        $operarioId = Auth::user()->id;
+        $userId = Auth::user()->id;
         session(['previous_url' => $request->fullUrl()]);
 
 
         // Crear la consulta base
-        $query = Data::where('id_operario', $operarioId)
+        $query = Data::where('id_user', $userId)
             ->where(function ($query) {
                 $query->where('estado', 0)
                     ->orWhereNull('estado');
@@ -341,7 +341,7 @@ class DataController extends Controller
             ->orderBy($sortBy, $direction)
             ->paginate(100);
 
-        $totalResultados = Data::where('id_operario', null)->count();
+        $totalResultados = Data::where('id_user', null)->count();
 
         return view('Data.Completados.index', [
             'datas' => $datas,
