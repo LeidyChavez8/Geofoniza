@@ -69,17 +69,14 @@ class DataController extends Controller
         // Construir la consulta con filtros
         $query = Data::where('estado', null);
 
-        if ($request->filled('buscador-nombre')) {
-            $query->where('nombres', 'like', '%' . $request->input('buscador-nombre') . '%');
-        }
-        if ($request->filled('buscador-contrato')) {
-            $query->where('contrato', 'like', '%' . $request->input('buscador-contrato') . '%');
-        }
-        if ($request->filled('buscador-medidor')) {
-            $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
-        }
         if ($request->filled('buscador-ciclo')) {
             $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
+        }
+        if ($request->filled('buscador-direccion')) {
+            $query->where('direccion', 'like', '%' . $request->input('buscador-direccion') . '%');
+        }
+        if ($request->filled('buscador-recorrido')) {
+            $query->where('recorrido', 'like', '%' . $request->input('buscador-recorrido') . '%'); 
         }
 
         // Aplicar el ordenamiento
@@ -170,17 +167,20 @@ class DataController extends Controller
         // Construir la consulta con filtros
         $query = Data::whereNotNull('id_user');
 
-        if ($request->filled('buscador-nombre')) {
-            $query->where('nombres', 'like', '%' . $request->input('buscador-nombre') . '%');
-        }
-        if ($request->filled('buscador-contrato')) {
-            $query->where('contrato', 'like', '%' . $request->input('buscador-contrato') . '%');
-        }
-        if ($request->filled('buscador-medidor')) {
-            $query->where('medidor', 'like', '%' . $request->input('buscador-medidor') . '%');
+        if ($request->filled('buscador-operario')) {
+            // buscamos el id del usuario por el nombre
+            $userId = User::where('name', 'like', '%' . $request->input('buscador-operario') . '%')->pluck('id');
+            // filtramos por el id del usuario
+            $query->whereIn('id_user', $userId);
         }
         if ($request->filled('buscador-ciclo')) {
             $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
+        }
+        if ($request->filled('buscador-direccion')) {
+            $query->where('direccion', 'like', '%' . $request->input('buscador-direccion') . '%');
+        }
+        if ($request->filled('buscador-recorrido')) {
+            $query->where('recorrido', 'like', '%' . $request->input('buscador-recorrido') . '%'); 
         }
 
         // Aplicar el ordenamiento

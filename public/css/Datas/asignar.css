@@ -22,7 +22,7 @@
 
 .filter-input {
     flex: 1;
-    min-width: 200px;
+    min-width: 185px;
     padding: 0.5rem;
     border: 1px solid var(--primary-color-light);
     border-radius: 6px;
