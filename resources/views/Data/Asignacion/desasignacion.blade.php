@@ -65,21 +65,6 @@
                             <th>
                                 @php
                                     $queryParams = request()->query();
-                                    $queryParams['sortBy'] = 'user_id';
-                                    $queryParams['direction'] =
-                                        request('sortBy') == 'user_id' && request('direction') == 'asc' ? 'desc' : 'asc';
-                                @endphp
-                                <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
-                                    Operario
-                                    @if (request('sortBy') == 'user_id')
-                                        <i
-                                            class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
-                                    @endif
-                                </a>
-                            </th>
-                            <th>
-                                @php
-                                    $queryParams = request()->query();
                                     $queryParams['sortBy'] = 'contrato';
                                     $queryParams['direction'] =
                                         request('sortBy') == 'contrato' && request('direction') == 'asc' ? 'desc' : 'asc';
@@ -91,6 +76,8 @@
                                             class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                     @endif
                                 </a>
+                            </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -106,7 +93,7 @@
                                     @endif
                                 </a>
                             </th>
-                            </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -124,6 +111,7 @@
                                     @endif
                                 </a>
                             </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -141,6 +129,7 @@
                                     @endif
                                 </a>
                             </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();

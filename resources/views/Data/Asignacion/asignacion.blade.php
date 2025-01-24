@@ -72,6 +72,7 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </th>
+                            
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -86,6 +87,8 @@
                                             class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                     @endif
                                 </a>
+                            </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -101,7 +104,7 @@
                                     @endif
                                 </a>
                             </th>
-                            </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -119,6 +122,7 @@
                                     @endif
                                 </a>
                             </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -136,6 +140,7 @@
                                     @endif
                                 </a>
                             </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
