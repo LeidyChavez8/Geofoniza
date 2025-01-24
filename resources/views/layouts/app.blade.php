@@ -23,9 +23,9 @@
     <nav class="sidebar close">
         <header>
             <div class="image-text">
-                <span class="image">
+                {{-- <span class="image">
                     <img src="logo.png" alt="">
-                </span>
+                </span> --}}
 
                 <div class="text logo-text">
                     <span class="name">Apptualiza</span>

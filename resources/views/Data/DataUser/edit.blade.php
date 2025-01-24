@@ -55,25 +55,33 @@
             <div class="form-group">
                 <label for="nombre_cliente">Nombre Cliente:</label>
                 <input type="text" name="nombre_cliente" class="form-control"
-                    value="{{ old('nombre_cliente', $data->nombre_cliente) }}">
+                    value="{{ old('nombre_cliente', $data->nombre_cliente) }}" disabled>
                 @error('nombre_cliente')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="telefono">Teléfono:</label>
-                <input type="text" name="telefono" id="telefono" class="form-control"
-                    value="{{ old('telefono', $data->telefono) }}" maxlength="10">
-                @error('telefono')
+                <label for="lectura">Lectura:</label>
+                <input type="text" name="lectura" id="lectura" class="form-control"
+                    value="{{ old('lectura', $data->lectura) }}" maxlength="10">
+                @error('lectura')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" name="email" class="form-control" value="{{ old('email', $data->email) }}">
-                @error('email')
+                <label for="novedad">Novedad:</label>
+                <input type="novedad" name="novedad" class="form-control" value="{{ old('novedad', $data->novedad) }}">
+                @error('novedad')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="comentario">Comentario:</label>
+                <input type="comentario" name="comentario" class="form-control" value="{{ old('comentario', $data->comentario) }}">
+                @error('comentario')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>

@@ -32,38 +32,50 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
     public function headings(): array
     {
         return [
-            'Ciclo',
-            'Año',
-            'Mes',
-            'Cuenta',
-            'Direccion',
-            'Recorrido',
-            'Medidor',
+            'Contrato',
+            'Producto',
             'Nombres',
-            'Periodo',
-            'Telefono',
-            'Email',
-            'Estado',
-            'Firma', // Añadir la columna de la firma
+            'Calificación',
+            'Categoría',
+            'Dirección',
+            'Ubicación',
+            'Medidor',
+            'Orden',
+            'Lectura Anterior',
+            'Fecha Lectura Anterior',
+            'Observación Lectura Anterior',
+            'Ciclo',
+            'Recorrido',
+            'Lectura',
+            'Observación Inspección',
+            'URL Foto',
+            'Inspector',
+            'Firma',
         ];
     }
 
     public function map($data): array
     {
         return [
-            $data->ciclo,
-            $data->año,
-            $data->mes,
-            $data->cuenta,
+            $data->contrato,
+            $data->producto,
+            $data->nombres,
+            $data->calificacion,
+            $data->categoria,
             $data->direccion,
-            (int) $data->recorrido, // Convertir explícitamente a entero
+            $data->ubicacion,
             $data->medidor,
-            $data->nombre_cliente,
-            $data->periodo,
-            $data->telefono,
-            $data->email,
-            $data->estado,
-            $data->firma, // Pasar la firma base64 en el mapeo
+            $data->orden,
+            $data->lectura_anterior,
+            $data->fecha_lectura_anterior,
+            $data->observacion_lectura_anterior,
+            $data->ciclo,
+            $data->recorrido,
+            $data->lectura,
+            $data->observacion_inspeccion,
+            $data->url_foto,
+            optional($data->user)->name,
+            optional($data->firma),
         ];
     }
 

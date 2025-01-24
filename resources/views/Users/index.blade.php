@@ -44,7 +44,7 @@
                     <td>{{ $user->rol }}</td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn btn-secondary" onclick="window.location.href='{{ route('users.edit', $user->id) }}'">
+                            <button class="btn btn-tertiary" style="width: unset; " onclick="window.location.href='{{ route('users.edit', $user->id) }}'">
                                 <i class='bx bx-edit-alt'></i>
                             </button>
 

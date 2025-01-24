@@ -248,17 +248,12 @@ class DataController extends Controller
         $data = Data::findOrFail($id);
 
         $validatedData = $request->validate([
-            'nombre_cliente' => 'required',
-            'telefono' => 'required|size:10',
-            'email' => 'required|email',
+            'lectura' => 'required',
+            'novedad' => 'required|size:10',
+            'comentario' => 'required|string',
         ]);
 
         $data->fill($validatedData);
-
-        if ($request->hasFile('firma')) {
-            $firmaBase64 = base64_encode(file_get_contents($request->file('firma')->path()));
-            $data->firma = $firmaBase64;
-        }
 
         // Cambiar el estado a 1 (actualizado)
         $data->estado = 1;
@@ -301,20 +296,6 @@ class DataController extends Controller
         return redirect()->back()->with('success', 'Datos reemplazados exitosamente.');
     }
 
-    // Este metodo es funcional pero no se usa, permite actualizar datos existentes con el nuevo archivo excel
-
-    // public function updateData(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xlsx,xls',
-    //     ]);
-
-    //     // Importar datos y actualizar si ya existen
-    //     Excel::import(new DataUpdateImport, $request->file('file'));
-
-    //     return redirect()->back()->with('success', 'Datos actualizados exitosamente.');
-    // }
-
     public function addData(Request $request)
     {
         // Validar el archivo
@@ -346,7 +327,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'correo', 'direccion', 'año', 'mes', 'periodo'];
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'direccion', 'año', 'mes', 'periodo'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }

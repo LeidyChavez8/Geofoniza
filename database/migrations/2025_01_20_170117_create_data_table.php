@@ -13,20 +13,26 @@ return new class extends Migration
     {
         Schema::create('data', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_cliente');
-            $table->string('email')->nullable();
-            $table->string('telefono')->nullable();
+            $table->string('contrato')->nullable();
+            $table->string('producto')->nullable();
+            $table->string('nombres')->nullable();
+            $table->string('calificacion')->nullable();
+            $table->string('categoria')->nullable();
+            $table->string('direccion')->nullable();
+            $table->string('ubicacion')->nullable();
+            $table->string('medidor')->nullable();
+            $table->string('orden')->nullable();
+            $table->string('lectura_anterior')->nullable();
+            $table->string('fecha_lectura_anterior')->nullable();
+            $table->string('observacion_lectura_anterior')->nullable();
+            $table->string('ciclo')->nullable();
+            $table->string('recorrido')->nullable();
+            $table->string('lectura')->nullable();
+            $table->string('observacion_inspeccion')->nullable();
+            $table->string('url_foto')->nullable();
             $table->text('firma')->nullable();
-            $table->string('cuenta');
-            $table->string('direccion');
-            $table->string('recorrido');
-            $table->string('ciclo');
-            $table->string('medidor');
-            $table->string('año');
-            $table->string('mes');
-            $table->string('periodo');
-            $table->foreignId('id_operario')->nullable()->constrained('users');
-            $table->tinyInteger('estado')->default(0)->nullable();
+            $table->foreignId('id_user')->nullable()->constrained('users');
+            $table->string('estado')->nullable();
             $table->timestamps();
         });
     }

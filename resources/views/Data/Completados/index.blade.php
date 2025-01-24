@@ -171,21 +171,7 @@
                                 @endif
                             </a>
                         </th>
-                        <th>
-                            @php
-                                $queryParams = request()->query();
-                                $queryParams['sortBy'] = 'email';
-                                $queryParams['direction'] =
-                                    request('sortBy') == 'email' && request('direction') == 'asc' ? 'desc' : 'asc';
-                            @endphp
-                            <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
-                                Correo
-                                @if (request('sortBy') == 'email')
-                                    <i
-                                        class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
-                                @endif
-                            </a>
-                        </th>
+
                         <th>
                             @php
                                 $queryParams = request()->query();
@@ -259,7 +245,6 @@
                             <td class="table-cell-truncate">{{ $data->direccion }}</td>
                             <td>{{ $data->recorrido }}</td>
                             <td class="table-cell-truncate">{{ $data->medidor }}</td>
-                            <td class="table-cell-truncate">{{ $data->email }}</td>
                             <td class="table-cell-truncate">{{ $data->direccion }}</td>
                             <td>{{ $data->año }}</td>
                             <td>{{ $data->mes }}</td>

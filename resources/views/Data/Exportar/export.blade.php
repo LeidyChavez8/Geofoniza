@@ -51,8 +51,6 @@
                             <th>Recorrido</th>
                             <th>Medidor</th>
                             <th>Nombre Cliente</th>
-                            <th>Teléfono</th>
-                            <th>Email</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -114,8 +112,6 @@
                         <td>${item.recorrido}</td>
                         <td>${item.medidor}</td>
                         <td class="table-cell-truncate">${item.nombre_cliente}</td>
-                        <td>${item.telefono}</td>
-                        <td class="table-cell-truncate">${item.email}</td>
                     `;
                         tableBody.appendChild(row);
                     });

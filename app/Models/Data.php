@@ -9,25 +9,31 @@ class Data extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'ciclo',
-        'nombre_cliente',
-        'email',
-        'telefono',
-        'firma',
-        'cuenta',
+        'contrato',
+        'producto',
+        'nombres',
+        'calificacion',
+        'categoria',
         'direccion',
-        'recorrido',
+        'ubicacion',
         'medidor',
-        'año',
-        'mes',
-        'periodo',
-        'id_operario',
+        'orden',
+        'lectura_anterior',
+        'fecha_lectura_anterior',
+        'observacion_lectura_anterior',
+        'ciclo',
+        'recorrido',
+        'lectura',
+        'observacion_inspeccion',
+        'url_foto',
+        'firma',
+        'id_user',
         'estado',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_operario');
+        return $this->belongsTo(User::class, 'id_user');
     }
 }
 

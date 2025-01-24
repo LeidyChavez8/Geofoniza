@@ -24,6 +24,6 @@ class User extends Authenticatable
 
     public function data()
     {
-        return $this->hasMany(Data::class, 'id_operario');
+        return $this->hasMany(Data::class, 'id_user');
     }
 }
