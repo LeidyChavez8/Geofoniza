@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Yaza\LaravelGoogleDriveStorage\Gdrive;  // Clase para manejar el almacenamiento en Google Drive
 
 class DataController extends Controller
 {
@@ -239,6 +240,62 @@ class DataController extends Controller
     public function asignadosEdit($id)
     {
         $data = Data::findOrFail($id);
+
+        $observacion = [
+            "CAUSA DE CIERRE",
+            "AR-Amerita Revisión De Laboratorio",
+            "AU-USUARIO AUSENTE",
+            "CB-CAJA REGISTRO OBSTACULIZADA",
+            "CD-PREDIO CERRADO",
+            "CO-CONSTRUCCION",
+            "DH-DESHABITADO",
+            "DM-PREDIO DEMOLIDO",
+            "DS-RECOMENDACIÓN NO ACATADA",
+            "FN-FUGA IMPERCEPTIBLE",
+            "FP-FUGA PERCEPTIBLE",
+            "FR-FUGA REPARADA",
+            "FS-FUGA SIN REPARAR",
+            "GFN-FUGA UBICADA GAS TRAZADOR",
+            "IS-INSPECCION SIN CONCLUIR",
+            "MI-MEDIDOR INVERTIDO",
+            "NA-NO ATIENDEN",
+            "ND-NO DEJAN",
+            "NF-NO EXISTE FUGA",
+            "NO SE PUDO COMPROBAR INFORMACION",
+            "NP-NO PERMITEN INGRESO AL PREDIO",
+            "NU-FUGA IMPERCEPTIBLE NO UBICADA",
+            "OR-ORDEN REPROGRAMADA POR EL USUARIO",
+            "PG-PROGRAMAR GEOFONO",
+            "RI-PREDIO CON RECONEXION ILEGAL",
+            "SD-SERVICIO DIRECTO",
+            "SP-SECTOR PELIGROSO",
+            "SSA-SECTOR SIN AGUA",
+            "SS-SERVICIO SUSPENDIDO",
+            "SV-SIN VEHICULO",
+            "VM-VIA EN MAL ESTADO",
+            "NE-No Se Encuentra Medidor",
+            "VI-Verificación Incompleta",
+            "ET-Medidor Enterrado",
+            "FV-Fuga Visible",
+            "Predio comercial cerrado",
+            "ND-No Dejan Pasar",
+            "Medidor sin conexión interna, vecino le regala agua",
+            "AS-Agua Suspendida",
+            "CA-Medidor con Candado",
+            "CO-Construcción",
+            "DC-Distinto Contador",
+            "FI-Fuga En Instalación",
+            "LT-Lote",
+            "Macromedidor",
+            "Medidor sin conexión interna, se surte del medidor del vecino",
+            "PG-Programar geófono",
+            "PNF-Persona No Facultada",
+            "Predio sin medidor",
+            "RI-Predio Con Reconexión Ilegal",
+            "SM-Sin Medidor"
+        ];
+
+        $data -> observacion = $observacion;
         return view('Data.DataUser.edit', compact('data'));
     }
 
@@ -249,16 +306,48 @@ class DataController extends Controller
 
         $validatedData = $request->validate([
             'lectura' => 'required',
-            'novedad' => 'required|size:10',
-            'comentario' => 'required|string',
+            'observacion' => 'required',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff',
         ]);
 
-        $data->fill($validatedData);
+        // Subir la foto a Google Drive
+        $mesActual = date('F');
+        $userFolder = auth()->user()->name; // Subcarpeta personalizada por usuario
+        $fileName = $validatedData['foto']->getClientOriginalName();
+        $filePath = "$mesActual/$userFolder/$fileName";
 
+        // Subida de foto
+        $driveResponse = Gdrive::put($filePath, $validatedData['foto']);
+
+        // Establecer permisos públicos
+        $disk = Storage::disk('google');
+        $fileMetaData = $disk->getAdapter()->getService()->files->listFiles([
+            'q' => "name='$fileName'"
+        ]);
+
+        if (!empty($fileMetaData->getFiles())) {
+            $fileId = $fileMetaData->getFiles()[0]->getId();
+            $permissions = new \Google\Service\Drive\Permission([
+                'type' => 'anyone',
+                'role' => 'reader',
+            ]);
+            $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
+
+            // Obtener URL pública
+            $fileUrl = "https://drive.google.com/uc?id=$fileId";
+        } else {
+            $fileUrl = null;
+        }
+
+            // dd($solicitud);
+            $data ->url_foto = $fileUrl;
+
+        $data->fill($validatedData);
+        $data->save();
+        dd($data);
         // Cambiar el estado a 1 (actualizado)
         $data->estado = 1;
 
-        $data->save();
 
         return redirect()->route('asignados.index')->with('success', 'Datos actualizados correctamente');
     }

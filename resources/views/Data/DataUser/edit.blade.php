@@ -29,66 +29,90 @@
 
             <!-- Campos del formulario -->
             <div class="form-group">
+                <label for="cuenta">Cuenta:</label>
+                <input type="text" name="cuenta" class="form-control" value="{{ old('cuenta', $data->contrato) }}"
+                    disabled>
+            </div>
+
+            <div class="form-group">
                 <label for="ciclo">Ciclo:</label>
                 <input type="text" name="ciclo" class="form-control" value="{{ old('ciclo', $data->ciclo) }}"
                     disabled>
             </div>
 
             <div class="form-group">
-                <label for="cuenta">Cuenta:</label>
-                <input type="text" name="cuenta" class="form-control" value="{{ old('cuenta', $data->cuenta) }}"
-                    disabled>
-            </div>
-
-            <div class="form-group">
                 <label for="direccion">Dirección:</label>
-                <input type="text" name="direccion" class="form-control"
+                <input type="text" id="medidor" name="direccion" class="form-control"
                     value="{{ old('direccion', $data->direccion) }}" disabled>
             </div>
 
             <div class="form-group">
                 <label for="medidor">Medidor:</label>
-                <input type="text" name="medidor" class="form-control" value="{{ old('medidor', $data->medidor) }}"
+                <input type="text" id="medidor" name="medidor" class="form-control" value="{{ old('medidor', $data->medidor) }}"
+                    disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="recorrido">Recorrido:</label>
+                <input type="text" id="recorrido" name="recorrido" class="form-control" value="{{ old('recorrido', $data->recorrido) }}"
                     disabled>
             </div>
 
             <div class="form-group">
                 <label for="nombre_cliente">Nombre Cliente:</label>
                 <input type="text" name="nombre_cliente" class="form-control"
-                    value="{{ old('nombre_cliente', $data->nombre_cliente) }}" disabled>
+                    value="{{ old('nombre_cliente', $data->nombres) }}" disabled>
                 @error('nombre_cliente')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
+            {{-- @dd($data->attributesToArray()); --}}
+    
+            <div class="form-group">
+                <label for="lectura_anterior">Lectura anterior:</label>
+                <input type="text" id="lectura_anterior" name="lectura_anterior" class="form-control"
+                    value="{{ old('lectura_anterior', $data->lectura_anterior) }}" maxlength="10" disabled>
+            </div>
+
             <div class="form-group">
                 <label for="lectura">Lectura:</label>
                 <input type="text" name="lectura" id="lectura" class="form-control"
-                    value="{{ old('lectura', $data->lectura) }}" maxlength="10">
+                    value="{{ old('lectura') }}" maxlength="10">
                 @error('lectura')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
+            {{-- @dd($data->observacion[0]) --}}
+
             <div class="form-group">
-                <label for="novedad">Novedad:</label>
-                <input type="novedad" name="novedad" class="form-control" value="{{ old('novedad', $data->novedad) }}">
-                @error('novedad')
+                <label for="observacion">Observación:</label>
+                <select name="observacion" id="observacion" class="form-control" value="{{ old('observacion')}}">
+                    <option value="" >Seleccione observación</option>
+                    @foreach ($data->observacion as $item)
+                        <option value="{{ $item }}">{{ $item }}</option>
+                    @endforeach
+                </select>
+                
+                @error('observacion')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="comentario">Comentario:</label>
-                <input type="comentario" name="comentario" class="form-control" value="{{ old('comentario', $data->comentario) }}">
-                @error('comentario')
+                <label for="foto">Foto:</label>
+                <input type="file" name="foto" id="foto" class="form-control"
+                    value="{{ old('lectura') }}" maxlength="10">
+                @error('foto')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
+
 
             <!-- Reemplaza el botón con un checkbox y un texto -->
             <div class="form-group checkbox-label">
-                <input type="checkbox">
+                <input type="checkbox" name="yes"  required {{ old('yes') ? 'checked' : '' }}>
                 <div class="terminos">
                     <label for="save-signature-checkbox" class="terminos">Autoriza a RIB Logísticas SAS a utilizar y
                         almacenar

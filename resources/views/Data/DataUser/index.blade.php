@@ -38,16 +38,19 @@
                     @foreach ($data as $item)
                         <tr>
                             <td class="table-cell-truncate" colspan="5"><strong>Nombres:</strong>
-                                {{ $item->nombre_cliente }}</td>
+                                {{ $item->nombres }}</td>
                         </tr>
                         <tr>
                             <td colspan="5"><strong>Ciclo:</strong> {{ $item->ciclo }}</td>
                         </tr>
                         <tr>
-                            <td colspan="5"><strong>Cuenta:</strong> {{ $item->cuenta }}</td>
+                            <td colspan="5"><strong>Cuenta:</strong> {{ $item->contrato }}</td>
                         </tr>
                         <tr>
                             <td colspan="5"><strong>Dirección:</strong> {{ $item->direccion }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5"><strong>Recorrido:</strong> {{ $item->recorrido }}</td>
                         </tr>
                         <tr>
                             <td class="table-cell-truncate" colspan="5"><strong>Medidor:</strong>

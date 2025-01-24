@@ -14,8 +14,8 @@
             <div class="filters-section">
                 <input type="text" name="buscador-nombre" class="filter-input" placeholder=" nombre..."
                     value="{{ request('buscador-nombre') }}">
-                <input type="text" name="buscador-cuenta" class="filter-input" placeholder=" cuenta..."
-                    value="{{ request('buscador-cuenta') }}">
+                <input type="text" name="buscador-contrato" class="filter-input" placeholder=" contrato..."
+                    value="{{ request('buscador-contrato') }}">
                 <input type="text" name="buscador-medidor" class="filter-input" placeholder=" medidor..."
                     value="{{ request('buscador-medidor') }}">
                 <input type="text" name="buscador-ciclo" class="filter-input" placeholder=" ciclo..."
@@ -97,15 +97,15 @@
                         <th>
                             @php
                                 $queryParams = request()->query();
-                                $queryParams['sortBy'] = 'nombre_cliente';
+                                $queryParams['sortBy'] = 'nombres';
                                 $queryParams['direction'] =
-                                    request('sortBy') == 'nombre_cliente' && request('direction') == 'asc'
+                                    request('sortBy') == 'nombres' && request('direction') == 'asc'
                                         ? 'desc'
                                         : 'asc';
                             @endphp
                             <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
                                 Nombre Cliente
-                                @if (request('sortBy') == 'nombre_cliente')
+                                @if (request('sortBy') == 'nombres')
                                     <i
                                         class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                 @endif
@@ -114,13 +114,13 @@
                         <th>
                             @php
                                 $queryParams = request()->query();
-                                $queryParams['sortBy'] = 'cuenta';
+                                $queryParams['sortBy'] = 'contrato';
                                 $queryParams['direction'] =
-                                    request('sortBy') == 'cuenta' && request('direction') == 'asc' ? 'desc' : 'asc';
+                                    request('sortBy') == 'contrato' && request('direction') == 'asc' ? 'desc' : 'asc';
                             @endphp
                             <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
-                                Cuenta
-                                @if (request('sortBy') == 'cuenta')
+                                contrato
+                                @if (request('sortBy') == 'contrato')
                                     <i
                                         class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                 @endif
@@ -240,8 +240,8 @@
                             <td>{{ $data->id }}</td>
                             <td>{{ $data->ciclo }}</td>
                             <td class="table-cell-truncate" style="text-align: left;">
-                                {{ $data->nombre_cliente }}</td>
-                            <td>{{ $data->cuenta }}</td>
+                                {{ $data->nombres }}</td>
+                            <td>{{ $data->contrato }}</td>
                             <td class="table-cell-truncate">{{ $data->direccion }}</td>
                             <td>{{ $data->recorrido }}</td>
                             <td class="table-cell-truncate">{{ $data->medidor }}</td>

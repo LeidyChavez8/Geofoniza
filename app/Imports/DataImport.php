@@ -37,6 +37,8 @@ class DataImport implements ToCollection
                 'observacion_inspeccion' => null,
                 'url_foto' => null,
                 'firma' => null,
+
+                
                 'id_user' => null,
                 'estado' => null, // estado de actualizacion de la lectura
             ];
