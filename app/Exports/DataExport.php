@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use Storage;
 
 class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithEvents
 {
@@ -75,11 +76,13 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
             $data->observacion_inspeccion,
             $data->url_foto,
             $data->user->name, 
-            $data->firma,
+            $data->firma, 
             // optional($data->user)->name,
             // optional($data->firma),
         ];
     }
+
+
 
     public function registerEvents(): array
     {
@@ -87,41 +90,39 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
                 $highestRow = $sheet->getHighestRow();
-                $column = 'M'; // Columna donde se colocará la imagen (firma)
-
-                for ($row = 2; $row <= $highestRow; $row++) {
+                $column = 'S'; // Columna donde se colocará la imagen (ajusta si es necesario)
+    
+                for ($row = 2; $row <= $highestRow; $row++) { // Inicia en 2 para evitar encabezados
                     $cellValue = $sheet->getCell($column . $row)->getValue();
-
+    
                     if ($cellValue) {
-                        $drawing = new Drawing();
-                        $drawing->setName('Firma');
-                        $drawing->setDescription('Firma');
-
-                        // Decodificar el base64 y guardarlo como una imagen temporal
-                        $imageData = base64_decode($cellValue);
-                        $imagePath = tempnam(sys_get_temp_dir(), 'firma_') . '.png';
-                        file_put_contents($imagePath, $imageData);
-
-                        $drawing->setPath($imagePath);
-
-                        // Ajustar el tamaño de la imagen
-                        $drawing->setHeight(50); // Ajusta la altura de la imagen
-                        $drawing->setWidth(100); // Ajusta el ancho de la imagen
-
-                        $drawing->setCoordinates($column . $row);
-                        $drawing->setWorksheet($sheet);
-
-                        // Redimensionar la celda para que coincida con el tamaño de la imagen
-                        $sheet->getColumnDimension($column)->setWidth(15); // Ajusta el ancho de la columna si es necesario
-                        $sheet->getRowDimension($row)->setRowHeight(50); // Ajusta la altura de la fila para que se ajuste a la imagen
-
-                        // Limpiar el valor de la celda (opcional)
-                        $sheet->getCell($column . $row)->setValue(null);
+                        $filePath = Storage::disk('public')->path($cellValue); // Ruta completa
+    
+                        // Verificar si el archivo existe
+                        if (file_exists($filePath)) {
+                            $drawing = new Drawing();
+                            $drawing->setName('Firma');
+                            $drawing->setDescription('Firma');
+                            $drawing->setPath($filePath); // Establecer la ruta de la imagen
+                            $drawing->setHeight(40); // Ajusta el tamaño de la imagen
+                            $drawing->setCoordinates($column . $row); // Coordenadas de la celda
+                            $drawing->setWorksheet($sheet); // Asignar la hoja
+    
+                            // Redimensionar la celda para coincidir con la imagen
+                            $sheet->getColumnDimension($column)->setWidth(15);
+                            $sheet->getRowDimension($row)->setRowHeight(35);
+    
+                            // Limpiar el contenido de la celda
+                            $sheet->getCell($column . $row)->setValue(null);
+                        } else {
+                            // Si no existe, escribir un mensaje de error
+                            $sheet->getCell($column . $row)->setValue('Imagen no encontrada');
+                        }
                     }
                 }
 
                 // Aplicar estilo a los encabezados
-                $sheet->getStyle('A1:M1')->applyFromArray([
+                $sheet->getStyle('A1:S1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],
