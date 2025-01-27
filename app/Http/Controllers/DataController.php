@@ -17,6 +17,36 @@ use Illuminate\Support\Facades\Storage;
 
 class DataController extends Controller
 {
+    // =============================    SIDEBAR     =============================
+    public function sidebarSearch(Request $request)
+    {
+        $query = $request->input('buscador-sidebar');
+
+        // Lista de secciones disponibles
+        $secciones = [
+            'inicio' => route('home'),
+            'usuarios' => route('users.index'),
+            'asignar' => route('asignar.index'),
+            'desasignar' => route('desasignar.index'),
+            'completados' => route('completados.index'),
+            'cargar excel' => route('import.import'),
+            'generar excel' => route('export'),
+        ];
+
+        // Busca una coincidencia en las secciones
+        $resultado = array_filter($secciones, function($seccion) use ($query){
+            return stripos($seccion, $query) !== false; // Buscar la coincidencia
+        }, ARRAY_FILTER_USE_KEY);
+
+        // Si encuentra una sección, redirige
+        if (!empty($resultado)) {
+            return redirect(array_values($resultado)[0]);
+        }
+
+        // Si no encuentra una sección, redirige al inicio
+        return back()->with('error-sidebar', 'Sección no encontrada.');
+    }
+
     // =============================      ASIGNACION      =============================
 
     public function asignarIndex(Request $request)

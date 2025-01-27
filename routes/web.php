@@ -12,6 +12,9 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
 
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+    // SIDEBAR
+    Route::get('/sidebar-search', [DataController::class, 'sidebarSearch'])->name('sidebar.search');
+
     Route::resource('users', UserController::class);
 
     // IMPORTAR EXCEL
@@ -39,15 +42,10 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/completados', [DataController::class, 'completadosIndex'])->name('completados.index');
     Route::get('/completados-filtrar', [DataController::class, 'completadosFiltrar'])->name('completados.filtrar');
 
-
     //EXPORTAR EXCEL
     Route::get('/export', [DataController::class, 'exportarIndex'])->name('export');
     Route::get('/export-filtrar', [DataController::class, 'exportarFiltrar'])->name('export.filtrar');
     Route::get('/export-data', [DataController::class, 'exportData'])->name('export.excel');
-
-
-
-
 
 
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');

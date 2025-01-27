@@ -63,10 +63,5 @@
                 <p>Bienvenido a la aplicación de asignación de tareas.</p>
             </div>
         </div>
-
-
-
-
-
     </div>
 @endsection

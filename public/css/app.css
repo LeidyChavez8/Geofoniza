@@ -143,6 +143,8 @@ body.no-transition * {
     display: flex;
     flex-direction: column;
 }
+
+/* =========================== */
 header .image-text .name {
     margin-top: 2px;
     font-size: 22px;

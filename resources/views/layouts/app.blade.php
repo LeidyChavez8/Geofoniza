@@ -39,16 +39,32 @@
         <div class="menu-bar">
             <div class="menu">
 
-                <li class="search-box">
-                    <i class='bx bx-search icon'></i>
-                    <input type="text" placeholder="Search...">
-                </li>
+                <form action="{{ route('sidebar.search') }}" method="GET">
+                    @csrf
+                    <li class="search-box">
+                        <i class='bx bx-search icon'></i>
+                        <input 
+                            type="text" 
+                            name="buscador-sidebar"
+                            class="search-sidebar" 
+                            placeholder="Search..."
+                            value="{{ request('buscador-sidebar') }}">
+                        <ul id="sugerencias-sidebar" class="suggestions"></ul>
+                    </li>
+                </form>
 
                 <ul class="menu-links">
                     <li class="nav-link">
                         <a href="{{ route('home') }}">
                             <i class='bx bx-home-alt icon' ></i>
                             <span class="text nav-text">Inicio</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-link">
+                        <a href="{{ route('users.index') }}">
+                            <i class='bx bx-user icon' ></i>
+                            <span class="text nav-text">Usuarios</span>
                         </a>
                     </li>
 
@@ -67,9 +83,9 @@
                     </li>
 
                     <li class="nav-link">
-                        <a href="{{ route('users.index') }}">
-                            <i class='bx bx-user icon' ></i>
-                            <span class="text nav-text">Usuarios</span>
+                        <a href="{{ route('completados.index') }}">
+                            <i class='bx bx-list-check icon' ></i>
+                            <span class="text nav-text">Completados</span>
                         </a>
                     </li>
 
@@ -80,12 +96,6 @@
                         </a>
                     </li>
 
-                    <li class="nav-link">
-                        <a href="{{ route('completados.index') }}">
-                            <i class='bx bx-list-check icon' ></i>
-                            <span class="text nav-text">Completados</span>
-                        </a>
-                    </li>
 
                     <li class="nav-link">
                         <a href="{{ route('export') }}">
@@ -127,6 +137,11 @@
     </section> --}}
 
     <div class="content">
+        @if (session('error-sidebar'))
+            <div class="alert alert-danger" role="alert">
+                <i class="bx bx-error"></i> {{ session('error-sidebar') }}
+            </div>
+        @endif
         @yield('content')
     </div>
 
@@ -198,34 +213,30 @@
         });
     </script>
 
-
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-        const logoutLink = document.getElementById('logout-link');
+            const logoutLink = document.getElementById('logout-link');
 
-        logoutLink.addEventListener('click', function(e) {
-            e.preventDefault();  // Evita la acción por defecto del enlace
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();  // Evita la acción por defecto del enlace
 
-            // Crea el formulario de cierre de sesión
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '{{ route('logout') }}'; // Genera la URL de logout usando Blade
+                // Crea el formulario de cierre de sesión
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ route('logout') }}'; // Genera la URL de logout usando Blade
 
-            // Agrega el token CSRF al formulario
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = '_token';
-            csrfToken.value = '{{ csrf_token() }}';
-            form.appendChild(csrfToken);
+                // Agrega el token CSRF al formulario
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                form.appendChild(csrfToken);
 
-            // Agrega el formulario al cuerpo y envíalo
-            document.body.appendChild(form);
-            form.submit();  // Envia el formulario
+                // Agrega el formulario al cuerpo y envíalo
+                document.body.appendChild(form);
+                form.submit();  // Envia el formulario
+            });
         });
-    });
-
     </script>
 </body>
 </html>
