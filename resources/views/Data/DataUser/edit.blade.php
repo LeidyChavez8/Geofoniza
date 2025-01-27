@@ -88,10 +88,10 @@
 
             <div class="form-group">
                 <label for="observacion">Observación:</label>
-                <select name="observacion" id="observacion" class="form-control" value="{{ old('observacion')}}">
-                    <option value="" >Seleccione observación</option>
+                <select name="observacion" id="observacion" class="form-control">
+                    <option value="">Seleccione observación</option>
                     @foreach ($data->observacion as $item)
-                        <option value="{{ $item }}">{{ $item }}</option>
+                        <option value="{{ $item }}" {{ old('observacion') == $item ? 'selected' : '' }}>{{ $item }}</option>
                     @endforeach
                 </select>
                 

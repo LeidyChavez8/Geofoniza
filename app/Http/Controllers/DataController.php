@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use Yaza\LaravelGoogleDriveStorage\Gdrive;  // Clase para manejar el almacenamiento en Google Drive
+use Yaza\LaravelGoogleDriveStorage\Gdrive;
+use Illuminate\Support\Facades\Storage;
 
 class DataController extends Controller
 {
@@ -343,10 +344,12 @@ class DataController extends Controller
             $data ->url_foto = $fileUrl;
 
         $data->fill($validatedData);
-        $data->save();
-        dd($data);
-        // Cambiar el estado a 1 (actualizado)
+
         $data->estado = 1;
+        
+        $data->save();
+        // dd($data);
+        // Cambiar el estado a 1 (actualizado)
 
 
         return redirect()->route('asignados.index')->with('success', 'Datos actualizados correctamente');

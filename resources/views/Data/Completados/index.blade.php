@@ -149,11 +149,11 @@
                 <tbody>
                     @foreach ($datas as $data)
                         <tr>
-                            <td>{{ $programacion->contrato }}</td>
-                            <td>{{ $programacion->ciclo }}</td>
-                            <td class="table-cell-truncate">{{ $programacion->direccion }}</td>
-                            <td class="table-cell-truncate">{{ $programacion->medidor }}</td>
-                            <td>{{ $programacion->recorrido }}</td>
+                            <td>{{ $data->contrato }}</td>
+                            <td>{{ $data->ciclo }}</td>
+                            <td class="table-cell-truncate">{{ $data->direccion }}</td>
+                            <td class="table-cell-truncate">{{ $data->medidor }}</td>
+                            <td>{{ $data->recorrido }}</td>
                         </tr>
                     @endforeach
                 </tbody>
