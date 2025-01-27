@@ -65,6 +65,21 @@ body {
     line-height: 1.5;
 }
 
+/* ===== estilos de firma ===== */
+.firma-container{
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+.firma-container label{
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.firma{
+    border: 1px solid #666;
+    background-color: #f9f9f9;
+}
 
 
 /* ===== estilos  ===== */

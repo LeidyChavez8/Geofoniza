@@ -19,7 +19,7 @@
             <div class="form-group">
                 <select name="ciclo" id="ciclo" onchange="fetchFilteredData(1); toggleTableVisibility();">
 
-                    <option value="0">Selecciona un ciclo</option>
+                    {{-- <option value="0">Selecciona un ciclo</option> --}}
                     <option value="all">Mostrar todos los ciclos</option>
                     @foreach ($ciclos as $ciclo)
                         <option value="{{ $ciclo }}"
@@ -44,13 +44,12 @@
                     <thead>
                         <tr>
                             <th>Ciclo</th>
-                            <th>Año</th>
-                            <th>Mes</th>
-                            <th>Cuenta</th>
+                            <th>Contrato</th>
                             <th>Dirección</th>
                             <th>Recorrido</th>
                             <th>Medidor</th>
-                            <th>Nombre Cliente</th>
+                            <th>Nombres</th>
+                            <th>Observación</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -105,16 +104,16 @@
                         var row = document.createElement("tr");
                         row.innerHTML = `
                         <td>${item.ciclo}</td>
-                        <td>${item.año}</td>
-                        <td>${item.mes}</td>
-                        <td>${item.cuenta}</td>
+                        <td>${item.contrato}</td>
                         <td class="table-cell-truncate">${item.direccion}</td>
                         <td>${item.recorrido}</td>
                         <td>${item.medidor}</td>
-                        <td class="table-cell-truncate">${item.nombre_cliente}</td>
-                    `;
+                        <td>${item.nombres}</td>
+                        <td>${item.observacion_inspeccion}</td>
+                        `;
                         tableBody.appendChild(row);
                     });
+                    // <td class="table-cell-truncate">${item.nombre_cliente}</td>
 
                     // Mostrar la paginación
                     var paginationHtml = `

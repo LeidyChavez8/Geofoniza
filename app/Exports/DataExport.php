@@ -74,8 +74,10 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
             $data->lectura,
             $data->observacion_inspeccion,
             $data->url_foto,
-            optional($data->user)->name,
-            optional($data->firma),
+            $data->user->name, 
+            $data->firma,
+            // optional($data->user)->name,
+            // optional($data->firma),
         ];
     }
 
@@ -93,7 +95,7 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                     if ($cellValue) {
                         $drawing = new Drawing();
                         $drawing->setName('Firma');
-                        $drawing->setDescription('Firma del Cliente');
+                        $drawing->setDescription('Firma');
 
                         // Decodificar el base64 y guardarlo como una imagen temporal
                         $imageData = base64_decode($cellValue);

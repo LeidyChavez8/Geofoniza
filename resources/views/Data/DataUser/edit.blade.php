@@ -84,18 +84,18 @@
                 @enderror
             </div>
 
-            {{-- @dd($data->observacion[0]) --}}
+            {{-- @dd($data->observacion_inspeccion[0]) --}}
 
             <div class="form-group">
-                <label for="observacion">Observación:</label>
-                <select name="observacion" id="observacion" class="form-control">
+                <label for="observacion_inspeccion">Observación:</label>
+                <select name="observacion_inspeccion" id="observacion_inspeccion" class="form-control">
                     <option value="">Seleccione observación</option>
-                    @foreach ($data->observacion as $item)
-                        <option value="{{ $item }}" {{ old('observacion') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                    @foreach ($data->observacion_inspeccion as $item)
+                        <option value="{{ $item }}" {{ old('observacion_inspeccion') == $item ? 'selected' : '' }}>{{ $item }}</option>
                     @endforeach
                 </select>
                 
-                @error('observacion')
+                @error('observacion_inspeccion')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
@@ -109,6 +109,18 @@
                 @enderror
             </div>
 
+            <div class="form-group firma-container">
+                <label for="firma">Firma</label>
+                <canvas id="signature-pad" class="firma" width="550" height="170"></canvas>
+                <input type="hidden" id="firma" name="firma" class="form-control">
+                @error('firma')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="firma-actions">
+                <button type="button" id="clear" >Limpiar firma</button>
+            </div>
 
             <!-- Reemplaza el botón con un checkbox y un texto -->
             <div class="form-group checkbox-label">
@@ -149,6 +161,38 @@
             document.body.classList.add('dark');
         }
     </script>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const canvas = document.getElementById('signature-pad');
+        const clearButton = document.getElementById('clear');
+        const hiddenInput = document.getElementById('firma');
+        const form = document.querySelector('form');
+
+        // Inicializar SignaturePad
+        const signaturePad = new SignaturePad(canvas,{
+            minWidth: 1, // Opcional: grosor mínimo del trazo
+            maxWidth: 3, // Opcional: grosor máximo del trazo
+            penColor: "black", // Color del trazo   
+        });
+
+        // Limpiar la firma
+        clearButton.addEventListener('click', function () {
+            signaturePad.clear();
+        });
+
+        // Guardar la firma en el campo oculto antes de enviar el formulario
+        form.addEventListener('submit', function (event) {
+            if (signaturePad.isEmpty()) {
+                alert('Por favor, asegúrate de firmar antes de enviar.');
+                event.preventDefault();
+            } else {
+                hiddenInput.value = signaturePad.toDataURL();
+            }
+        });
+    });
+</script>
 
 </body>
 

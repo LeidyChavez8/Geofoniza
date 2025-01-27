@@ -7,6 +7,7 @@ use App\Imports\DataImport;
 use App\Imports\DataUpdateImport;
 use App\Models\Data;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -296,7 +297,7 @@ class DataController extends Controller
             "SM-Sin Medidor"
         ];
 
-        $data -> observacion = $observacion;
+        $data -> observacion_inspeccion = $observacion;
         return view('Data.DataUser.edit', compact('data'));
     }
 
@@ -307,15 +308,16 @@ class DataController extends Controller
 
         $validatedData = $request->validate([
             'lectura' => 'required',
-            'observacion' => 'required',
+            'observacion_inspeccion' => 'required',
             'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff',
+            'firma' => 'required|string',
         ]);
 
         // Subir la foto a Google Drive
         $mesActual = date('F');
         $userFolder = auth()->user()->name; // Subcarpeta personalizada por usuario
         $fileName = $validatedData['foto']->getClientOriginalName();
-        $filePath = "$mesActual/$userFolder/$fileName";
+        $filePath = "Apptualiza/"."$mesActual/$userFolder/$fileName";
 
         // Subida de foto
         $driveResponse = Gdrive::put($filePath, $validatedData['foto']);
@@ -340,13 +342,34 @@ class DataController extends Controller
             $fileUrl = null;
         }
 
-            // dd($solicitud);
-            $data ->url_foto = $fileUrl;
+        $data ->url_foto = $fileUrl;
+
+        $firmaPath = null;
+        try {
+            if($request->has('firma')){
+                try {
+                    $image = str_replace('data:image/png;base64,','',$request->input('firma'));
+                    $image = str_replace(' ','+',$image);
+                    $firmaPath = 'firmas/' . uniqid() . '.png';
+                    Storage::disk('public')->put($firmaPath,base64_decode($image));
+                
+                } catch (Exception $e){
+                    return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
+                }
+            }
+        } catch (Exception $e){
+            return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
+        }
+
+
 
         $data->fill($validatedData);
 
         $data->estado = 1;
-        
+
+        $data->firma = $firmaPath;
+
+        dd(Storage::url($data->firma));
         $data->save();
         // dd($data);
         // Cambiar el estado a 1 (actualizado)
@@ -565,6 +588,4 @@ class DataController extends Controller
         // Realizar la exportación a Excel con el nombre generado
         return Excel::download(new DataExport($ciclo), $nombreArchivo);
     }
-
-
 }
