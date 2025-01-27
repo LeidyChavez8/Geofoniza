@@ -12,6 +12,8 @@
         <form action="{{ route('completados.filtrar') }}" method="GET" class="mb-4">
             @csrf
             <div class="filters-section">
+                <input type="text" name="buscador-operario" class="filter-input" placeholder=" operario..."
+                    value="{{ request('buscador-operario') }}">
                 <input type="text" name="buscador-ciclo" class="filter-input" placeholder=" ciclo..."
                     value="{{ request('buscador-ciclo') }}">
                 <input type="text" name="buscador-direccion" class="filter-input" placeholder=" direccion..."
@@ -59,6 +61,20 @@
             <table class="assignment-table">
                 <thead>
                     <tr>
+                        <th>
+                            @php
+                                $queryParams = request()->query();
+                                $queryParam['sortBy'] = 'operario';
+                                $queryParams['direction'] = 
+                                    request('sortBy') == 'operario' && request('direction') == 'asc' ? 'desc' : 'asc';
+                            @endphp
+                            <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
+                                operario
+                                @if (request('sortBy') == 'operario')
+                                    <i class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>                                    
+                                @endif
+                            </a>
+                        </th>
                         <th>
                             @php
                                 $queryParams = request()->query();
@@ -149,6 +165,7 @@
                 <tbody>
                     @foreach ($datas as $data)
                         <tr>
+                            <td>{{ $data->user->name }}</td>
                             <td>{{ $data->contrato }}</td>
                             <td>{{ $data->ciclo }}</td>
                             <td class="table-cell-truncate">{{ $data->direccion }}</td>
