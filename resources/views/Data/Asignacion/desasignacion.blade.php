@@ -62,6 +62,22 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </th>
+
+                            <th>
+                                @php
+                                    $queryParams = request()->query();
+                                    $queryParams['sortBy'] = 'id_user';
+                                    $queryParams['direction'] =
+                                        request('sortBy') == 'id_user' && request('direction') == 'asc' ? 'desc' : 'asc';
+                                @endphp
+                                <a href="{{ route(Route::currentRouteName(),$queryParams) }}">
+                                    Operario
+                                    @if (request('sortBy') == 'id_user')
+                                        <i class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
+                                    @endif
+                                </a>
+                            </th>
+
                             <th>
                                 @php
                                     $queryParams = request()->query();
@@ -72,8 +88,7 @@
                                 <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
                                     Contrato
                                     @if (request('sortBy') == 'contrato')
-                                        <i
-                                            class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
+                                        <i class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -88,8 +103,7 @@
                                 <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
                                     Ciclo
                                     @if (request('sortBy') == 'ciclo')
-                                        <i
-                                            class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
+                                        <i class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -106,8 +120,7 @@
                                 <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
                                     Dirección
                                     @if (request('sortBy') == 'direccion')
-                                        <i
-                                            class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
+                                        <i class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -124,8 +137,7 @@
                                 <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
                                     Medidor
                                     @if (request('sortBy') == 'medidor')
-                                    <i
-                                    class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
+                                    <i class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -142,8 +154,7 @@
                                 <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
                                     Recorrido
                                     @if (request('sortBy') == 'recorrido')
-                                        <i
-                                            class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
+                                        <i class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -158,14 +169,12 @@
                                         <span class="checkmark"></span>
                                     </label>
                                 </td>
-                                {{-- <td>{{ $programacion->user->name }}</td> --}}
+                                <td>{{ $programacion->user->name }}</td>
                                 <td>{{ $programacion->contrato }}</td>
                                 <td>{{ $programacion->ciclo }}</td>
                                 <td class="table-cell-truncate">{{ $programacion->direccion }}</td>
                                 <td class="table-cell-truncate">{{ $programacion->medidor }}</td>
                                 <td>{{ $programacion->recorrido }}</td>
-                                {{-- <td>{{ $programacion->id_user }}</td> --}}
-
                             </tr>
                         @endforeach
                     </tbody>
