@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Data;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -68,6 +69,16 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $data = Data::all();
+        foreach ($data as $dataItem) {
+            if($dataItem->id_user === $user->id){
+                return redirect()->route('users.index')->with('error', 'No se puede eliminar un usuario que tiene asignaciones.');
+            }
+            if($user->rol === 'admin'){
+                return redirect()->route('users.index')->with('error', 'No puede eliminar a un administrador.');
+            }
+        }
+        
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Usuario eliminado con éxito.');
     }

@@ -158,12 +158,14 @@
                                         <span class="checkmark"></span>
                                     </label>
                                 </td>
-                                <td>{{ $programacion->user->name }}</td>
+                                {{-- <td>{{ $programacion->user->name }}</td> --}}
                                 <td>{{ $programacion->contrato }}</td>
                                 <td>{{ $programacion->ciclo }}</td>
                                 <td class="table-cell-truncate">{{ $programacion->direccion }}</td>
                                 <td class="table-cell-truncate">{{ $programacion->medidor }}</td>
                                 <td>{{ $programacion->recorrido }}</td>
+                                {{-- <td>{{ $programacion->id_user }}</td> --}}
+
                             </tr>
                         @endforeach
                     </tbody>

@@ -566,7 +566,7 @@ class DataController extends Controller
         $ciclo = $request->input('ciclo');
 
         // Filtrar los datos según el ciclo
-        if ($ciclo == 'all') {
+        if ($ciclo === '0') {
             // Si el ciclo es 'all', mostrar todos los registros
             $datas = Data::where('estado', 1)->paginate(10);
         } elseif ($ciclo) {
@@ -603,15 +603,16 @@ class DataController extends Controller
     {
         $ciclo = $request->input('ciclo');
 
+        if($ciclo === 'null') {
+            return redirect()->back()->with('error', 'Debes seleccionar un ciclo para exportar.');
+        }
         // Filtrar los registros según el ciclo y el estado = 1
         $query = Data::where('estado', 1);
         if ($ciclo && $ciclo !== 'all') {
             $query->where('ciclo', $ciclo);
         }
-
         // Obtener la cantidad de registros que serán exportados
         $cantidadRegistros = $query->count();
-
         // Obtener la hora actual
         $horaActual = now()->format('Y-m-d_H-i-s');  // Formato: año-mes-día_hora-minuto-segundo
 

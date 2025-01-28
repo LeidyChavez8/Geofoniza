@@ -14,13 +14,23 @@
             <h2>Exportar Órdenes Actualizadas</h2>
         </div>
 
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @elseif(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="content-container">
             <!-- Filtro de Ciclo -->
             <div class="form-group">
                 <select name="ciclo" id="ciclo" onchange="fetchFilteredData(1); toggleTableVisibility();">
 
-                    {{-- <option value="0">Selecciona un ciclo</option> --}}
-                    <option value="all">Mostrar todos los ciclos</option>
+                    <option value="null">Selecciona un ciclo</option>
+                    <option value=0> Mostrar todos los ciclos</option>
                     @foreach ($ciclos as $ciclo)
                         <option value="{{ $ciclo }}"
                             {{ request('ciclo') == $ciclo ? 'selected' : '' }}>

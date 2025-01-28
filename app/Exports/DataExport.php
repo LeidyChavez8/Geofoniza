@@ -75,9 +75,9 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
             $data->lectura,
             $data->observacion_inspeccion,
             $data->url_foto,
-            $data->user->name, 
+            optional($data->user)->name,
+            // $data->user->name, 
             $data->firma, 
-            // optional($data->user)->name,
             // optional($data->firma),
         ];
     }
@@ -129,10 +129,10 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                 ]);
 
                 // Aplicar formato numérico a la columna 'recorrido'
-                $sheet->getStyle('F2:F' . $highestRow)->getNumberFormat()->setFormatCode('0');
+                $sheet->getStyle('N2:N' . $highestRow)->getNumberFormat()->setFormatCode('0');
 
                 // Alinear todos los datos a la izquierda
-                $sheet->getStyle('A1:M' . $highestRow)->applyFromArray([
+                $sheet->getStyle('A1:S' . $highestRow)->applyFromArray([
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
                     ],
