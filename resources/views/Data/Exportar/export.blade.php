@@ -28,8 +28,7 @@
             <!-- Filtro de Ciclo -->
             <div class="form-group">
                 <select name="ciclo" id="ciclo" onchange="fetchFilteredData(1); toggleTableVisibility();">
-
-                    <option value="null">Selecciona un ciclo</option>
+                    <option value="null" disabled selected>Selecciona un ciclo</option>
                     <option value=0> Mostrar todos los ciclos</option>
                     @foreach ($ciclos as $ciclo)
                         <option value="{{ $ciclo }}"
