@@ -65,8 +65,9 @@ class DataController extends Controller
             $direction = 'asc';
         }
 
-        // Obtener los datos ordenados
-        $data = Data::where('id_user', null)
+        // Obtener los datos ordenados solo si no están relacionados con un usuario
+        $data = Data::whereNull('id_user')
+            ->orWhere('id_user', '')
             ->orderBy($sortBy, $direction)
             ->paginate(100);
 
@@ -99,8 +100,11 @@ class DataController extends Controller
             $direction = 'asc';
         }
 
-        // Construir la consulta con filtros
-        $query = Data::where('estado', null);
+        // Genera la consulta donde 
+        // -> id_user sea null para no incluir los ya asignados
+        // -> estado sea null para no incluir los ya completados
+        $query = Data::whereNull('id_user')
+            ->whereNull('estado');
 
         if ($request->filled('buscador-ciclo')) {
             $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
@@ -139,14 +143,7 @@ class DataController extends Controller
         return redirect()->route('asignar.index')->with('success', 'Operario asignado exitosamente');
     }
 
-
-
-
     // =============================      DESASIGNACION      =============================
-
-
-
-
     public function desasignarIndex(Request $request)
     {
         // Obtener los parámetros de ordenamiento
@@ -165,6 +162,7 @@ class DataController extends Controller
 
         // Obtener los datos ordenados
         $data = Data::whereNotNull('id_user')
+            ->whereNull('estado')
             ->orderBy($sortBy, $direction)
             ->paginate(100);
 
@@ -198,7 +196,8 @@ class DataController extends Controller
         }
 
         // Construir la consulta con filtros
-        $query = Data::whereNotNull('id_user');
+        $query = Data::whereNotNull('id_user')
+            ->whereNull('estado');
 
         if ($request->filled('buscador-operario')) {
             // buscamos el id del usuario por el nombre
@@ -241,14 +240,7 @@ class DataController extends Controller
         return redirect()->route('desasignar.index')->with('success', 'Operario desasignado exitosamente');
     }
 
-
-
-
     // =============================      USERDATA      =============================
-
-
-
-
     public function asignadosListar(Request $request)
     {
         $userId = Auth::user()->id;
@@ -410,21 +402,10 @@ class DataController extends Controller
         $data->save();
         // dd($data);
         // Cambiar el estado a 1 (actualizado)
-
-
         return redirect()->route('asignados.index')->with('success', 'Datos actualizados correctamente');
     }
 
-
-
-
-
     // =============================      IMPORTAR      =============================
-
-
-
-
-
     public function showUploadForm()
     {
         return view('Data.Importar.import');
@@ -462,15 +443,7 @@ class DataController extends Controller
         return redirect()->back()->with('success', 'Datos agregados exitosamente.');
     }
 
-
-
-
     // =============================      COMPLETADOS      =============================
-
-
-
-
-
     public function completadosIndex(Request $request)
     {
 
