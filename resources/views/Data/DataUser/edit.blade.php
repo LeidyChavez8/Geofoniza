@@ -17,8 +17,6 @@
 <body>
 
 
-
-
     <div class="container">
         <h2> Actualizar datos</h2>
 
@@ -102,8 +100,7 @@
 
             <div class="form-group">
                 <label for="foto">Foto:</label>
-                <input type="file" name="foto" id="foto" class="form-control"
-                    value="{{ old('lectura') }}" maxlength="10">
+                <input type="file" name="foto" id="foto" class="form-control">
                 @error('foto')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror

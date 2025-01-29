@@ -339,7 +339,8 @@ class DataController extends Controller
      $validatedData = $request->validate([
     	'lectura' => 'required',
     	'observacion_inspeccion' => 'required',
-    	'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
+    	'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff
+        // Subir la foto a Google Drive',
     	'firma' => 'required|string',
      ],[
     	'foto.required' => 'La foto es obligatoria.',

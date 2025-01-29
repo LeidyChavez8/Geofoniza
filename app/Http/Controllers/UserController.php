@@ -40,7 +40,7 @@ class UserController extends Controller
             'rol' => $request->rol,
         ]);
 
-        return redirect()->route('Users.index')->with('success', 'Usuario creado con éxito.');
+        return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
     }
 
     public function edit(User $user)
@@ -64,7 +64,7 @@ class UserController extends Controller
             'rol' => $request->rol,
         ]);
 
-        return redirect()->route('Users.index')->with('success', 'Usuario actualizado con éxito.');
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
     }
 
     public function destroy(User $user)
@@ -72,15 +72,15 @@ class UserController extends Controller
         $data = Data::all();
         foreach ($data as $dataItem) {
             if($dataItem->id_user === $user->id){
-                return redirect()->route('Users.index')->with('error', 'No se puede eliminar un usuario que tiene asignaciones.');
+                return redirect()->route('users.index')->with('error', 'No se puede eliminar un usuario que tiene asignaciones.');
             }
             if($user->rol === 'admin'){
-                return redirect()->route('Users.index')->with('error', 'No puede eliminar a un administrador.');
+                return redirect()->route('users.index')->with('error', 'No puede eliminar a un administrador.');
             }
         }
 
         $user->delete();
-        return redirect()->route('Users.index')->with('success', 'Usuario eliminado con éxito.');
+        return redirect()->route('users.index')->with('success', 'Usuario eliminado con éxito.');
     }
 
 
