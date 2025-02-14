@@ -25,53 +25,88 @@
             @csrf
             @method('PUT')
 
-            <!-- Campos del formulario -->
-            <div class="form-group">
-                <label for="cuenta">Cuenta:</label>
-                <input type="text" name="cuenta" class="form-control" value="{{ old('cuenta', $data->contrato) }}"
-                    disabled>
-            </div>
+            {{-- CAMPOS DE LA AGENDA --}}
 
             <div class="form-group">
-                <label for="ciclo">Ciclo:</label>
-                <input type="text" name="ciclo" class="form-control" value="{{ old('ciclo', $data->ciclo) }}"
-                    disabled>
-            </div>
-
-            <div class="form-group">
-                <label for="direccion">Dirección:</label>
-                <input type="text" id="medidor" name="direccion" class="form-control"
-                    value="{{ old('direccion', $data->direccion) }}" disabled>
-            </div>
-
-            <div class="form-group">
-                <label for="medidor">Medidor:</label>
-                <input type="text" id="medidor" name="medidor" class="form-control" value="{{ old('medidor', $data->medidor) }}"
-                    disabled>
-            </div>
-
-            <div class="form-group">
-                <label for="recorrido">Recorrido:</label>
-                <input type="text" id="recorrido" name="recorrido" class="form-control" value="{{ old('recorrido', $data->recorrido) }}"
-                    disabled>
+                <label for="orden">Orden:</label>
+                <input type="text" name="orden" id="orden" class="form-control"
+                value="{{ old('nombre_cliente', $data->orden) }}" disabled>
             </div>
 
             <div class="form-group">
                 <label for="nombre_cliente">Nombre Cliente:</label>
                 <input type="text" name="nombre_cliente" class="form-control"
                     value="{{ old('nombre_cliente', $data->nombres) }}" disabled>
-                @error('nombre_cliente')
+            </div>
+
+            {{-- <div class="form-group">
+                <label for="ciclo">Ciclo:</label>
+                <input type="text" name="ciclo" class="form-control"
+                    disabled>
+            </div> --}}
+
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" class="form-control"
+                  value="{{$data->direccion}}"  disabled>
+            </div>
+            
+            <div class="form-group">
+                <label for="barrio">Barrio:</label>
+                <input type="text" id="barrio" name="barrio" class="form-control"
+                value="{{$data->barrio}}" disabled>
+            </div>
+          
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" name="telefono" class="form-control"
+                  value="{{$data->telefono}}" disabled>
+            </div>
+           
+            <div class="form-group">
+                <label for="correo">Correo:</label>
+                <input type="text" id="correo" name="correo" class="form-control"
+                value="{{$data->correo}}"  disabled>
+            </div>
+
+
+            {{-- CAMPOS DE LA VISITA --}}
+            <div class="form-group">
+                <label for="numeroPersonas">Número de personas:</label>
+                <input type="text" name="numeroPersonas" id="numeroPersonas" class="form-control"
+                    value="{{ old('numeroPersonas') }}" maxlength="10">
+                @error('numeroPersonas')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
-            {{-- @dd($data->attributesToArray()); --}}
-    
             <div class="form-group">
-                <label for="lectura_anterior">Lectura anterior:</label>
-                <input type="text" id="lectura_anterior" name="lectura_anterior" class="form-control"
-                    value="{{ old('lectura_anterior', $data->lectura_anterior) }}" maxlength="10" disabled>
+                <label for="categoria">Categoría:</label>
+                <input type="text" name="categoria" id="categoria" class="form-control"
+                    value="{{ old('categoria') }}" maxlength="10">
+                @error('categoria')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
             </div>
+
+            <div class="form-group">
+                <label for="puntoHidraulico">Punto hidráulico:</label>
+                <input type="text" name="puntoHidraulico" id="puntoHidraulico" class="form-control"
+                    value="{{ old('puntoHidraulico') }}" maxlength="10">
+                @error('puntoHidraulico')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            
+            <div class="form-group">
+                <label for="medidor">Medidor:</label>
+                <input type="text" name="medidor" id="medidor" class="form-control"
+                    value="{{ old('medidor') }}" maxlength="10">
+                @error('medidor')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
 
             <div class="form-group">
                 <label for="lectura">Lectura:</label>
@@ -81,8 +116,22 @@
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
-
-            {{-- @dd($data->observacion_inspeccion[0]) --}}
+            <div class="form-group">
+                <label for="aforo">Aforo:</label>
+                <input type="text" name="aforo" id="aforo" class="form-control"
+                    value="{{ old('aforo') }}" maxlength="10">
+                @error('aforo')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="form-group">
+                <label for="resultado">Resultado:</label>
+                <input type="text" name="resultado" id="resultado" class="form-control"
+                    value="{{ old('resultado') }}" maxlength="10">
+                @error('resultado')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
 
             <div class="form-group">
                 <label for="observacion_inspeccion">Observación:</label>
@@ -99,25 +148,48 @@
             </div>
 
             <div class="form-group">
-                <label for="foto">Foto:</label>
+                <label for="foto">Evidencia:</label>
                 <input type="file" name="foto" id="foto" class="form-control">
                 @error('foto')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
+
+           {{-- FIRMA DEL USUARIO --}}
             <div class="form-group firma-container">
-                <label for="firma">Firma</label>
-                <canvas id="signature-pad" class="firma" width="550" height="170"></canvas>
-                <input type="hidden" id="firma" name="firma" class="form-control">
-                @error('firma')
+                <label for="firmaUsuario">Firma del usuario</label>
+                <canvas id="signature-pad-usuario" class="firma" width="550" height="170"></canvas>
+                <input type="hidden" id="firmaUsuario" name="firmaUsuario" class="form-control">
+                @error('firmaUsuario')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="firma-actions">
-                <button type="button" id="clear" >Limpiar firma</button>
+                <button type="button" id="clear-usuario">Limpiar firma del usuario</button>
             </div>
+
+            {{-- FIRMA DEL TÉCNICO --}}
+            <div class="form-group firma-container">
+                <label for="firmaTecnico">Firma del técnico</label>
+                <canvas id="signature-pad-tecnico" class="firma" width="550" height="170"></canvas>
+                <input type="hidden" id="firmaTecnico" name="firmaTecnico" class="form-control">
+                @error('firmaTecnico')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="firma-actions">
+                <button type="button" id="clear-tecnico">Limpiar firma del técnico</button>
+            </div>
+
+
+
+
+
+
+
 
             <!-- Reemplaza el botón con un checkbox y un texto -->
             <div class="form-group checkbox-label">
@@ -161,34 +233,36 @@
 
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const canvas = document.getElementById('signature-pad');
-        const clearButton = document.getElementById('clear');
-        const hiddenInput = document.getElementById('firma');
+document.addEventListener('DOMContentLoaded', function () {
+    function initializeSignaturePad(canvasId, clearButtonId, hiddenInputId) {
+        const canvas = document.getElementById(canvasId);
+        const clearButton = document.getElementById(clearButtonId);
+        const hiddenInput = document.getElementById(hiddenInputId);
         const form = document.querySelector('form');
 
-        // Inicializar SignaturePad
-        const signaturePad = new SignaturePad(canvas,{
-            minWidth: 1, // Opcional: grosor mínimo del trazo
-            maxWidth: 3, // Opcional: grosor máximo del trazo
-            penColor: "black", // Color del trazo   
+        const signaturePad = new SignaturePad(canvas, {
+            minWidth: 1,
+            maxWidth: 3,
+            penColor: "black",
         });
 
-        // Limpiar la firma
         clearButton.addEventListener('click', function () {
             signaturePad.clear();
         });
 
-        // Guardar la firma en el campo oculto antes de enviar el formulario
         form.addEventListener('submit', function (event) {
             if (signaturePad.isEmpty()) {
-                alert('Por favor, asegúrate de firmar antes de enviar.');
+                alert(`Por favor, asegúrate de firmar en el campo ${canvasId} antes de enviar.`);
                 event.preventDefault();
             } else {
                 hiddenInput.value = signaturePad.toDataURL();
             }
         });
-    });
+    }
+
+    initializeSignaturePad('signature-pad-usuario', 'clear-usuario', 'firmaUsuario');
+    initializeSignaturePad('signature-pad-tecnico', 'clear-tecnico', 'firmaTecnico');
+});
 </script>
 
 </body>

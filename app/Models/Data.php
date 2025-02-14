@@ -9,26 +9,26 @@ class Data extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'contrato',
-        'producto',
-        'nombres',
-        'calificacion',
-        'categoria',
-        'direccion',
-        'ubicacion',
-        'medidor',
         'orden',
-        'lectura_anterior',
-        'fecha_lectura_anterior',
-        'observacion_lectura_anterior',
-        'ciclo',
-        'recorrido',
+        'nombres',
+        'direccion',
+        'barrio',
+        'telefono',
+        'correo',
+        
+        'medidor',
         'lectura',
+        'aforo',
+        'resultado',
         'observacion_inspeccion',
         'url_foto',
-        'firma',
+        'firmaUsuario',
+        'firmaTecnico',
+        'ciclo',
         'id_user',
-        'estado',
+        'puntoHidraulico',
+        'numeroPersonas',
+        'categoria',
     ];
 
     public function user()

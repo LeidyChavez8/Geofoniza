@@ -37,25 +37,36 @@
                 <tbody>
                     @foreach ($data as $item)
                         <tr>
+                            <td class="table-cell-truncate" colspan="5"><strong>Orden:</strong>
+                                {{ $item->orden }}
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="table-cell-truncate" colspan="5"><strong>Nombres:</strong>
-                                {{ $item->nombres }}</td>
+                                {{ $item->nombres }}
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="5"><strong>Ciclo:</strong> {{ $item->ciclo }}</td>
+                            <td class="table-cell-truncate" colspan="5"><strong>Dirección:</strong>
+                                {{ $item->direccion }}
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="5"><strong>Cuenta:</strong> {{ $item->contrato }}</td>
+                            <td class="table-cell-truncate" colspan="5"><strong>Barrio:</strong>
+                                {{ $item->barrio }}
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="5"><strong>Dirección:</strong> {{ $item->direccion }}</td>
+                            <td class="table-cell-truncate" colspan="5"><strong>Teléfono:</strong>
+                                {{ $item->telefono }}
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="5"><strong>Recorrido:</strong> {{ $item->recorrido }}</td>
+                            <td class="table-cell-truncate" colspan="5"><strong>Correo:</strong>
+                                {{ $item->correo }}
+                            </td>
                         </tr>
-                        <tr>
-                            <td class="table-cell-truncate" colspan="5"><strong>Medidor:</strong>
-                                {{ $item->medidor }}</td>
-                        </tr>
+                        
                     @endforeach
                 </tbody>
             </table>

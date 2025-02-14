@@ -52,11 +52,12 @@ class DataController extends Controller
     public function asignarIndex(Request $request)
     {
         // Obtener los parámetros de ordenamiento
-        $sortBy = $request->get('sortBy', 'recorrido'); // Columna por defecto
-        $direction = $request->get('direction', 'asc'); // Dirección por defecto
+        $sortBy = $request->get('sortBy', 'direction');
+
+        $direction = $request->get('direction', 'asc');
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
+        $validColumns = ['ciclo', 'direccion', 'medidor'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -92,7 +93,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
+        $validColumns = ['ciclo', 'direccion', 'medidor'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -112,9 +113,7 @@ class DataController extends Controller
         if ($request->filled('buscador-direccion')) {
             $query->where('direccion', 'like', '%' . $request->input('buscador-direccion') . '%');
         }
-        if ($request->filled('buscador-recorrido')) {
-            $query->where('recorrido', 'like', '%' . $request->input('buscador-recorrido') . '%'); 
-        }
+        
 
         // Aplicar el ordenamiento
         $data = $query
@@ -151,7 +150,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
+        $validColumns = ['ciclo', 'direccion', 'medidor'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -187,7 +186,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
+        $validColumns = ['ciclo', 'direccion', 'medidor'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -211,9 +210,7 @@ class DataController extends Controller
         if ($request->filled('buscador-direccion')) {
             $query->where('direccion', 'like', '%' . $request->input('buscador-direccion') . '%');
         }
-        if ($request->filled('buscador-recorrido')) {
-            $query->where('recorrido', 'like', '%' . $request->input('buscador-recorrido') . '%'); 
-        }
+        
 
         // Aplicar el ordenamiento
         $data = $query
@@ -252,8 +249,7 @@ class DataController extends Controller
             ->where(function ($query) {
                 $query->where('estado', 0)
                     ->orWhereNull('estado');
-            })
-            ->orderBy('recorrido', 'asc');
+            });
 
         // Obtener los datos paginados
         $data = $query->paginate(1);
@@ -329,17 +325,21 @@ class DataController extends Controller
         $data = Data::findOrFail($id);
 
      $validatedData = $request->validate([
+        'medidor' => 'required',
     	'lectura' => 'required',
+    	'aforo' => 'required',
+    	'resultado' => 'required',
     	'observacion_inspeccion' => 'required',
     	'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
-    	'firma' => 'required|string',
-     ],[
-    	'foto.required' => 'La foto es obligatoria.',
+    	'firmaUsuario' => 'required|string',
+    	'firmaTecnico' => 'required|string',
+    	'puntoHidraulico' => 'required|int',
+    	'numeroPersonas' => 'required|int',
+    ],[
+    	'foto.required' => 'La evidencia es obligatoria.',
     	'foto.image' => 'El archivo debe ser una imagen.',
     	'foto.mimes' => 'La imagen debe estar en formato: jpeg, png, jpg, bmp o tiff.',
-     ]);
-
-//dd($error);
+    ]);
 
         // Subir la foto a Google Drive
         $mesActual = date('F');
@@ -375,33 +375,42 @@ class DataController extends Controller
 
         $firmaPath = null;
         try {
-            if($request->has('firma')){
+            if($request->has('firmaUsuario')){
                 try {
-                    $image = str_replace('data:image/png;base64,','',$request->input('firma'));
+                    $image = str_replace('data:image/png;base64,','',$request->input('firmaUsuario'));
                     $image = str_replace(' ','+',$image);
-                    $firmaPath = 'firmas/' . uniqid() . '.png';
-                    Storage::disk('public')->put($firmaPath,base64_decode($image));
+                    $firmaUsuarioPath = 'firmas/' . uniqid() . '.png';
+                    Storage::disk('public')->put($firmaUsuarioPath,base64_decode($image));
 
                 } catch (Exception $e){
                     return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
                 }
+
+                $data->firmaUsuario = $firmaUsuarioPath;
+            }
+            if($request->has('firmaTecnico')){
+                try {
+                    $image = str_replace('data:image/png;base64,','',$request->input('firma'));
+                    $image = str_replace(' ','+',$image);
+                    $firmaTecnicoPath = 'firmas/' . uniqid() . '.png';
+                    Storage::disk('public')->put($firmaTecnicoPath,base64_decode($image));
+
+                } catch (Exception $e){
+                    return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
+                }
+
+                $data->firmaTecnico = $firmaTecnicoPath;
             }
         } catch (Exception $e){
             return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
         }
 
-
-
         $data->fill($validatedData);
 
         $data->estado = 1;
 
-        $data->firma = $firmaPath;
-
-        // dd(Storage::url($data->firma));
         $data->save();
-        // dd($data);
-        // Cambiar el estado a 1 (actualizado)
+
         return redirect()->route('asignados.index')->with('success', 'Datos actualizados correctamente');
     }
 
@@ -452,7 +461,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'cuenta', 'direccion', 'recorrido', 'medidor', 'direccion', 'año', 'mes', 'periodo'];
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'direccion', 'medidor', 'direccion', 'año', 'mes'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -482,7 +491,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['contrato', 'ciclo', 'direccion', 'medidor', 'recorrido'];
+        $validColumns = ['ciclo', 'direccion', 'medidor'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -505,9 +514,7 @@ class DataController extends Controller
         if ($request->filled('buscador-direccion')) {
             $query->where('direccion', 'like', '%' . $request->input('buscador-direccion') . '%');
         }
-        if ($request->filled('buscador-recorrido')) {
-            $query->where('recorrido', 'like', '%' . $request->input('buscador-recorrido') . '%');
-        }
+
 
         // Aplicar el ordenamiento
         $datas = $query

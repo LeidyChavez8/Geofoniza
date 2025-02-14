@@ -13,26 +13,29 @@ return new class extends Migration
     {
         Schema::create('data', function (Blueprint $table) {
             $table->id();
-            $table->string('contrato')->nullable();
-            $table->string('producto')->nullable();
-            $table->string('nombres')->nullable();
-            $table->string('calificacion')->nullable();
-            $table->string('categoria')->nullable();
-            $table->string('direccion')->nullable();
-            $table->string('ubicacion')->nullable();
-            $table->string('medidor')->nullable();
             $table->string('orden')->nullable();
-            $table->string('lectura_anterior')->nullable();
-            $table->string('fecha_lectura_anterior')->nullable();
-            $table->string('observacion_lectura_anterior')->nullable();
-            $table->string('ciclo')->nullable();
-            $table->string('recorrido')->nullable();
-            $table->string('lectura')->nullable();
+            $table->string('nombres')->nullable();
+            $table->string('direccion')->nullable();
+            $table->string('barrio')->nullable();
+            $table->string('telefono')->nullable();
+            $table->string('correo')->nullable();
+
+
+            $table->string('medidor')->nullable();
+            $table->integer('lectura')->nullable();
+            $table->integer('aforo')->nullable();
+            $table->string('resultado')->nullable();
             $table->string('observacion_inspeccion')->nullable();
             $table->string('url_foto')->nullable();
-            $table->text('firma')->nullable();
+            $table->text('firmaUsuario')->nullable();
+            $table->text('firmaTecnico')->nullable();
+            $table->string('ciclo')->nullable();
             $table->foreignId('id_user')->nullable()->constrained('users');
+            $table->integer('puntoHidraulico')->nullable();
+            $table->integer('numeroPersonas')->nullable();
+            $table->string('categoria')->nullable();
             $table->string('estado')->nullable();
+
             $table->timestamps();
         });
     }
