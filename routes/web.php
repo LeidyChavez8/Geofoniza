@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TicketController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -50,6 +51,7 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
 
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');
 
+    Route::get('/generate-ticket/{id}', [TicketController::class, 'generateTicket']);
 });
 
 Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
