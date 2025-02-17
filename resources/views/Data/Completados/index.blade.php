@@ -78,13 +78,13 @@
                         <th>
                             @php
                                 $queryParams = request()->query();
-                                $queryParams['sortBy'] = 'contrato';
+                                $queryParams['sortBy'] = 'orden';
                                 $queryParams['direction'] =
-                                    request('sortBy') == 'contrato' && request('direction') == 'asc' ? 'desc' : 'asc';
+                                    request('sortBy') == 'orden' && request('direction') == 'asc' ? 'desc' : 'asc';
                             @endphp
                             <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
-                                Contrato
-                                @if (request('sortBy') == 'contrato')
+                                Orden
+                                @if (request('sortBy') == 'orden')
                                     <i
                                         class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                 @endif
@@ -94,13 +94,31 @@
                         <th>
                             @php
                                 $queryParams = request()->query();
-                                $queryParams['sortBy'] = 'ciclo';
+                                $queryParams['sortBy'] = 'telefono';
                                 $queryParams['direction'] =
-                                    request('sortBy') == 'ciclo' && request('direction') == 'asc' ? 'desc' : 'asc';
+                                    request('sortBy') == 'telefono' && request('direction') == 'asc' ? 'desc' : 'asc';
                             @endphp
                             <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
-                                Ciclo
-                                @if (request('sortBy') == 'ciclo')
+                                Telefono
+                                @if (request('sortBy') == 'telefono')
+                                    <i
+                                        class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
+                                @endif
+                            </a>
+                        </th>
+
+                        <th>
+                            @php
+                                $queryParams = request()->query();
+                                $queryParams['sortBy'] = 'nombres';
+                                $queryParams['direction'] =
+                                    request('sortBy') == 'nombres' && request('direction') == 'asc'
+                                        ? 'desc'
+                                        : 'asc';
+                            @endphp
+                            <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
+                                Nombres
+                                @if (request('sortBy') == 'nombres')
                                     <i
                                         class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                 @endif
@@ -119,24 +137,6 @@
                             <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
                                 Dirección
                                 @if (request('sortBy') == 'direccion')
-                                    <i
-                                        class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
-                                @endif
-                            </a>
-                        </th>
-
-                        <th>
-                            @php
-                                $queryParams = request()->query();
-                                $queryParams['sortBy'] = 'medidor';
-                                $queryParams['direction'] =
-                                    request('sortBy') == 'medidor' && request('direction') == 'asc'
-                                        ? 'desc'
-                                        : 'asc';
-                            @endphp
-                            <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
-                                Medidor
-                                @if (request('sortBy') == 'medidor')
                                 <i
                                 class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                 @endif
@@ -146,15 +146,15 @@
                         <th>
                             @php
                                 $queryParams = request()->query();
-                                $queryParams['sortBy'] = 'recorrido';
+                                $queryParams['sortBy'] = 'barrio';
                                 $queryParams['direction'] =
-                                    request('sortBy') == 'recorrido' && request('direction') == 'asc'
+                                    request('sortBy') == 'barrio' && request('direction') == 'asc'
                                         ? 'desc'
                                         : 'asc';
                             @endphp
                             <a href="{{ route(Route::currentRouteName(), $queryParams) }}">
-                                Recorrido
-                                @if (request('sortBy') == 'recorrido')
+                                Barrio
+                                @if (request('sortBy') == 'barrio')
                                     <i
                                         class="bx {{ request('direction') == 'asc' ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}"></i>
                                 @endif
@@ -164,14 +164,14 @@
                 </thead>
                 <tbody>
                     @foreach ($datas as $data)
-                        <tr>
-                            <td>{{ $data->user->name }}</td>
-                            <td>{{ $data->contrato }}</td>
-                            <td>{{ $data->ciclo }}</td>
-                            <td class="table-cell-truncate">{{ $data->direccion }}</td>
-                            <td class="table-cell-truncate">{{ $data->medidor }}</td>
-                            <td>{{ $data->recorrido }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ $data->user->name }}</td>
+                        <td>{{ $data->orden }}</td>
+                        <td>{{ $data->telefono }}</td>
+                        <td class="table-cell-truncate">{{ $data->nombres }}</td>
+                        <td class="table-cell-truncate">{{ $data->direccion }}</td>
+                        <td>{{ $data->barrio }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>

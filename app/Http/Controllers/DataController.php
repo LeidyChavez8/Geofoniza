@@ -388,9 +388,10 @@ class DataController extends Controller
 
                 $data->firmaUsuario = $firmaUsuarioPath;
             }
+
             if($request->has('firmaTecnico')){
                 try {
-                    $image = str_replace('data:image/png;base64,','',$request->input('firma'));
+                    $image = str_replace('data:image/png;base64,','',$request->input('firmaTecnico'));
                     $image = str_replace(' ','+',$image);
                     $firmaTecnicoPath = 'firmas/' . uniqid() . '.png';
                     Storage::disk('public')->put($firmaTecnicoPath,base64_decode($image));

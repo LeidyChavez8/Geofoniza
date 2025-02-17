@@ -83,7 +83,7 @@
             <div class="form-group">
                 <label for="categoria">Categoría:</label>
                 <input type="text" name="categoria" id="categoria" class="form-control"
-                    value="{{ old('categoria') }}" maxlength="10">
+                    value="{{ old('categoria') }}">
                 @error('categoria')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
@@ -92,7 +92,7 @@
             <div class="form-group">
                 <label for="puntoHidraulico">Punto hidráulico:</label>
                 <input type="text" name="puntoHidraulico" id="puntoHidraulico" class="form-control"
-                    value="{{ old('puntoHidraulico') }}" maxlength="10">
+                    value="{{ old('puntoHidraulico') }}" >
                 @error('puntoHidraulico')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
@@ -101,7 +101,7 @@
             <div class="form-group">
                 <label for="medidor">Medidor:</label>
                 <input type="text" name="medidor" id="medidor" class="form-control"
-                    value="{{ old('medidor') }}" maxlength="10">
+                    value="{{ old('medidor') }}" >
                 @error('medidor')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
@@ -119,7 +119,7 @@
             <div class="form-group">
                 <label for="aforo">Aforo:</label>
                 <input type="text" name="aforo" id="aforo" class="form-control"
-                    value="{{ old('aforo') }}" maxlength="10">
+                    value="{{ old('aforo') }}">
                 @error('aforo')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
@@ -127,7 +127,7 @@
             <div class="form-group">
                 <label for="resultado">Resultado:</label>
                 <input type="text" name="resultado" id="resultado" class="form-control"
-                    value="{{ old('resultado') }}" maxlength="10">
+                    value="{{ old('resultado') }}">
                 @error('resultado')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
