@@ -78,20 +78,18 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                $ultimaFila = $sheet->getHighestRow();
-
-                $penultimaFila = $ultimaFila-1;
+                $ultimaFila = $sheet->getHighestRow(); // Última fila con datos
 
                 $columnUsuario = 'M'; // Columna donde se colocará la firma del usuario
                 $columnTecnico = 'N'; // Columna donde se colocará la firma del técnico 
-    
 
-                for ($row = 2; $row <= $penultimaFila; $row++) {
+                // Primer ciclo: Para la firma del usuario
+                for ($row = 2; $row <= $ultimaFila; $row++) {
                     $cellValue = $sheet->getCell($columnUsuario . $row)->getValue();
-    
+
                     if ($cellValue) {
                         $filePath = Storage::disk('public')->path($cellValue); // Ruta completa
-    
+
                         // Verificar si el archivo existe
                         if (file_exists($filePath)) {
                             $drawing = new Drawing();
@@ -101,11 +99,11 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                             $drawing->setHeight(40); // Ajusta el tamaño de la imagen
                             $drawing->setCoordinates($columnUsuario . $row); // Coordenadas de la celda
                             $drawing->setWorksheet($sheet); // Asignar la hoja
-    
+
                             // Redimensionar la celda para coincidir con la imagen
                             $sheet->getColumnDimension($columnUsuario)->setWidth(15);
                             $sheet->getRowDimension($row)->setRowHeight(35);
-    
+
                             // Limpiar el contenido de la celda
                             $sheet->getCell($columnUsuario . $row)->setValue(null);
                         } else {
@@ -115,13 +113,13 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                     }
                 }
 
-
+                // Segundo ciclo: Para la firma del técnico
                 for ($row = 2; $row <= $ultimaFila; $row++) {
                     $cellValue = $sheet->getCell($columnTecnico . $row)->getValue();
-    
+
                     if ($cellValue) {
                         $filePath = Storage::disk('public')->path($cellValue); // Ruta completa
-    
+
                         // Verificar si el archivo existe
                         if (file_exists($filePath)) {
                             $drawing = new Drawing();
@@ -131,11 +129,11 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                             $drawing->setHeight(40); // Ajusta el tamaño de la imagen
                             $drawing->setCoordinates($columnTecnico . $row); // Coordenadas de la celda
                             $drawing->setWorksheet($sheet); // Asignar la hoja
-    
+
                             // Redimensionar la celda para coincidir con la imagen
                             $sheet->getColumnDimension($columnTecnico)->setWidth(15);
                             $sheet->getRowDimension($row)->setRowHeight(35);
-    
+
                             // Limpiar el contenido de la celda
                             $sheet->getCell($columnTecnico . $row)->setValue(null);
                         } else {
@@ -144,7 +142,7 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                         }
                     }
                 }
-               
+                            
 
                 // Aplicar estilo a los encabezados
                 $sheet->getStyle('A1:S1')->applyFromArray([
