@@ -1,9 +1,13 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
     margin: 0;
     padding: 10px;
     font-size: 12px;
     line-height: 1.2;
+}
+
+.header, .details, .signatures, .footer {
+    font-family: inherit;
 }
 
 .header {
@@ -14,7 +18,7 @@ body {
 
 .order-number {
     position: absolute;
-    top: 0;
+    top: -10;
     right: 0;
     font-weight: bold;
 }
@@ -30,8 +34,13 @@ body {
 }
 
 .signatures {
-    margin-top: 20px;
+    margin-top: 10px;
+    text-align: center;
 }
+
+/* .firma {
+    transform: translateY(10px); 
+} */
 
 .footer {
     margin-top: 20px;

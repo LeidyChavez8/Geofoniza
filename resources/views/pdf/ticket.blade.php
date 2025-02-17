@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ticket</title>
-    <link rel="stylesheet" href="{{ asset('css/Pdf/ticket.css') }}">
+    <style>
+         <?php echo file_get_contents(public_path('css/Pdf/ticket.css')); ?>
+    </style>
 </head>
 <body>
+    <p class="order-number">{{ $data->orden }}</p> <!-- Número de orden en la parte superior derecha -->
     <div class="header">
-        <h3>Tienda XYZ</h3>
+        <h3>GEOFONIZA</h3>
         <p>Dirección: Calle Principal 456</p>
         <p>Teléfono: 987-654-3210</p>
-        <p class="order-number">Orden: {{ $data->orden }}</p> <!-- Número de orden en la parte superior derecha -->
     </div>
 
     <div class="details">
@@ -32,12 +34,22 @@
             <li><strong>Aforo:</strong> {{ $data->aforo }}</li>
             <li><strong>Resultado:</strong> {{ $data->resultado }}</li>
             <li><strong>Observación:</strong> {{ $data->observacion_inspeccion }}</li>
+            <li><strong>Ciclo:</strong> {{ $data->ciclo }}</li>
+            <li><strong>Punto Hidraulico:</strong> {{ $data->puntoHidraulico }}</li>
+            <li><strong>Número Personas:</strong> {{ $data->numeroPersonas }}</li>
+            <li><strong>Categoría:</strong> {{ $data->categoria }}</li>
         </ul>
     </div>
 
     <div class="signatures">
-        <p><strong>Firma Usuario:</strong> <img src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="100"></p>
-        <p><strong>Firma Técnico:</strong> <img src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="100"></p>
+        <p>
+            <strong>Firma Usuario:</strong>
+            <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Técnico" width="100">
+        </p>
+        <p>
+            <strong>Firma Técnico:</strong>
+            <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="100">
+        </p>
     </div>
 
     <div class="footer">
