@@ -418,7 +418,7 @@ class DataController extends Controller
 
         $data->save();
 
-        return redirect()->route('asignados.index')->with('success', 'Datos actualizados correctamente');
+        return redirect()->route('generate.ticket', ['id' => $data->id])->with('success', 'Datos actualizados correctamente');
     }
 
     // =============================      IMPORTAR      =============================

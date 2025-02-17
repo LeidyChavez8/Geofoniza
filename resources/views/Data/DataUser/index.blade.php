@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/Datas/indexDataUser.css') }}">
 
-
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -26,6 +25,12 @@
 
 
     <div class="container">
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <div class="header-container">
             <h2>Órdenes Asignadas</h2>
         </div>

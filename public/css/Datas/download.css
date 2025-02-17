@@ -1,7 +1,4 @@
 body {
-    min-height: 100vh;
-    background-color: var(--body-color);
-    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,11 +9,12 @@ body {
     background: var(--sidebar-color);
     overflow: hidden;
     border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-shadow: var(--box-shadow);
     box-sizing: border-box;
+    max-width: 500px;
+    text-align: center;
 }
-
 /* ================== dark/light mode para vistas de usuario ================== */
 
 .dark-mode-switch {
@@ -99,93 +97,48 @@ input:checked+.slider:before {
     color: var(--text-color);
 }
 
-
-/* ================== Table ================== */
-
-.table-vertical {
-    table-layout: fixed;
-    /* Fixes column widths */
-    width: 100%;
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
 }
 
-.table-vertical td {
-    border-bottom: 1px solid var(--primary-color-light);
-    border-radius: unset;
-    padding: 12px 8px;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.table-cell-truncate {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* ================== Buttons ================== */
-
-.btn-group {
-    padding: 10px;
-}
-
-
-
-
-/* ================== Pagination ================== */
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    padding: 0;
-    list-style-type: none;
-    margin-top: 10px;
-}
-
-.page-item {
-    margin: 0 5px;
-}
-
-.page-link {
-    display: block;
-    padding: 10px;
+p {
     font-size: 1rem;
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.buttons a {
+    display: inline-block;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: #fff;
     text-decoration: none;
+    border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
-.page-link:hover {
-    background-color: var(--primary-color);
-    color: #fff;
+.buttons a:hover {
+    background-color: #0056b3;
 }
 
-.page-item.active .page-link {
-    background-color: var(--primary-color);
-    color: #fff;
-}
-
-.page-item.disabled .page-link {
-    color: #ccc;
-    pointer-events: none;
-}
-
+/* Estilos para mensajes de éxito */
 .alert {
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
 }
+
 .alert-success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
-
-/* ================== Alerts ================== */
 
 
 

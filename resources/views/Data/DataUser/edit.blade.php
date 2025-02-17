@@ -184,13 +184,6 @@
                 <button type="button" id="clear-tecnico">Limpiar firma del técnico</button>
             </div>
 
-
-
-
-
-
-
-
             <!-- Reemplaza el botón con un checkbox y un texto -->
             <div class="form-group checkbox-label">
                 <input type="checkbox" name="yes"  required {{ old('yes') ? 'checked' : '' }}>
@@ -214,12 +207,11 @@
                 </button>
 
                 <button type="submit" id="update-button" class="btn btn-primary">
-                    Actualizar
+                    Continuar
                 </button>
             </div>
         </form>
     </div>
-
 
     <script>
         const checkbox = document.querySelector('.dark-mode-switch input[type="checkbox"]');

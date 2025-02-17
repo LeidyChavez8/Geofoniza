@@ -51,14 +51,15 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
 
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');
 
-    Route::get('/generate-ticket/{id}', [TicketController::class, 'generateTicket']);
 });
 
 Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
-
+    
     //USERDATA
     Route::get('/asignados', [DataController::class, 'asignadosListar'])->name('asignados.index');
     Route::get('/asignados/edit/{data}', [DataController::class, 'asignadosEdit'])->name('asignados.edit');
     Route::put('/operario/update/{id}', [DataController::class, 'asignadosUpdate'])->name('asignados.update');
+    Route::get('/generate-ticket/{id}', [TicketController::class, 'generateTicket'])->name('generate.ticket');
+    Route::get('/download-ticket/{id}', [TicketController::class, 'showDownloadOptions'])->name('download.ticket');
 
 });
