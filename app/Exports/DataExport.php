@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use Storage;
 
@@ -33,52 +34,40 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
     public function headings(): array
     {
         return [
-            'Contrato',
-            'Producto',
+            'Orden',
             'Nombres',
-            'Calificación',
+            'Resultado',
             'Categoría',
             'Dirección',
-            'Ubicación',
+            'Barrio',
             'Medidor',
-            'Orden',
-            'Lectura Anterior',
-            'Fecha Lectura Anterior',
-            'Observación Lectura Anterior',
             'Ciclo',
-            'Recorrido',
             'Lectura',
             'Observación Inspección',
             'URL Foto',
             'Inspector',
-            'Firma',
+            'Firma del usuario',
+            'Firma del técnico',
         ];
     }
 
     public function map($data): array
     {
         return [
-            $data->contrato,
-            $data->producto,
+            $data->orden,
             $data->nombres,
-            $data->calificacion,
+            $data->resultado,
             $data->categoria,
             $data->direccion,
-            $data->ubicacion,
+            $data->barrio,
             $data->medidor,
-            $data->orden,
-            $data->lectura_anterior,
-            $data->fecha_lectura_anterior,
-            $data->observacion_lectura_anterior,
             $data->ciclo,
-            $data->recorrido,
             $data->lectura,
             $data->observacion_inspeccion,
             $data->url_foto,
             optional($data->user)->name,
-            // $data->user->name, 
-            $data->firma, 
-            // optional($data->firma),
+            $data->firmaUsuario, 
+            $data->firmaTecnico, 
         ];
     }
 
@@ -89,11 +78,16 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                $highestRow = $sheet->getHighestRow();
-                $column = 'S'; // Columna donde se colocará la imagen (ajusta si es necesario)
+                $ultimaFila = $sheet->getHighestRow();
+
+                $penultimaFila = $ultimaFila-1;
+
+                $columnUsuario = 'M'; // Columna donde se colocará la firma del usuario
+                $columnTecnico = 'N'; // Columna donde se colocará la firma del técnico 
     
-                for ($row = 2; $row <= $highestRow; $row++) { // Inicia en 2 para evitar encabezados
-                    $cellValue = $sheet->getCell($column . $row)->getValue();
+
+                for ($row = 2; $row <= $penultimaFila; $row++) {
+                    $cellValue = $sheet->getCell($columnUsuario . $row)->getValue();
     
                     if ($cellValue) {
                         $filePath = Storage::disk('public')->path($cellValue); // Ruta completa
@@ -101,25 +95,56 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                         // Verificar si el archivo existe
                         if (file_exists($filePath)) {
                             $drawing = new Drawing();
-                            $drawing->setName('Firma');
-                            $drawing->setDescription('Firma');
+                            $drawing->setName('FirmaUsuario');
+                            $drawing->setDescription('UsuarioTecnico');
                             $drawing->setPath($filePath); // Establecer la ruta de la imagen
                             $drawing->setHeight(40); // Ajusta el tamaño de la imagen
-                            $drawing->setCoordinates($column . $row); // Coordenadas de la celda
+                            $drawing->setCoordinates($columnUsuario . $row); // Coordenadas de la celda
                             $drawing->setWorksheet($sheet); // Asignar la hoja
     
                             // Redimensionar la celda para coincidir con la imagen
-                            $sheet->getColumnDimension($column)->setWidth(15);
+                            $sheet->getColumnDimension($columnUsuario)->setWidth(15);
                             $sheet->getRowDimension($row)->setRowHeight(35);
     
                             // Limpiar el contenido de la celda
-                            $sheet->getCell($column . $row)->setValue(null);
+                            $sheet->getCell($columnUsuario . $row)->setValue(null);
                         } else {
                             // Si no existe, escribir un mensaje de error
-                            $sheet->getCell($column . $row)->setValue('Imagen no encontrada');
+                            $sheet->getCell($columnUsuario . $row)->setValue('Imagen no encontrada');
                         }
                     }
                 }
+
+
+                for ($row = 2; $row <= $ultimaFila; $row++) {
+                    $cellValue = $sheet->getCell($columnTecnico . $row)->getValue();
+    
+                    if ($cellValue) {
+                        $filePath = Storage::disk('public')->path($cellValue); // Ruta completa
+    
+                        // Verificar si el archivo existe
+                        if (file_exists($filePath)) {
+                            $drawing = new Drawing();
+                            $drawing->setName('FirmaTecnico');
+                            $drawing->setDescription('FirmaTecnico');
+                            $drawing->setPath($filePath); // Establecer la ruta de la imagen
+                            $drawing->setHeight(40); // Ajusta el tamaño de la imagen
+                            $drawing->setCoordinates($columnTecnico . $row); // Coordenadas de la celda
+                            $drawing->setWorksheet($sheet); // Asignar la hoja
+    
+                            // Redimensionar la celda para coincidir con la imagen
+                            $sheet->getColumnDimension($columnTecnico)->setWidth(15);
+                            $sheet->getRowDimension($row)->setRowHeight(35);
+    
+                            // Limpiar el contenido de la celda
+                            $sheet->getCell($columnTecnico . $row)->setValue(null);
+                        } else {
+                            // Si no existe, escribir un mensaje de error
+                            $sheet->getCell($columnTecnico . $row)->setValue('Imagen no encontrada');
+                        }
+                    }
+                }
+               
 
                 // Aplicar estilo a los encabezados
                 $sheet->getStyle('A1:S1')->applyFromArray([
@@ -129,10 +154,10 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
                 ]);
 
                 // Aplicar formato numérico a la columna 'recorrido'
-                $sheet->getStyle('N2:N' . $highestRow)->getNumberFormat()->setFormatCode('0');
+                $sheet->getStyle('N2:N' . $ultimaFila)->getNumberFormat()->setFormatCode('0');
 
                 // Alinear todos los datos a la izquierda
-                $sheet->getStyle('A1:S' . $highestRow)->applyFromArray([
+                $sheet->getStyle('A1:S' . $ultimaFila)->applyFromArray([
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
                     ],

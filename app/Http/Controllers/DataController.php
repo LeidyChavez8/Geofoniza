@@ -57,7 +57,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc');
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['ciclo', 'direccion', 'medidor'];
+        $validColumns = ['ciclo', 'direccion', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -93,7 +93,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['ciclo', 'direccion', 'medidor'];
+        $validColumns = ['ciclo', 'direccion', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -150,7 +150,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['ciclo', 'direccion', 'medidor'];
+        $validColumns = ['ciclo', 'direccion', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -186,7 +186,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['ciclo', 'direccion', 'medidor'];
+        $validColumns = ['ciclo', 'direccion', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -375,6 +375,10 @@ class DataController extends Controller
 
         $firmaPath = null;
         try {
+            $firmaTecnicoPath = '';
+
+            $firmaUsuarioPath = '';
+
             if($request->has('firmaUsuario')){
                 try {
                     $image = str_replace('data:image/png;base64,','',$request->input('firmaUsuario'));
@@ -386,7 +390,6 @@ class DataController extends Controller
                     return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
                 }
 
-                $data->firmaUsuario = $firmaUsuarioPath;
             }
 
             if($request->has('firmaTecnico')){
@@ -400,7 +403,6 @@ class DataController extends Controller
                     return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
                 }
 
-                $data->firmaTecnico = $firmaTecnicoPath;
             }
         } catch (Exception $e){
             return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
@@ -408,6 +410,10 @@ class DataController extends Controller
 
         $data->fill($validatedData);
 
+        $data->firmaTecnico = $firmaTecnicoPath;
+
+        $data->firmaUsuario = $firmaUsuarioPath;
+        
         $data->estado = 1;
 
         $data->save();
@@ -462,7 +468,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'direccion', 'medidor', 'direccion', 'año', 'mes'];
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'direccion', 'orden', 'direccion', 'año', 'mes'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -492,7 +498,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['ciclo', 'direccion', 'medidor'];
+        $validColumns = ['ciclo', 'direccion', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
