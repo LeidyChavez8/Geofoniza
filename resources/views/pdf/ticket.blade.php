@@ -10,17 +10,22 @@
     </style>
 </head>
 <body>
+    {{-- {{dd(file_exists(public_path('img/LOGO_RIB_R.png')));}} --}}
+    {{-- <img class="logo" src="{{ public_path('img/LOGO_RIB_R.png') }}" alt="Logo" width="100"> <!-- Logo de la empresa --> --}}
     <p class="order-number">{{ $data->orden }}</p> <!-- Número de orden en la parte superior derecha -->
     <div class="header">
         <h3>GEOFONIZA</h3>
-        <p>Dirección: Calle Principal 456</p>
-        <p>Teléfono: 987-654-3210</p>
+        <ul>
+            <li><strong>Dirección:</strong> Calle Principal 456</li>
+            <li><strong>Teléfono:</strong> 987-654-3210</li>
+        </ul>
     </div>
 
     <div class="details">
-        <p><strong>Agenda:</strong></p>
         <ul>
-            <li><strong>Nombre:</strong> {{ $data->nombres }}</li>
+            <li><strong>Hora de inicio:</strong> {{ $data->created_at }}</li>
+            <li><strong>Hora final:</strong> {{ $data->updated_at }}</li>
+            <li><strong>Cliente:</strong> {{ $data->nombres }}</li>
             <li><strong>Dirección:</strong> {{ $data->direccion }}</li>
             <li><strong>Barrio:</strong> {{ $data->barrio }}</li>
             <li><strong>Teléfono:</strong> {{ $data->telefono }}</li>
@@ -29,7 +34,7 @@
 
         <p><strong>Visita:</strong></p>
         <ul>
-            <li><strong>Medidor:</strong> {{ $data->medidor }}</li>
+            <li><strong>No. Medidor:</strong> {{ $data->medidor }}</li>
             <li><strong>Lectura:</strong> {{ $data->lectura }}</li>
             <li><strong>Aforo:</strong> {{ $data->aforo }}</li>
             <li><strong>Resultado:</strong> {{ $data->resultado }}</li>
@@ -42,13 +47,17 @@
     </div>
 
     <div class="signatures">
+        @php
+            $firmaUsuario = Storage::disk('public')->path($data->firmaUsuario);
+            $firmaTecnico = Storage::disk('public')->path($data->firmaTecnico);
+        @endphp
         <p>
             <strong>Firma Usuario:</strong>
-            <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Técnico" width="100">
+            <img class="firma" src="{{ $firmaUsuario }}" alt="Firma Usuario" width="100">
         </p>
         <p>
             <strong>Firma Técnico:</strong>
-            <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="100">
+            <img class="firma" src="{{ $firmaTecnico }}" alt="Firma Técnico" width="100">
         </p>
     </div>
 

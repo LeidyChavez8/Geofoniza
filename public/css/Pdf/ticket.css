@@ -1,19 +1,25 @@
 body {
     font-family: 'Courier New', Courier, monospace;
     margin: 0;
-    padding: 10px;
-    font-size: 12px;
-    line-height: 1.2;
+    padding: 0px;
+    font-size: 9px;
+    line-height: 1.1;
 }
 
 .header, .details, .signatures, .footer {
     font-family: inherit;
 }
 
-.header {
-    text-align: center;
+strong {
+    color: rgba(53, 53, 53, 0.947);
+}
+
+.header ul {
+    padding: 0;
+    margin: 0;
     margin-bottom: 10px;
-    position: relative;
+    list-style: none;
+    /* position: relative; */
 }
 
 .order-number {
@@ -38,9 +44,9 @@ body {
     text-align: center;
 }
 
-/* .firma {
+.firma {
     transform: translateY(10px); 
-} */
+}
 
 .footer {
     margin-top: 20px;
