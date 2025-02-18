@@ -167,7 +167,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['ciclo', 'direccion', 'orden'];
+        $validColumns = ['operario', 'nombres', 'direccion', 'barrio', 'telefono', 'correo', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -203,7 +203,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['ciclo', 'direccion', 'orden'];
+        $validColumns = ['operario', 'nombres', 'direccion', 'barrio', 'telefono', 'correo', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -221,11 +221,28 @@ class DataController extends Controller
             // filtramos por el id del usuario
             $query->whereIn('id_user', $userId);
         }
-        if ($request->filled('buscador-ciclo')) {
-            $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
+        if ($request->filled('buscador-nombre')) {
+            $query->where('nombres', 'like', '%' . $request->input('buscador-nombre') . '%');
         }
+
         if ($request->filled('buscador-direccion')) {
             $query->where('direccion', 'like', '%' . $request->input('buscador-direccion') . '%');
+        }
+
+        if ($request->filled('buscador-barrio')) {
+            $query->where('barrio', 'like', '%' . $request->input('buscador-barrio') . '%');
+        }
+
+        if ($request->filled('buscador-telefono')) {
+            $query->where('telefono', 'like', '%' . $request->input('buscador-telefono') . '%');
+        }
+
+        if ($request->filled('buscador-correo')) {
+            $query->where('correo', 'like', '%' . $request->input('buscador-correo') . '%');
+        }
+        
+        if ($request->filled('buscador-orden')) {
+            $query->where('orden', 'like', '%' . $request->input('buscador-orden') . '%');
         }
         
 
