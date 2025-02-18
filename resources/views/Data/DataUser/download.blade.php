@@ -32,10 +32,10 @@
 
         <div class="buttons">
             <!-- Botón para visualizar el ticket en el navegador -->
-            <a href="{{ $ticketUrl }}" target="_blank">Visualizar Ticket</a>
+            <a href="{{route('ticket.generate', $data->id)}}" target="_blank">Visualizar Ticket</a>
 
             <!-- Botón para descargar el ticket -->
-            <a href="{{ $ticketUrl }}" download="ticket_{{ $data->orden }}.pdf">Descargar Ticket</a>
+            <a href="{{ route('ticket.download',$data->id) }}" download="ticket_{{ $data->orden }}.pdf">Descargar Ticket</a>
 
             <!-- Botón para finalizar -->
             <a href="{{ route('asignados.index') }}" class="finalizar">Finalizar</a>

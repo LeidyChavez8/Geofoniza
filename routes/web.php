@@ -59,7 +59,10 @@ Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
     Route::get('/asignados', [DataController::class, 'asignadosListar'])->name('asignados.index');
     Route::get('/asignados/edit/{data}', [DataController::class, 'asignadosEdit'])->name('asignados.edit');
     Route::put('/operario/update/{id}', [DataController::class, 'asignadosUpdate'])->name('asignados.update');
-    Route::get('/generate-ticket/{id}', [TicketController::class, 'generateTicket'])->name('generate.ticket');
-    Route::get('/download-ticket/{id}', [TicketController::class, 'showDownloadOptions'])->name('download.ticket');
+
+    //TICKETS 
+    Route::get('/ticket-options/{id}', [TicketController::class, 'showTicketOptions'])->name('ticket.options');
+    Route::get('/ticket-generate/{id}', [TicketController::class, 'generateTicket'])->name('ticket.generate');
+    Route::get('/ticket-download/{id}', [TicketController::class, 'generateTicket'])->name('ticket.download');
 
 });

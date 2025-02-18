@@ -48,8 +48,8 @@
 
     <div class="signatures">
         @php
-            $firmaUsuario = Storage::disk('public')->path($data->firmaUsuario);
-            $firmaTecnico = Storage::disk('public')->path($data->firmaTecnico);
+            $firmaUsuario = Storage::disk('google')->path($data->firmaUsuario);
+            $firmaTecnico = Storage::disk('google')->path($data->firmaTecnico);
         @endphp
         <p>
             <strong>Firma Usuario:</strong>
