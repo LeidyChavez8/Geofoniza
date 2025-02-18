@@ -358,31 +358,37 @@ class DataController extends Controller
     {
         $data = Data::findOrFail($id);
 
-     $validatedData = $request->validate([
-        'medidor' => 'required',
-    	'lectura' => 'required',
-    	'aforo' => 'required',
-    	'resultado' => 'required',
-    	'observacion_inspeccion' => 'required',
-    	'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
-    	'firmaUsuario' => 'required|string',
-    	'firmaTecnico' => 'required|string',
-    	'puntoHidraulico' => 'required|int',
-    	'numeroPersonas' => 'required|int',
-    ],[
-    	'foto.required' => 'La evidencia es obligatoria.',
-    	'foto.image' => 'El archivo debe ser una imagen.',
-    	'foto.mimes' => 'La imagen debe estar en formato: jpeg, png, jpg, bmp o tiff.',
-    ]);
+        $direccion = $data->direccion;
+
+
+        $validatedData = $request->validate([
+            'medidor' => 'required',
+            'lectura' => 'required',
+            'aforo' => 'required',
+            'resultado' => 'required',
+            'observacion_inspeccion' => 'required',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
+            'firmaUsuario' => 'required|string',
+            'firmaTecnico' => 'required|string',
+            'puntoHidraulico' => 'required|int',
+            'numeroPersonas' => 'required|int',
+        ],[
+            'foto.required' => 'La evidencia es obligatoria.',
+            'foto.image' => 'El archivo debe ser una imagen.',
+            'foto.mimes' => 'La imagen debe estar en formato: jpeg, png, jpg, bmp o tiff.',
+        ]);
+
+        $data->fill($validatedData);
+
 
         // Subir la foto a Google Drive
         $mesActual = date('F');
         $userFolder = auth()->user()->name; // Subcarpeta personalizada por usuario
         $fileName = $validatedData['foto']->getClientOriginalName();
-        $filePath = "Apptualiza/"."$mesActual/$userFolder/$fileName";
+        $filePath = "Apptualiza/"."$mesActual/$userFolder/$direccion/evidencia/$fileName";
 
         // Subida de foto
-        $driveResponse = Gdrive::put($filePath, $validatedData['foto']);
+        Gdrive::put($filePath, $validatedData['foto']);
 
         // Establecer permisos públicos
         $disk = Storage::disk('google');
@@ -404,50 +410,90 @@ class DataController extends Controller
             $fileUrl = null;
         }
 
-
         $data ->url_foto = $fileUrl;
+        
 
-        $firmaPath = null;
         try {
-            $firmaTecnicoPath = '';
-
-            $firmaUsuarioPath = '';
-
             if($request->has('firmaUsuario')){
                 try {
-                    $image = str_replace('data:image/png;base64,','',$request->input('firmaUsuario'));
-                    $image = str_replace(' ','+',$image);
-                    $firmaUsuarioPath = 'firmas/' . uniqid() . '.png';
-                    Storage::disk('public')->put($firmaUsuarioPath,base64_decode($image));
+                    $image = $request->input('firmaUsuario');
+                    $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
+                    $image = str_replace(' ', '+', $image);
+        
+                    $imageData = base64_decode($image);
+        
+                    // Generar ruta final
+                    $firmaUsuarioPath = 'firma del usuario/' . uniqid() . '.png';
+                    $filePath = "Apptualiza/$mesActual/$userFolder/$direccion/$firmaUsuarioPath";
+        
+                    // Obtener URL pública
+                    $fileUrl = "https://drive.google.com/uc?id=$fileId";
+                    Storage::disk('google')->put($filePath,$imageData);
+
+                    if (!empty($fileMetaData->getFiles())) {
+                        $fileId = $fileMetaData->getFiles()[0]->getId();
+                        $permissions = new \Google\Service\Drive\Permission([
+                            'type' => 'anyone',
+                            'role' => 'reader',
+                        ]);
+                        $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
+            
+                        // Obtener URL pública
+                        $fileUrl = "https://drive.google.com/uc?id=$fileId";
+                    } else {
+                        $fileUrl = null;
+                    }
+
+                    $data->firmaUsuario = $fileUrl;
 
                 } catch (Exception $e){
                     return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
                 }
 
             }
+
 
             if($request->has('firmaTecnico')){
                 try {
-                    $image = str_replace('data:image/png;base64,','',$request->input('firmaTecnico'));
-                    $image = str_replace(' ','+',$image);
-                    $firmaTecnicoPath = 'firmas/' . uniqid() . '.png';
-                    Storage::disk('public')->put($firmaTecnicoPath,base64_decode($image));
+                    $image = $request->input('firmaTecnico');
+                    $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
+                    $image = str_replace(' ', '+', $image);
+        
+                    $imageData = base64_decode($image);
+        
+                    // Generar ruta final
+                    $firmaTecnicoPath = 'firma del tecnico/' . uniqid() . '.png';
+                    $filePath = "Apptualiza/$mesActual/$userFolder/$direccion/$firmaTecnicoPath";
+        
+
+                    Storage::disk('google')->put($filePath,$imageData);
+
+                    if (!empty($fileMetaData->getFiles())) {
+                        $fileId = $fileMetaData->getFiles()[0]->getId();
+                        $permissions = new \Google\Service\Drive\Permission([
+                            'type' => 'anyone',
+                            'role' => 'reader',
+                        ]);
+                        $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
+            
+                        // Obtener URL pública
+                        $fileUrl = "https://drive.google.com/uc?id=$fileId";
+                    } else {
+                        $fileUrl = null;
+                    }
+                    
+                    $data->firmaTecnico = $fileUrl;
 
                 } catch (Exception $e){
                     return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
                 }
 
             }
+
         } catch (Exception $e){
             return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
         }
 
-        $data->fill($validatedData);
-
-        $data->firmaTecnico = $firmaTecnicoPath;
-
-        $data->firmaUsuario = $firmaUsuarioPath;
-        
         $data->estado = 1;
 
         $data->save();
