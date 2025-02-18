@@ -53,11 +53,10 @@ class DataController extends Controller
     {
         // Obtener los parámetros de ordenamiento
         $sortBy = $request->get('sortBy', 'direction');
-
         $direction = $request->get('direction', 'asc');
 
         // Validar que la columna y la dirección sean válidas
-        $validColumns = ['ciclo', 'direccion', 'orden'];
+        $validColumns = ['nombres', 'direccion', 'barrio', 'telefono', 'correo', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -93,7 +92,7 @@ class DataController extends Controller
         $direction = $request->get('direction', 'asc'); // Dirección de orden por defecto
 
         // Validar la columna y la dirección de ordenamiento
-        $validColumns = ['ciclo', 'direccion', 'orden'];
+        $validColumns = ['nombres', 'direccion', 'barrio', 'telefono', 'correo', 'orden'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
@@ -107,12 +106,30 @@ class DataController extends Controller
         $query = Data::whereNull('id_user')
             ->whereNull('estado');
 
-        if ($request->filled('buscador-ciclo')) {
-            $query->where('ciclo', 'like', '%' . $request->input('buscador-ciclo') . '%');
+        if ($request->filled('buscador-nombre')) {
+            $query->where('nombres', 'like', '%' . $request->input('buscador-nombre') . '%');
         }
+
         if ($request->filled('buscador-direccion')) {
             $query->where('direccion', 'like', '%' . $request->input('buscador-direccion') . '%');
         }
+
+        if ($request->filled('buscador-barrio')) {
+            $query->where('barrio', 'like', '%' . $request->input('buscador-barrio') . '%');
+        }
+
+        if ($request->filled('buscador-telefono')) {
+            $query->where('telefono', 'like', '%' . $request->input('buscador-telefono') . '%');
+        }
+
+        if ($request->filled('buscador-correo')) {
+            $query->where('correo', 'like', '%' . $request->input('buscador-correo') . '%');
+        }
+        
+        if ($request->filled('buscador-orden')) {
+            $query->where('orden', 'like', '%' . $request->input('buscador-orden') . '%');
+        }
+
         
 
         // Aplicar el ordenamiento
@@ -467,8 +484,8 @@ class DataController extends Controller
         $sortBy = $request->get('sortBy', 'id'); // Columna por defecto
         $direction = $request->get('direction', 'asc'); // Dirección por defecto
 
-        // Validar que la columna y la dirección sean válidas
-        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'direccion', 'orden', 'direccion', 'año', 'mes'];
+        // Validar que la columna y la dirección de ordenamiento sean válidas
+        $validColumns = ['id', 'ciclo', 'nombre_cliente', 'direccion', 'orden', 'año', 'mes'];
         if (!in_array($sortBy, $validColumns)) {
             $sortBy = 'id';
         }
