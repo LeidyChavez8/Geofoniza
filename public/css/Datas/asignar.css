@@ -4,12 +4,13 @@
 
 /* Contenedor principal */
 .assignment-container {
-    background-color: var(--sidebar-color);
+    /* background-color: var(--sidebar-color); */
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin: auto;
     padding: 1rem;
     transition: var(--tran-03);
+    height: 100vh;
 }
 
 /* Filtros */
@@ -309,7 +310,7 @@
 /* ================================== PAGINACION ================================== */
 /* Contenedor de la paginación */
 .pagination-container {
-    margin-top: 1.5rem;
+    /* margin-top: 1rem; */
     display: flex;
     flex-direction: column;
     align-items: center;
