@@ -7,26 +7,54 @@ use App\Models\Data;
 use Storage;
 
 class TicketController extends Controller
-{
+{   
     public function generateTicket($id)
     {
-        // Actualizar los datos en la base de datos
         $data = Data::findOrFail($id);
+
+    // FIRMA DEL USUARIO
+        $firmaUsuario = file_get_contents($data->firmaUsuario);
+    
+        $firmaUsuarioBase64 = base64_encode($firmaUsuario);
+
+        $data->firmaUsuario = 'data:image/png;base64,' . $firmaUsuarioBase64;
+
+    // FIRMA DEL ADMIN
+        $firmaTecnico = file_get_contents($data->firmaTecnico);
+    
+        $firmaTecnicoBase64 = base64_encode($firmaTecnico);
+
+        $data->firmaTecnico = 'data:image/png;base64,' . $firmaTecnicoBase64;
 
         // Generar el ticket PDF y guardarlo temporalmente
         $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
                 ->setPaper([0, 0, 227, 400], 'portrait'); // Tamaño ajustado
                 
+        $pdf->render();
         return $pdf->stream();
     }
     public function downloadTicket($id)
     {
-        // Actualizar los datos en la base de datos
+
         $data = Data::findOrFail($id);
 
+        // FIRMA DEL USUARIO
+            $firmaUsuario = file_get_contents($data->firmaUsuario);
+
+            $firmaUsuarioBase64 = base64_encode($firmaUsuario);
+
+            $data->firmaUsuario = 'data:image/png;base64,' . $firmaUsuarioBase64;
+            
+        // FIRMA DEL ADMIN
+            $firmaTecnico = file_get_contents($data->firmaTecnico);
+        
+            $firmaTecnicoBase64 = base64_encode($firmaTecnico);
+    
+            $data->firmaTecnico = 'data:image/png;base64,' . $firmaTecnicoBase64;
+
         // Generar el ticket PDF y guardarlo temporalmente
-        $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
-                ->setPaper([0, 0, 227, 400], 'portrait'); // Tamaño ajustado
+            $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
+                    ->setPaper([0, 0, 227, 400], 'portrait'); // Tamaño ajustado
 
         return $pdf->download('ticket'.$data->orden .'.pdf');
     }

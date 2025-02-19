@@ -14,6 +14,15 @@
     {{-- <img class="logo" src="{{ public_path('img/LOGO_RIB_R.png') }}" alt="Logo" width="100"> <!-- Logo de la empresa --> --}}
     <p class="order-number">{{ $data->orden }}</p> <!-- Número de orden en la parte superior derecha -->
     <div class="header">
+        @php
+            $path = storage_path('app/public/img/LogoRib.png');
+            $logo = file_get_contents($path);
+
+            $LogoBase64 = base64_encode($logo); 
+
+            $logo = 'data:image/png;base64,' . $LogoBase64;
+        @endphp
+        <img class="logo" src="{{ $logo }}" alt="Logo" width="100" style="background-color: black"> <!-- Logo de la empresa -->
         <h3>GEOFONIZA</h3>
         <ul>
             <li><strong>Dirección:</strong> Calle Principal 456</li>
@@ -47,17 +56,13 @@
     </div>
 
     <div class="signatures">
-        @php
-            $firmaUsuario = Storage::disk('google')->path($data->firmaUsuario);
-            $firmaTecnico = Storage::disk('google')->path($data->firmaTecnico);
-        @endphp
         <p>
             <strong>Firma Usuario:</strong>
-            <img class="firma" src="{{ $firmaUsuario }}" alt="Firma Usuario" width="100">
+            <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="100" height="50">
         </p>
         <p>
             <strong>Firma Técnico:</strong>
-            <img class="firma" src="{{ $firmaTecnico }}" alt="Firma Técnico" width="100">
+            <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="100" height="50">
         </p>
     </div>
 
