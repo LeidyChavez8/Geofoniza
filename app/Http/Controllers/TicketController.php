@@ -56,6 +56,7 @@ class TicketController extends Controller
             $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
                     ->setPaper([0, 0, 227, 400], 'portrait'); // Tamaño ajustado
 
+            $pdf->render();
         return $pdf->download('ticket'.$data->orden .'.pdf');
     }
 
