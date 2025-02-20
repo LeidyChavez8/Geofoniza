@@ -58,6 +58,7 @@
 
 .table-wrapper a {
     all: unset;
+    cursor: pointer;
 }
 
 .table-cell-truncate {
@@ -65,7 +66,7 @@
     white-space: nowrap; /* Evita que el texto se divida en varias líneas */
     overflow: hidden; /* Oculta el contenido que exceda el ancho */
     text-overflow: ellipsis; /* Muestra los puntos suspensivos (...) */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el texto */
+    /* cursor: pointer; */
 }
 
 .assignment-table {
@@ -97,7 +98,7 @@
     width: 50px;
     padding: 0.5rem;
     position: relative;
-    user-select: none;
+    /* user-select: none; */
 }
 
 .assignment-table th:first-child {

@@ -157,6 +157,11 @@
                                 @endif
                             </a>
                         </th>
+
+
+                        <th>
+                            Ticket
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -168,6 +173,7 @@
                         <td>{{ $data->telefono }}</td>
                         <td class="table-cell-truncate">{{ $data->direccion }}</td>
                         <td>{{ $data->barrio }}</td>
+                        <td><a href="{{route('ticket.options',$data->id)}}"> <span style=" font-size: 30px; color: #ad0000; cursor: pointer;" class="material-symbols-outlined"> star_rate </span> </a></td>
                     </tr>
                     @endforeach
                 </tbody>

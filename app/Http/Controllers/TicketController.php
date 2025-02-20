@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\Data;
@@ -8,9 +9,19 @@ use Storage;
 
 class TicketController extends Controller
 {   
-    public function generateTicket($id)
+    public function generateTicket($id, Request $request)
     {
         $data = Data::findOrFail($id);
+
+        if($data->estado != 1) {
+            abort(404);
+        }
+
+        if(Auth::user()->rol != 'admin'){
+            if ($data->id_user != Auth::id()) {
+                abort(403, 'No tienes permiso para ver este ticket.');
+            }
+        }
 
     // FIRMA DEL USUARIO
         $firmaUsuario = file_get_contents($data->firmaUsuario);
@@ -28,36 +39,15 @@ class TicketController extends Controller
 
         // Generar el ticket PDF y guardarlo temporalmente
         $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
-                ->setPaper([0, 0, 227, 400], 'portrait'); // Tamaño ajustado
+                ->setPaper([0, 0, 227, 500], 'portrait'); // Tamaño ajustado
                 
         $pdf->render();
-        return $pdf->stream();
-    }
-    public function downloadTicket($id)
-    {
 
-        $data = Data::findOrFail($id);
-
-        // FIRMA DEL USUARIO
-            $firmaUsuario = file_get_contents($data->firmaUsuario);
-
-            $firmaUsuarioBase64 = base64_encode($firmaUsuario);
-
-            $data->firmaUsuario = 'data:image/png;base64,' . $firmaUsuarioBase64;
-            
-        // FIRMA DEL ADMIN
-            $firmaTecnico = file_get_contents($data->firmaTecnico);
-        
-            $firmaTecnicoBase64 = base64_encode($firmaTecnico);
-    
-            $data->firmaTecnico = 'data:image/png;base64,' . $firmaTecnicoBase64;
-
-        // Generar el ticket PDF y guardarlo temporalmente
-            $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
-                    ->setPaper([0, 0, 227, 400], 'portrait'); // Tamaño ajustado
-
-            $pdf->render();
-        return $pdf->download('ticket'.$data->orden .'.pdf');
+        if($request->routeIs('ticket.generate')) {
+            return $pdf->stream();
+        } else if($request->routeIs('ticket.download')) {
+            return $pdf->download('ticket'.$data->orden .'.pdf');
+        }
     }
 
     public function showTicketOptions($id)

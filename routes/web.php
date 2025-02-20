@@ -66,3 +66,12 @@ Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
     Route::get('/ticket-download/{id}', [TicketController::class, 'downloadTicket'])->name('ticket.download');
 
 });
+
+
+Route::middleware('auth')->group(function () {
+    //TICKETS 
+    Route::get('/ticket-options/{id}', [TicketController::class, 'showTicketOptions'])->name('ticket.options');
+    Route::get('/ticket-generate/{id}', [TicketController::class, 'generateTicket'])->name('ticket.generate');
+    Route::get('/ticket-download/{id}', [TicketController::class, 'generateTicket'])->name('ticket.download');
+
+});

@@ -35,10 +35,15 @@
             <a href="{{route('ticket.generate', $data->id)}}" target="_blank">Visualizar Ticket</a>
 
             <!-- Botón para descargar el ticket -->
-            <a href="{{ route('ticket.download',$data->id) }}" download="ticket_{{ $data->orden }}.pdf">Descargar Ticket</a>
+            <a href="{{ route('ticket.download',$data->id) }}" >Descargar Ticket</a>
+
 
             <!-- Botón para finalizar -->
-            <a href="{{ route('asignados.index') }}" class="finalizar">Finalizar</a>
+            @if (Auth::user()->rol==='admin')
+                <a href="{{ route('completados.index') }}" class="finalizar">Finalizar</a>
+            @elseif (Auth::user()->rol==='user')
+                <a href="{{ route('asignados.index') }}" class="finalizar">Finalizar</a>
+            @endif
         </div>
     </div>
 
