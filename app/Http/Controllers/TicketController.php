@@ -39,7 +39,7 @@ class TicketController extends Controller
 
         // Generar el ticket PDF y guardarlo temporalmente
         $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
-                ->setPaper([0, 0, 227, 500], 'portrait'); // Tamaño ajustado
+                ->setPaper([0, 0, 227, 730], 'portrait'); // Tamaño ajustado
                 
         $pdf->render();
 

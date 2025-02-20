@@ -125,24 +125,25 @@
                 @enderror
             </div>
             <div class="form-group">
-                <label for="resultado">Resultado:</label>
-                <input type="text" name="resultado" id="resultado" class="form-control"
-                    value="{{ old('resultado') }}">
-                @error('resultado')
+                <label for="observacion_inspeccion">Observación:</label>
+                <input type="text" name="observacion_inspeccion" id="observacion_inspeccion" class="form-control"
+                    value="{{ old('observacion_inspeccion') }}">
+                
+                @error('observacion_inspeccion')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="observacion_inspeccion">Observación:</label>
-                <select name="observacion_inspeccion" id="observacion_inspeccion" class="form-control">
-                    <option value="">Seleccione observación</option>
-                    @foreach ($data->observacion_inspeccion as $item)
-                        <option value="{{ $item }}" {{ old('observacion_inspeccion') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                <label for="resultado">Resultado:</label>
+                <select name="resultado" id="resultado" class="form-control">
+                    <option value="">Seleccione el resultado de la inspección</option>
+                    @foreach ($data->resultado as $item)
+                        <option value="{{ $item }}" {{ old('resultado') == $item ? 'selected' : '' }}>{{ $item }}</option>
                     @endforeach
                 </select>
                 
-                @error('observacion_inspeccion')
+                @error('resultado')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>

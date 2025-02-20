@@ -47,6 +47,7 @@
         </div>
     </div>
 
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe, enim?
     <script>
         const checkbox = document.querySelector('.dark-mode-switch input[type="checkbox"]');
         const modeText = document.querySelector('.dark-mode-switch .mode-text');

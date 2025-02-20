@@ -295,7 +295,7 @@ class DataController extends Controller
     {
         $data = Data::findOrFail($id);
 
-        $observacion = [
+        $resultado = [
             "CAUSA DE CIERRE",
             "AR-Amerita Revisión De Laboratorio",
             "AU-USUARIO AUSENTE",
@@ -349,7 +349,7 @@ class DataController extends Controller
             "SM-Sin Medidor"
         ];
 
-        $data -> observacion_inspeccion = $observacion;
+        $data -> resultado = $resultado;
         return view('Data.DataUser.edit', compact('data'));
     }
 

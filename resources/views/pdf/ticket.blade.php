@@ -10,58 +10,70 @@
     </style>
 </head>
 <body>
-    {{-- {{dd(file_exists(public_path('img/LOGO_RIB_R.png')));}} --}}
-    {{-- <img class="logo" src="{{ public_path('img/LOGO_RIB_R.png') }}" alt="Logo" width="100"> <!-- Logo de la empresa --> --}}
     <p class="order-number">{{ $data->orden }}</p> <!-- Número de orden en la parte superior derecha -->
     <div class="header">
         @php
             $path = storage_path('app/public/img/LogoRib.png');
-            $logo = file_get_contents($path);
+            $logoRib = file_get_contents($path);
 
-            $LogoBase64 = base64_encode($logo); 
+            $LogoRibBase64 = base64_encode($logoRib); 
 
-            $logo = 'data:image/png;base64,' . $LogoBase64;
+            $logoRib = 'data:image/png;base64,' . $LogoRibBase64;
+
+
+            $path = storage_path('app/public/img/LogoAqualert.png');
+            $logoAqualert = file_get_contents($path);
+
+            $LogoAqualertBase64 = base64_encode($logoAqualert); 
+
+            $logoAqualert = 'data:image/png;base64,' . $LogoAqualertBase64;
         @endphp
-        <img class="logo" src="{{ $logo }}" alt="Logo" width="100" style="background-color: black"> <!-- Logo de la empresa -->
+
+
+        <div class="logo-container">
+            <img class="logo" src="{{ $logoRib }}" alt="Logo RIB">
+            <img class="logo" src="{{ $logoAqualert }}" alt="Logo Aqualert" style="transform: translateY(25px); height: 100px;"  >
+        </div>
+
         <h3>GEOFONIZA</h3>
         <ul>
-            <li><strong>Dirección:</strong> Calle Principal 456</li>
-            <li><strong>Teléfono:</strong> 987-654-3210</li>
+            <li>Dirección: Calle Principal 456</li>
+            <li>Teléfono: 987-654-3210</li>
         </ul>
     </div>
 
     <div class="details">
         <ul>
-            <li><strong>Hora de inicio:</strong> {{ $data->created_at }}</li>
-            <li><strong>Hora final:</strong> {{ $data->updated_at }}</li>
-            <li><strong>Cliente:</strong> {{ $data->nombres }}</li>
-            <li><strong>Dirección:</strong> {{ $data->direccion }}</li>
-            <li><strong>Barrio:</strong> {{ $data->barrio }}</li>
-            <li><strong>Teléfono:</strong> {{ $data->telefono }}</li>
-            <li><strong>Correo:</strong> {{ $data->correo }}</li>
+            <li>Hora de inicio:{{ $data->created_at }}</li>
+            <li>Hora final: {{ $data->updated_at }}</li>
+            <li>Cliente: {{ $data->nombres }}</li>
+            <li>Dirección: {{ $data->direccion }}</li>
+            <li>Barrio: {{ $data->barrio }}</li>
+            <li>Teléfono: {{ $data->telefono }}</li>
+            <li>Correo: {{ $data->correo }}</li>
         </ul>
 
-        <p><strong>Visita:</strong></p>
+        <p>Visita:</p>
         <ul>
-            <li><strong>No. Medidor:</strong> {{ $data->medidor }}</li>
-            <li><strong>Lectura:</strong> {{ $data->lectura }}</li>
-            <li><strong>Aforo:</strong> {{ $data->aforo }}</li>
-            <li><strong>Resultado:</strong> {{ $data->resultado }}</li>
-            <li><strong>Observación:</strong> {{ $data->observacion_inspeccion }}</li>
-            <li><strong>Ciclo:</strong> {{ $data->ciclo }}</li>
-            <li><strong>Punto Hidraulico:</strong> {{ $data->puntoHidraulico }}</li>
-            <li><strong>Número Personas:</strong> {{ $data->numeroPersonas }}</li>
-            <li><strong>Categoría:</strong> {{ $data->categoria }}</li>
+            <li>No. Medidor:{{ $data->medidor }}</li>
+            <li>Lectura: {{ $data->lectura }}</li>
+            <li>Aforo: {{ $data->aforo }}</li>
+            <li class="parrafo">Resultado: {{ $data->resultado }}</li>
+            <li>Observación: {{ $data->observacion_inspeccion }}</li>
+            <li>Ciclo: {{ $data->ciclo }}</li>
+            <li>Punto Hidraulico: {{ $data->puntoHidraulico }}</li>
+            <li>Número Personas: {{ $data->numeroPersonas }}</li>
+            <li>Categoría: {{ $data->categoria }}</li>
         </ul>
     </div>
 
     <div class="signatures">
         <p>
-            <strong>Firma Usuario:</strong>
+            Firma Usuario:
             <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="100" height="50">
         </p>
         <p>
-            <strong>Firma Técnico:</strong>
+            Firma Técnico:
             <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="100" height="50">
         </p>
     </div>
