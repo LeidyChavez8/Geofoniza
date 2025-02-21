@@ -43,7 +43,11 @@ body {
 table {
     border-radius: 8px;
 }
-
+td{
+    max-width: 270px;
+    word-wrap: break-word;
+    white-space: normal;
+}
 .btn-primary {
     width: 100%;
 }

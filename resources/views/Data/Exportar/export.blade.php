@@ -53,11 +53,10 @@
                     <thead>
                         <tr>
                             <th>Ciclo</th>
-                            <th>Contrato</th>
                             <th>Dirección</th>
-                            <th>Recorrido</th>
                             <th>Medidor</th>
                             <th>Nombres</th>
+                            <th>Resultado</th>
                             <th>Observación</th>
                         </tr>
                     </thead>
@@ -113,11 +112,10 @@
                         var row = document.createElement("tr");
                         row.innerHTML = `
                         <td>${item.ciclo}</td>
-                        <td>${item.contrato}</td>
                         <td class="table-cell-truncate">${item.direccion}</td>
-                        <td>${item.recorrido}</td>
                         <td>${item.medidor}</td>
                         <td>${item.nombres}</td>
+                        <td>${item.resultado}</td>
                         <td>${item.observacion_inspeccion}</td>
                         `;
                         tableBody.appendChild(row);

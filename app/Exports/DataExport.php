@@ -35,13 +35,13 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
     {
         return [
             'Orden',
+            'Ciclo',
             'Nombres',
             'Resultado',
             'Categoría',
             'Dirección',
             'Barrio',
             'Medidor',
-            'Ciclo',
             'Lectura',
             'Observación Inspección',
             'URL Foto',
@@ -55,13 +55,13 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
     {
         return [
             $data->orden,
+            $data->ciclo,
             $data->nombres,
             $data->resultado,
             $data->categoria,
             $data->direccion,
             $data->barrio,
             $data->medidor,
-            $data->ciclo,
             $data->lectura,
             $data->observacion_inspeccion,
             $data->url_foto,

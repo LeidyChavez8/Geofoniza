@@ -78,6 +78,7 @@
 
 .assignment-table th,
 .assignment-table td {
+    max-width: 300px;
     padding: 0.75rem 0.25rem;
     text-align: center;
     border-bottom: 1px solid var(--primary-color-light);
