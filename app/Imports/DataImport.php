@@ -18,33 +18,32 @@ class DataImport implements ToCollection
             if ($index === 0) continue;
             // Mapear los datos de Excel a las columnas de la base de datos
             $data = [
-                'contrato' => $row[0] ?? null,
-                'producto' => $row[1] ?? null,
-                'nombres' => $row[2] ?? null,
-                'calificacion' => $row[3] ?? null,
-                'categoria' => $row[4] ?? null,
-                'direccion' => $row[5] ?? null,
-                'ubicacion' => $row[6] ?? null,
-                'medidor' => $row[7] ?? null,
-                'orden' => $row[8] ?? null,
-                'lectura_anterior' => $row[9] ?? null,
-                'fecha_lectura_anterior' => $row[10] ?? null,
-                'observacion_lectura_anterior' => $row[11] ?? null,
-                'ciclo' => $row[12] ?? null,
-                'recorrido' => $row[13] ?? null,
+                'orden' => $row[0] ?? null,
+                'nombres' => $row[1] ?? null,
+                'direccion' => $row[2] ?? null,
+                'barrio' => $row[3] ?? null,
+                'telefono' => $row[4] ?? null,
+                'correo' => $row[5] ?? null,
 
+
+                'medidor' => null,
                 'lectura' => null,
+                'aforo' => null,
+                'resultado' => null,
                 'observacion_inspeccion' => null,
                 'url_foto' => null,
-                'firma' => null,
-
-                
+                'firmaUsuario' => null,
+                'firmaTecnico' => null,
+                'ciclo' => $row[12] ?? null,
                 'id_user' => null,
-                'estado' => null, // estado de actualizacion de la lectura
+                'punto_hidraulico' => null,
+                'numeroPersonas' => null,
+                'categoria' => null,
+                'estado' => null,
             ];
 
             // Verificar si el registro ya existe en la base de datos por 'contrato'
-            $existingRecord = Data::where('contrato', $data['contrato'])->first();
+            $existingRecord = Data::where('orden', $data['orden'])->first();
 
             if (!$existingRecord) {
                 // Insertar nuevo registro si no existe
