@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Str;
 class Data extends Model
 {
     use HasFactory;
@@ -30,6 +30,18 @@ class Data extends Model
         'numeroPersonas',
         'categoria',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($orden) {
+            do {
+                $randomCode = 'OR-' . strtoupper(Str::random(5));
+            } while (self::where('orden', $randomCode)->exists());
+
+            $orden->orden = $randomCode;
+        });
+    }
 
     public function user()
     {

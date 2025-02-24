@@ -33,7 +33,7 @@ strong {
 .order-number {
     position: absolute;
     top: -10;
-    right: 0;
+    right: -10;
 }
 
 .details {

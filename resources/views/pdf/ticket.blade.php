@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <p class="order-number">{{ $data->orden }}</p> <!-- Número de orden en la parte superior derecha -->
+    <p class="order-number">{{ $data->orden }}</p>
     <div class="header">
         @php
             $path = storage_path('app/public/img/LogoRib.png');
@@ -90,6 +90,12 @@
     <div class="footer">
         <p>Servicio especializado y garantizado.</p>
         <p>Gracias por su confianza</p>
+
+    <br>
+        <p>Teléfono de contácto</p>
+        <p>310 2313007</p>
+        <p>310 2316450</p>
+        <p>www.Rib.com.co</p>
     </div>
 </body>
 </html>
