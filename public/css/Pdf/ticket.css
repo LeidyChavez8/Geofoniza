@@ -9,7 +9,7 @@ body {
     font-family: 'Courier New', Courier, monospace;
     margin: 0;
     padding: 0px;
-    font-size: 9px;
+    font-size: 10px;
     line-height: 2;
     font-weight: bold;
 }
@@ -52,13 +52,17 @@ strong {
 }
 
 .firma {
-    transform: translateY(10px); 
+    transform: translateY(20px); 
 }
 
 .footer {
     margin-top: 20px;
     text-align: center;
     font-size: 10px;
+}
+.footer p{
+    font-size: ;
+    line-height: 0.5;
 }
 
 .logo-container {

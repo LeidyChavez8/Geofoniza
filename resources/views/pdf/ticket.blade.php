@@ -32,14 +32,10 @@
 
         <div class="logo-container">
             <img class="logo" src="{{ $logoRib }}" alt="Logo RIB">
-            <img class="logo" src="{{ $logoAqualert }}" alt="Logo Aqualert" style="transform: translateY(25px); height: 100px;"  >
+            <img class="logo" src="{{ $logoAqualert }}" alt="Logo Aqualert"  >
         </div>
 
-        <h3>GEOFONIZA</h3>
-        <ul>
-            <li>Dirección: Calle Principal 456</li>
-            <li>Teléfono: 987-654-3210</li>
-        </ul>
+
     </div>
 
     <div class="details">
@@ -53,7 +49,8 @@
             <li>Correo: {{ $data->correo }}</li>
         </ul>
 
-        <p>Visita:</p>
+        <br><br>
+        <p>VISITA:</p>
         <ul>
             <li>No. Medidor:{{ $data->medidor }}</li>
             <li>Lectura: {{ $data->lectura }}</li>
@@ -70,17 +67,29 @@
     <div class="signatures">
         <p>
             Firma Usuario:
-            <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="100" height="50">
+            <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="120" height="60">
         </p>
         <p>
             Firma Técnico:
-            <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="100" height="50">
+            <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="120" height="60">
         </p>
     </div>
 
+
+    <br><br><br><br>
+    
+    <p class="parrafo">
+        RIB Logísticas SAS utiliza y almacena sus datos personales,
+        incluyendo su número de teléfono y correo electrónico, conforme 
+        a la Ley 1581 de 2012. Esta información será utilizada únicamente 
+        para fines relacionados con la prestación de nuestros servicios.
+    </p>
+
+    <br><br><br><br>
+    
     <div class="footer">
-        <p>Gracias por su visita</p>
-        <p>Visítenos nuevamente</p>
+        <p>Servicio especializado y garantizado.</p>
+        <p>Gracias por su confianza</p>
     </div>
 </body>
 </html>
