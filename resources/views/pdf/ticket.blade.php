@@ -40,13 +40,14 @@
 
     <div class="details">
         <ul>
-            <li>Hora de inicio:{{ $data->created_at }}</li>
-            <li>Hora final: {{ $data->updated_at }}</li>
-            <li>Cliente: {{ $data->nombres }}</li>
-            <li>Dirección: {{ $data->direccion }}</li>
-            <li>Barrio: {{ $data->barrio }}</li>
-            <li>Teléfono: {{ $data->telefono }}</li>
-            <li>Correo: {{ $data->correo }}</li>
+            <li>Hora de inicio: {{ $data->created_at ?? 'Desconocido' }}</li>
+            <li>Hora final: {{ $data->updated_at ?? 'Desconocido' }}</li>
+            <li>Cliente: {{ $data->nombres ?? 'Desconocido' }}</li>
+            <li>Cédula: {{ $data->cedula ?? 'Desconocido' }}</li>
+            <li>Dirección: {{ $data->direccion ?? 'Desconocido' }}</li>
+            <li>Barrio: {{ $data->barrio ?? 'Desconocido' }}</li>
+            <li>Teléfono: {{ $data->telefono ?? 'Desconocido' }}</li>
+            <li>Correo: {{ $data->correo ?? 'Desconocido' }}</li>
         </ul>
 
         <br><br>

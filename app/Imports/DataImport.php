@@ -20,10 +20,11 @@ class DataImport implements ToCollection
             $data = [
                 'orden' => $row[0] ?? null,
                 'nombres' => $row[1] ?? null,
-                'direccion' => $row[2] ?? null,
-                'barrio' => $row[3] ?? null,
-                'telefono' => $row[4] ?? null,
-                'correo' => $row[5] ?? null,
+                'cedula' => $row[2] ?? null,
+                'direccion' => $row[3] ?? null,
+                'barrio' => $row[4] ?? null,
+                'telefono' => $row[5] ?? null,
+                'correo' => $row[6] ?? null,
 
 
                 'medidor' => null,
