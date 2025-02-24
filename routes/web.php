@@ -39,6 +39,11 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/asignados/edit/{data}', [DataController::class, 'asignadosEdit'])->name('asignados.edit');
     Route::put('/operario/update/{id}', [DataController::class, 'asignadosUpdate'])->name('asignados.update');
 
+    //AGENDA
+    Route::get('/agendar', [DataController::class, 'create'])->name('schedule.create'); // Formulario vacío (nuevo)
+    Route::get('/agendar/{id}', [DataController::class, 'edit'])->name('schedule.edit'); // Formulario con datos existentes
+    Route::post('/agendar', [DataController::class, 'store'])->name('schedule.store'); // Guardar nuevo
+    Route::put('/agendar/{id}', [DataController::class, 'update'])->name('schedule.update'); // Actualizar existente
     //COMPLETADOS
     Route::get('/completados', [DataController::class, 'completadosIndex'])->name('completados.index');
     Route::get('/completados-filtrar', [DataController::class, 'completadosFiltrar'])->name('completados.filtrar');

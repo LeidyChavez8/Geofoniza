@@ -85,6 +85,14 @@
                     </li>
 
                     <li class="nav-link">
+                        <a href="{{ route('schedule.store') }}">
+                            <i class='bx bx-list-check icon' ></i>
+                            <span class="text nav-text">Agendar</span>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-link">
                         <a href="{{ route('completados.index') }}">
                             <i class='bx bx-list-check icon' ></i>
                             <span class="text nav-text">Completados</span>

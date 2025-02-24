@@ -11,6 +11,7 @@ class Data extends Model
     protected $fillable = [
         'orden',
         'nombres',
+        'cedula',
         'direccion',
         'barrio',
         'telefono',

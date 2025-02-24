@@ -526,6 +526,66 @@ class DataController extends Controller
         return redirect()->route('ticket.options', ['id' => $data->id])->with('success', 'Datos actualizados correctamente');
     }
 
+    // =============================      AGENDAR      =============================
+   
+     // Mostrar formulario vacío para crear nuevo registro
+    public function create()
+    {
+        return view('Data.Agendar.agendar');
+    }
+
+    // Mostrar formulario con datos existentes para editar
+    public function edit($id)
+    {
+        $data = Data::findOrFail($id);
+        return view('Data.Agendar.agendar', compact('data'));
+    }
+
+    // Guardar nuevo registro
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nombres' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u', // Solo letras, espacios y guiones
+            'cedula' => 'required|string|digits_between:6,10|unique:data,cedula', // Entre 6 y 10 dígitos, único en la BD
+            'direccion' => 'required|string|max:255', // Máximo 255 caracteres
+            'barrio' => 'required|string|max:100', // Máximo 100 caracteres
+            'telefono' => 'required|string|regex:/^\d{7,10}$/', // Solo números, entre 7 y 10 dígitos
+            'correo' => 'email|max:255', // Formato email válido y único en la BD
+        ], [
+            'nombres.required' => 'El nombre es obligatorio.',
+            'nombres.regex' => 'El nombre solo puede contener letras, espacios y guiones.',
+            'cedula.required' => 'La cédula es obligatoria.',
+            'cedula.digits_between' => 'La cédula debe tener entre 6 y 10 dígitos.',
+            'cedula.unique' => 'Esta cédula ya está registrada.',
+            'direccion.required' => 'La dirección es obligatoria.',
+            'barrio.required' => 'El barrio es obligatorio.',
+            'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.regex' => 'El teléfono debe contener entre 7 y 10 dígitos numéricos.',
+            'correo.email' => 'Debe ingresar un correo válido.',
+        ]);
+        
+        Data::create($validatedData);
+        return redirect()->route('schedule.create')->with('success', 'Registro creado exitosamente.');
+    }
+
+    // Actualizar un registro existente
+    public function update(Request $request, $id)
+    {
+        $data = Data::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'nombres' => 'required|string',
+            'cedula' => 'required|string',
+            'direccion' => 'required|string',
+            'barrio' => 'required|string',
+            'telefono' => 'required|string',
+            'correo' => 'required|email',
+        ]);
+
+        $data->update($validatedData);
+        return redirect()->route('schedule.edit', $id)->with('success', 'Registro actualizado correctamente.');
+    }
+
     // =============================      IMPORTAR      =============================
     public function showUploadForm()
     {
