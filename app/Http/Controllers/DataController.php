@@ -372,10 +372,14 @@ class DataController extends Controller
             'firmaTecnico' => 'required|string',
             'puntoHidraulico' => 'required|int',
             'numeroPersonas' => 'required|int',
+            // {{-- RESIDENCIAL COMERCIAL INDUSTRIAL --}}
+            'categoria' => 'required|string|in:residencial,comercial,industrial',
         ],[
             'foto.required' => 'La evidencia es obligatoria.',
             'foto.image' => 'El archivo debe ser una imagen.',
             'foto.mimes' => 'La imagen debe estar en formato: jpeg, png, jpg, bmp o tiff.',
+            'categoria.in' => 'Eliija una categoría válida.',
+            'categoria.required' => 'La categoría es obligatoria.',
         ]);
 
         $data->fill($validatedData);
@@ -534,19 +538,12 @@ class DataController extends Controller
         return view('Data.Agendar.agendar');
     }
 
-    // Mostrar formulario con datos existentes para editar
-    public function edit($id)
-    {
-        $data = Data::findOrFail($id);
-        return view('Data.Agendar.agendar', compact('data'));
-    }
-
     // Guardar nuevo registro
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'nombres' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u', // Solo letras, espacios y guiones
-            'cedula' => 'required|string|digits_between:6,10|unique:data,cedula', // Entre 6 y 10 dígitos, único en la BD
+            'cedula' => 'required|string|digits_between:6,10', // Entre 6 y 10 dígitos, único en la BD
             'direccion' => 'required|string|max:255', // Máximo 255 caracteres
             'barrio' => 'required|string|max:100', // Máximo 100 caracteres
             'telefono' => 'required|string|regex:/^\d{7,10}$/', // Solo números, entre 7 y 10 dígitos
@@ -566,24 +563,6 @@ class DataController extends Controller
         
         Data::create($validatedData);
         return redirect()->route('schedule.create')->with('success', 'Registro creado exitosamente.');
-    }
-
-    // Actualizar un registro existente
-    public function update(Request $request, $id)
-    {
-        $data = Data::findOrFail($id);
-
-        $validatedData = $request->validate([
-            'nombres' => 'required|string',
-            'cedula' => 'required|string',
-            'direccion' => 'required|string',
-            'barrio' => 'required|string',
-            'telefono' => 'required|string',
-            'correo' => 'required|email',
-        ]);
-
-        $data->update($validatedData);
-        return redirect()->route('schedule.edit', $id)->with('success', 'Registro actualizado correctamente.');
     }
 
     // =============================      IMPORTAR      =============================

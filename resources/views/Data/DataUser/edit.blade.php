@@ -82,8 +82,12 @@
 
             <div class="form-group">
                 <label for="categoria">Categoría:</label>
-                <input type="text" name="categoria" id="categoria" class="form-control"
-                    value="{{ old('categoria') }}">
+                    <select name="categoria" id="categoria" class="form-control">
+                        <option value="">Seleccione la categoria de la inspección</option>
+                            <option value="residencial" {{ old('categoria') == 'residencial' ? 'selected' : '' }}>Residencial</option>
+                            <option value="comercial" {{ old('categoria') == 'comercial' ? 'selected' : '' }}>Comercial</option>
+                            <option value="industrial" {{ old('categoria') == 'industrial' ? 'selected' : '' }}>Industrial</option>
+                    </select>                
                 @error('categoria')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
