@@ -40,8 +40,8 @@
 
     <div class="details">
         <ul>
-            <li>Hora de inicio: {{ $data->created_at ?? 'Desconocido' }}</li>
-            <li>Hora final: {{ $data->updated_at ?? 'Desconocido' }}</li>
+            {{-- <li>Hora de inicio: {{ $data->created_at ?? 'Desconocido' }}</li> --}}
+            <li>Hora: {{ $data->updated_at ?? 'Desconocido' }}</li>
             <li>Cliente: {{ $data->nombres ?? 'Desconocido' }}</li>
             <li>Cédula: {{ $data->cedula ?? 'Desconocido' }}</li>
             <li>Dirección: {{ $data->direccion ?? 'Desconocido' }}</li>
