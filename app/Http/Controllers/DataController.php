@@ -359,27 +359,58 @@ class DataController extends Controller
         $data = Data::findOrFail($id);
 
         $direccion = $data->direccion;
-
-
+        
+        $request->merge([
+            'numeroPersonas' => (int) $request->numeroPersonas,
+        ]);
+        
         $validatedData = $request->validate([
-            'medidor' => 'required',
-            'lectura' => 'required',
-            'aforo' => 'required',
-            'resultado' => 'required',
-            'observacion_inspeccion' => 'required',
+            'numeroPersonas' => 'required|integer',
+            'categoria' => 'required|string|in:residencial,comercial,industrial',
+            'puntoHidraulico' => 'required|string',
+            'medidor' => 'required|string',
+            'lectura' => 'required|string',
+            'aforo' => 'required|string',
+            'observacion_inspeccion' => 'required|string',
+            'resultado' => 'required|string',
             'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
             'firmaUsuario' => 'required|string',
             'firmaTecnico' => 'required|string',
-            'puntoHidraulico' => 'required|int',
-            'numeroPersonas' => 'required|int',
-            // {{-- RESIDENCIAL COMERCIAL INDUSTRIAL --}}
-            'categoria' => 'required|string|in:residencial,comercial,industrial',
-        ],[
-            'foto.required' => 'La evidencia es obligatoria.',
-            'foto.image' => 'El archivo debe ser una imagen.',
-            'foto.mimes' => 'La imagen debe estar en formato: jpeg, png, jpg, bmp o tiff.',
-            'categoria.in' => 'Eliija una categoría válida.',
+        ], [
+            'numeroPersonas.required' => 'El número de personas es obligatorio.',
+            'numeroPersonas.integer' => 'El número de personas debe ser un número entero.',
+        
             'categoria.required' => 'La categoría es obligatoria.',
+            'categoria.in' => 'La categoría debe ser Residencial, Comercial o Industrial.',
+        
+            'puntoHidraulico.required' => 'El punto hidráulico es obligatorio.',
+            'puntoHidraulico.string' => 'El punto hidráulico debe ser un texto válido.',
+        
+            'medidor.required' => 'El medidor es obligatorio.',
+            'medidor.string' => 'El medidor debe ser un texto válido.',
+        
+            'lectura.required' => 'La lectura es obligatoria.',
+            'lectura.integer' => 'La lectura debe ser un número entero.',
+        
+            'aforo.required' => 'El aforo es obligatorio.',
+            'aforo.string' => 'El aforo debe ser un texto válido.',
+        
+            'observacion_inspeccion.required' => 'La observación es obligatoria.',
+            'observacion_inspeccion.string' => 'La observación debe ser un texto válido.',
+        
+            'resultado.required' => 'El resultado es obligatorio.',
+            'resultado.string' => 'El resultado debe ser un texto válido.',
+        
+            'foto.required' => 'La evidencia es obligatoria.',
+            'foto.image' => 'La evidencia debe ser una imagen válida.',
+            'foto.mimes' => 'La evidencia debe estar en formato JPEG, PNG, JPG, BMP o TIFF.',
+            'foto.max' => 'La evidencia no debe superar los 50MB.',
+        
+            'firmaUsuario.required' => 'La firma del usuario es obligatoria.',
+            'firmaUsuario.string' => 'La firma del usuario debe ser un texto válido.',
+        
+            'firmaTecnico.required' => 'La firma del técnico es obligatoria.',
+            'firmaTecnico.string' => 'La firma del técnico debe ser un texto válido.',
         ]);
 
         $data->fill($validatedData);

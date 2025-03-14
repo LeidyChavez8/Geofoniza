@@ -217,6 +217,16 @@
             </div>
         </form>
     </div>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Se encontraron los siguientes errores:</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
     <script>
         const checkbox = document.querySelector('.dark-mode-switch input[type="checkbox"]');
