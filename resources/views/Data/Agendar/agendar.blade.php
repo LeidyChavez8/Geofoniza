@@ -73,6 +73,13 @@
                         value="{{ $data->correo ?? old('correo') }}" placeholder="">
                 </div>
 
+                {{-- Campo Cilco --}}
+                <div class="mb-3">
+                    <label for="ciclo" class="form-label">Ciclo</label>
+                    <input type="text" class="form-control" id="ciclo" name="ciclo"
+                        value="{{ $data->ciclo ?? old('ciclo') }}" placeholder="">
+                </div>
+
                 {{-- ajustar el boton de registrar para que no se vea pegado --}}
                 <br> 
                 {{-- Botón de envío --}}

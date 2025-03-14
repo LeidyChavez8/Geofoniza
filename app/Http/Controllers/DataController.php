@@ -548,6 +548,7 @@ class DataController extends Controller
             'barrio' => 'required|string|max:100', // Máximo 100 caracteres
             'telefono' => 'required|string|regex:/^\d{7,10}$/', // Solo números, entre 7 y 10 dígitos
             'correo' => 'email|max:255', // Formato email válido y único en la BD
+            'ciclo' => 'string|max:255', // Formato email válido y único en la BD
         ], [
             'nombres.required' => 'El nombre es obligatorio.',
             'nombres.regex' => 'El nombre solo puede contener letras, espacios y guiones.',
@@ -559,6 +560,7 @@ class DataController extends Controller
             'telefono.required' => 'El teléfono es obligatorio.',
             'telefono.regex' => 'El teléfono debe contener entre 7 y 10 dígitos numéricos.',
             'correo.email' => 'Debe ingresar un correo válido.',
+            'ciclo' => 'Debe ingresar un ciclo válido.',
         ]);
         
         Data::create($validatedData);

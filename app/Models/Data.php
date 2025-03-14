@@ -16,6 +16,7 @@ class Data extends Model
         'barrio',
         'telefono',
         'correo',
+        'ciclo',
         
         'medidor',
         'lectura',
@@ -25,7 +26,6 @@ class Data extends Model
         'url_foto',
         'firmaUsuario',
         'firmaTecnico',
-        'ciclo',
         'id_user',
         'puntoHidraulico',
         'numeroPersonas',
