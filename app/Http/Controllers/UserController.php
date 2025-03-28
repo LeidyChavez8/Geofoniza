@@ -71,7 +71,7 @@ class UserController extends Controller
     {
         $data = Data::all();
         foreach ($data as $dataItem) {
-            if($dataItem->id_user === $user->id){
+            if($dataItem->id_user === $user->id && $dataItem->esta == 1){
                 return redirect()->route('users.index')->with('error', 'No se puede eliminar un usuario que tiene asignaciones.');
             }
             if($user->rol === 'admin'){
