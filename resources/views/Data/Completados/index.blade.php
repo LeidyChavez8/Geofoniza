@@ -158,9 +158,12 @@
                             </a>
                         </th>
 
-
                         <th>
                             Ticket
+                        </th>
+                       
+                        <th>
+                            Editar
                         </th>
                     </tr>
                 </thead>
@@ -174,8 +177,8 @@
                         <td class="table-cell-truncate">{{ $data->direccion }}</td>
                         <td>{{ $data->barrio }}</td>
                         <td><a href="{{route('ticket.options',$data->id)}}"> <span style=" font-size: 30px; color: #ad0000; cursor: pointer;" class="material-symbols-outlined"> star_rate </span> </a></td>
-                    </tr>
-                    @endforeach
+                        <td><a href="{{route('completados.edit',$data->id)}}"> <i class='bx bx-edit-alt' style="font-size:26px;"></i> </a></td></tr>
+                        @endforeach
                 </tbody>
             </table>
         </div>

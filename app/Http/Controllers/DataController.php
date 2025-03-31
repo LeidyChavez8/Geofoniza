@@ -296,57 +296,17 @@ class DataController extends Controller
         $data = Data::findOrFail($id);
 
         $resultado = [
-            "CAUSA DE CIERRE",
-            "AR-Amerita Revisión De Laboratorio",
-            "AU-USUARIO AUSENTE",
-            "CB-CAJA REGISTRO OBSTACULIZADA",
-            "CD-PREDIO CERRADO",
-            "CO-CONSTRUCCION",
-            "DH-DESHABITADO",
-            "DM-PREDIO DEMOLIDO",
-            "DS-RECOMENDACIÓN NO ACATADA",
-            "FN-FUGA IMPERCEPTIBLE",
-            "FP-FUGA PERCEPTIBLE",
-            "FR-FUGA REPARADA",
-            "FS-FUGA SIN REPARAR",
-            "GFN-FUGA UBICADA GAS TRAZADOR",
-            "IS-INSPECCION SIN CONCLUIR",
-            "MI-MEDIDOR INVERTIDO",
-            "NA-NO ATIENDEN",
-            "ND-NO DEJAN",
-            "NF-NO EXISTE FUGA",
-            "NO SE PUDO COMPROBAR INFORMACION",
-            "NP-NO PERMITEN INGRESO AL PREDIO",
-            "NU-FUGA IMPERCEPTIBLE NO UBICADA",
-            "OR-ORDEN REPROGRAMADA POR EL USUARIO",
-            "PG-PROGRAMAR GEOFONO",
-            "RI-PREDIO CON RECONEXION ILEGAL",
-            "SD-SERVICIO DIRECTO",
-            "SP-SECTOR PELIGROSO",
-            "SSA-SECTOR SIN AGUA",
-            "SS-SERVICIO SUSPENDIDO",
-            "SV-SIN VEHICULO",
-            "VM-VIA EN MAL ESTADO",
-            "NE-No Se Encuentra Medidor",
-            "VI-Verificación Incompleta",
-            "ET-Medidor Enterrado",
-            "FV-Fuga Visible",
-            "Predio comercial cerrado",
-            "ND-No Dejan Pasar",
-            "Medidor sin conexión interna, vecino le regala agua",
-            "AS-Agua Suspendida",
-            "CA-Medidor con Candado",
-            "CO-Construcción",
-            "DC-Distinto Contador",
-            "FI-Fuga En Instalación",
-            "LT-Lote",
-            "Macromedidor",
-            "Medidor sin conexión interna, se surte del medidor del vecino",
-            "PG-Programar geófono",
-            "PNF-Persona No Facultada",
-            "Predio sin medidor",
-            "RI-Predio Con Reconexión Ilegal",
-            "SM-Sin Medidor"
+            "Fuga Imperceptible",
+            "Fuga Perceptible",
+            "Medidor Instalado en Reversa",
+            "Predio sin de Fuga",       
+            "Fuga No Visible No Localizada",
+            "Sector sin Suministro de Agua",
+            "Acceso Dificultoso",
+            "Revisión Inconclusa",
+            "Fuga Visible",     
+            "Fuga En Instalación",
+            "No Hay Medidor en el Predio",
         ];
 
         $data -> resultado = $resultado;
@@ -668,6 +628,99 @@ class DataController extends Controller
             'sortBy' => $sortBy,
             'direction' => $direction,
         ]);
+    }
+
+
+    public function editCompletados($dataId){
+        $data = Data::find($dataId);
+        
+        $resultados = [
+            "Fuga Imperceptible",
+            "Fuga Perceptible",
+            "Medidor Instalado en Reversa",
+            "Predio sin de Fuga",       
+            "Fuga No Visible No Localizada",
+            "Sector sin Suministro de Agua",
+            "Acceso Dificultoso",
+            "Revisión Inconclusa",
+            "Fuga Visible",     
+            "Fuga En Instalación",
+            "No Hay Medidor en el Predio",
+        ];
+
+        return view('Data.Completados.edit', compact('data', 'resultados'));
+    }
+    public function updateCompletados(Request $request, $dataId){
+        $data = Data::findOrFail($dataId);
+
+        $validatedData = $request->validate([
+            // Nuevas validaciones agregadas
+            'nombres' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u',
+            'cedula' => 'required|numeric|digits_between:6,10',
+            'direccion' => 'required|string|max:255|regex:/^[^#]+$/',
+            'barrio' => 'required|string|max:100',
+            'telefono' => 'required|digits:10',
+            'correo' => 'nullable|email|max:255',
+            'ciclo' => 'nullable|string|max:255',
+            'numeroPersonas' => 'required|integer',
+            'categoria' => 'required|string|in:residencial,comercial,industrial',
+            'puntoHidraulico' => 'required|integer',
+            'medidor' => 'required|string',
+            'lectura' => 'required|string',
+            'aforo' => 'required|string',
+            'observacion_inspeccion' => 'required|string',
+            'resultado' => 'required|string',
+        ], [
+            'nombres.required' => 'El nombre es obligatorio.',
+            'nombres.regex' => 'El nombre solo puede contener letras, espacios y guiones.',
+            
+            'cedula.required' => 'La cédula es obligatoria.',
+            'cedula.numeric' => 'La cédula solo puede contener números.',
+            'cedula.digits_between' => 'La cédula debe tener entre 6 y 10 dígitos.',
+            
+            'direccion.required' => 'La dirección es obligatoria.',
+            'direccion.regex' => 'Solo ingrese caracteres alfanuméricos.',
+            
+            'barrio.required' => 'El barrio es obligatorio.',
+            
+            'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.digits' => 'El teléfono debe contener exactamente 10 dígitos.',
+            
+            'correo.email' => 'Debe ingresar un correo válido.',
+            
+            'ciclo.string' => 'Debe ingresar un ciclo válido.',
+        
+            'numeroPersonas.required' => 'El número de personas es obligatorio.',
+            'numeroPersonas.integer' => 'El número de personas debe ser un número válido.',
+            
+            'categoria.required' => 'La categoría es obligatoria.',
+            'categoria.in' => 'La categoría debe ser Residencial, Comercial o Industrial.',
+            
+            'puntoHidraulico.required' => 'El punto hidráulico es obligatorio.',
+            'puntoHidraulico.integer' => 'El punto hidráulico debe ser un número válido.',
+            
+            'medidor.required' => 'El medidor es obligatorio.',
+            'medidor.string' => 'El medidor debe ser un texto válido.',
+            
+            'lectura.required' => 'La lectura es obligatoria.',
+            
+            'aforo.required' => 'El aforo es obligatorio.',
+            'aforo.string' => 'El aforo debe ser un texto válido.',
+            
+            'observacion_inspeccion.required' => 'La observación es obligatoria.',
+            'observacion_inspeccion.string' => 'La observación debe ser un texto válido.',
+            
+            'resultado.required' => 'El resultado es obligatorio.',
+            'resultado.string' => 'El resultado debe ser un texto válido.',
+        ]);
+
+        $data->fill($validatedData);
+
+        $data->estado = 1;
+
+        $data->save();
+
+        return redirect()->route('ticket.options', ['id' => $data->id])->with('success', 'Datos actualizados correctamente');
     }
 
     public function completadosFiltrar(Request $request)
