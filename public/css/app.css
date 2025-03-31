@@ -362,7 +362,7 @@ body.dark .home .text{
     top: 0;
     left: 250px; /* Desplazada hacia la derecha según el ancho de la sidebar */
     width: calc(100% - 250px); /* El contenido ocupa el espacio restante */
-    height: 100vh; /* Se asegura de ocupar toda la altura de la ventana */
+    /* height: 100vh; Se asegura de ocupar toda la altura de la ventana */
     background-color: var(--body-color);
     transition: var(--tran-05); /* Transición suave para los cambios */
 }
@@ -428,7 +428,7 @@ body.dark .home .text{
 
 /* ===== Alerts ===== */
 .alert {
-    padding: 1rem;
+    padding: 6px;
     margin-bottom: 1.5rem;
     border-radius: var(--border-radius);
     display: flex;
@@ -438,7 +438,6 @@ body.dark .home .text{
 
 
 /* Alert Colors */
-
 .alert-success {
     background-color: #d1e7dd;
     color: #0f5132;

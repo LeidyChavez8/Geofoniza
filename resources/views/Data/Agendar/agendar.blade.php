@@ -13,16 +13,6 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
         {{-- Formulario --}}
         <div class="section">
             <form action="{{ isset($data) ? route('schedule.update', $data->id) : route('schedule.store') }}" method="POST" id="Agendar_inputs">
@@ -35,35 +25,50 @@
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" class="form-control" id="nombres" name="nombres"
-                        value="{{ $data->nombres ?? old('nombres') }}" required placeholder="">
+                        value="{{ $data->nombres ?? old('nombres') }}" placeholder="">
+                    @error('nombres')
+                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                 {{-- Campo Cedula --}}
-                 <div class="mb-3">
-                    <label for="cedula" class="form-label">Cedula</label>
+                {{-- Campo Cédula --}}
+                <div class="mb-3">
+                    <label for="cedula" class="form-label">Cédula</label>
                     <input type="text" class="form-control" id="cedula" name="cedula"
-                        value="{{ $data->cedula ?? old('cedula') }}" required placeholder="">
+                        value="{{ $data->cedula ?? old('cedula') }}" placeholder="">
+                    @error('cedula')
+                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 {{-- Campo Dirección --}}
                 <div class="mb-3">
                     <label for="direccion" class="form-label">Dirección</label>
                     <input type="text" class="form-control" id="direccion" name="direccion"
-                        value="{{ $data->direccion ?? old('direccion') }}" required placeholder="">
+                        value="{{ $data->direccion ?? old('direccion') }}" placeholder="">
+                    @error('direccion')
+                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 {{-- Campo Barrio --}}
                 <div class="mb-3">
                     <label for="barrio" class="form-label">Barrio</label>
                     <input type="text" class="form-control" id="barrio" name="barrio"
-                        value="{{ $data->barrio ?? old('barrio') }}" required placeholder="">
+                        value="{{ $data->barrio ?? old('barrio') }}" placeholder="">
+                    @error('barrio')
+                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 {{-- Campo Teléfono --}}
                 <div class="mb-3">
                     <label for="telefono" class="form-label">Teléfono</label>
                     <input type="tel" class="form-control" id="telefono" name="telefono"
-                        value="{{ $data->telefono ?? old('telefono') }}" required placeholder="">
+                        value="{{ $data->telefono ?? old('telefono') }}" placeholder="">
+                    @error('telefono')
+                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 {{-- Campo Correo --}}
@@ -71,23 +76,30 @@
                     <label for="correo" class="form-label">Correo</label>
                     <input type="email" class="form-control" id="correo" name="correo"
                         value="{{ $data->correo ?? old('correo') }}" placeholder="">
+                    @error('correo')
+                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                {{-- Campo Cilco --}}
+                {{-- Campo Ciclo --}}
                 <div class="mb-3">
                     <label for="ciclo" class="form-label">Ciclo</label>
                     <input type="text" class="form-control" id="ciclo" name="ciclo"
                         value="{{ $data->ciclo ?? old('ciclo') }}" placeholder="">
+                    @error('ciclo')
+                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                {{-- ajustar el boton de registrar para que no se vea pegado --}}
-                <br> 
+                {{-- Ajustar el botón de registrar para que no se vea pegado --}}
+                <br>
+
                 {{-- Botón de envío --}}
                 <button type="submit" class="btn btn-primary">
                     {{ isset($data) ? 'Actualizar' : 'Registrar' }}
                 </button>
             </form>
-        </div> 
+        </div>
         {{-- fin de la section --}}
     </div>
 @endsection

@@ -182,6 +182,7 @@
                                         <span class="checkmark"></span>
                                     </label>
                                 </td>
+
                                 <td>{{ $programacion->user->name }}</td>
                                 <td class="table-cell-truncate">{{ $programacion->nombres }}</td>
                                 <td class="table-cell-truncate">{{ $programacion->direccion }}</td>

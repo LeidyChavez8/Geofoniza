@@ -266,6 +266,7 @@ class DataController extends Controller
 
         $programaciones = $request->input('Programacion');
 
+        $programaciones->load('user');
         Data::whereIn('id', $programaciones)->update(['id_user' => null]);
 
         return redirect()->route('desasignar.index')->with('success', 'Operario desasignado exitosamente');
@@ -367,7 +368,7 @@ class DataController extends Controller
         $validatedData = $request->validate([
             'numeroPersonas' => 'required|integer',
             'categoria' => 'required|string|in:residencial,comercial,industrial',
-            'puntoHidraulico' => 'required|string',
+            'puntoHidraulico' => 'required|integer',
             'medidor' => 'required|string',
             'lectura' => 'required|string',
             'aforo' => 'required|string',
@@ -378,13 +379,13 @@ class DataController extends Controller
             'firmaTecnico' => 'required|string',
         ], [
             'numeroPersonas.required' => 'El número de personas es obligatorio.',
-            'numeroPersonas.integer' => 'El número de personas debe ser un número entero.',
+            'numeroPersonas.integer' => 'El número de personas debe ser un número válido.',
         
             'categoria.required' => 'La categoría es obligatoria.',
             'categoria.in' => 'La categoría debe ser Residencial, Comercial o Industrial.',
         
             'puntoHidraulico.required' => 'El punto hidráulico es obligatorio.',
-            'puntoHidraulico.string' => 'El punto hidráulico debe ser un texto válido.',
+            'puntoHidraulico.integer' => 'El punto hidráulico debe ser un número válido.',
         
             'medidor.required' => 'El medidor es obligatorio.',
             'medidor.string' => 'El medidor debe ser un texto válido.',
@@ -573,23 +574,24 @@ class DataController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'nombres' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u', // Solo letras, espacios y guiones
-            'cedula' => 'required|string|digits_between:6,10', // Entre 6 y 10 dígitos, único en la BD
-            'direccion' => 'required|string|max:255', // Máximo 255 caracteres
-            'barrio' => 'required|string|max:100', // Máximo 100 caracteres
-            'telefono' => 'required|string|regex:/^\d{7,10}$/', // Solo números, entre 7 y 10 dígitos
-            'correo' => 'email|max:255', // Formato email válido y único en la BD
-            'ciclo' => 'string|max:255', // Formato email válido y único en la BD
+            'nombres' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u',
+            'cedula' => 'required|numeric|digits_between:6,10',
+            'direccion' => 'required|string|max:255|regex:/^[^#]+$/',
+            'barrio' => 'required|string|max:100',
+            'telefono' => 'required|digits:10',
+            'correo' => 'email|max:255',
+            'ciclo' => 'string|max:255', 
         ], [
             'nombres.required' => 'El nombre es obligatorio.',
             'nombres.regex' => 'El nombre solo puede contener letras, espacios y guiones.',
             'cedula.required' => 'La cédula es obligatoria.',
+            'cedula.numeric' => 'La cédula solo puede contener números.',
             'cedula.digits_between' => 'La cédula debe tener entre 6 y 10 dígitos.',
-            'cedula.unique' => 'Esta cédula ya está registrada.',
             'direccion.required' => 'La dirección es obligatoria.',
+            'direccion.regex' => 'Solo ingrese caracteres alfanuméricos.',
             'barrio.required' => 'El barrio es obligatorio.',
             'telefono.required' => 'El teléfono es obligatorio.',
-            'telefono.regex' => 'El teléfono debe contener entre 7 y 10 dígitos numéricos.',
+            'telefono.digits' => 'El teléfono debe contener exactamente 10 dígitos.',
             'correo.email' => 'Debe ingresar un correo válido.',
             'ciclo' => 'Debe ingresar un ciclo válido.',
         ]);

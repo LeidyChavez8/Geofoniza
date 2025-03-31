@@ -21,17 +21,11 @@
     @yield('style')
 </head>
 <body>
-
     <nav class="sidebar close">
         <header>
             <div class="image-text">
-                {{-- <span class="image">
-                    <img src="logo.png" alt="">
-                </span> --}}
-
                 <div class="text logo-text">
                     <span class="name">Apptualiza</span>
-                    {{-- <span class="profession"></span> --}}
                 </div>
             </div>
 
@@ -45,10 +39,10 @@
                     @csrf
                     <li class="search-box">
                         <i class='bx bx-search icon'></i>
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             name="buscador-sidebar"
-                            class="search-sidebar" 
+                            class="search-sidebar"
                             placeholder="Search..."
                             value="{{ request('buscador-sidebar') }}">
                         <ul id="sugerencias-sidebar" class="suggestions"></ul>
@@ -58,7 +52,7 @@
                 <ul class="menu-links">
                     <li class="nav-link">
                         <a href="{{ route('home') }}">
-                            <i class='bx bx-home-alt icon' ></i>
+                            <i class='bx bx-home-alt icon'></i>
                             <span class="text nav-text">Inicio</span>
                         </a>
                     </li>
@@ -139,12 +133,8 @@
 
             </div>
         </div>
-
     </nav>
 
-    {{-- <section class="home">
-        <div class="text">Dashboard Sidebar</div>
-    </section> --}}
 
     <div class="content">
         @if (session('error-sidebar'))

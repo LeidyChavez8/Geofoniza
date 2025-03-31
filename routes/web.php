@@ -53,13 +53,10 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/export-filtrar', [DataController::class, 'exportarFiltrar'])->name('export.filtrar');
     Route::get('/export-data', [DataController::class, 'exportData'])->name('export.excel');
 
-
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');
-
 });
 
 Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
-    
     //USERDATA
     Route::get('/asignados', [DataController::class, 'asignadosListar'])->name('asignados.index');
     Route::get('/asignados/edit/{data}', [DataController::class, 'asignadosEdit'])->name('asignados.edit');
@@ -69,7 +66,6 @@ Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
     Route::get('/ticket-options/{id}', [TicketController::class, 'showTicketOptions'])->name('ticket.options');
     Route::get('/ticket-generate/{id}', [TicketController::class, 'generateTicket'])->name('ticket.generate');
     Route::get('/ticket-download/{id}', [TicketController::class, 'downloadTicket'])->name('ticket.download');
-
 });
 
 
@@ -78,5 +74,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/ticket-options/{id}', [TicketController::class, 'showTicketOptions'])->name('ticket.options');
     Route::get('/ticket-generate/{id}', [TicketController::class, 'generateTicket'])->name('ticket.generate');
     Route::get('/ticket-download/{id}', [TicketController::class, 'generateTicket'])->name('ticket.download');
-
 });
