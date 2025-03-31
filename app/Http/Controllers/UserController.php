@@ -98,7 +98,6 @@ class UserController extends Controller
             }
         }
 
-        dd('post-if');
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Usuario eliminado con éxito.');
     }

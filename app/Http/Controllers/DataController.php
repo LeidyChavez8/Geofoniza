@@ -266,7 +266,6 @@ class DataController extends Controller
 
         $programaciones = $request->input('Programacion');
 
-        $programaciones->load('user');
         Data::whereIn('id', $programaciones)->update(['id_user' => null]);
 
         return redirect()->route('desasignar.index')->with('success', 'Operario desasignado exitosamente');
