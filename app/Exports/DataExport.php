@@ -45,10 +45,8 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
             'Medidor',
             'Lectura',
             'Observación Inspección',
-            'URL Foto',
             'Inspector',
-            'Firma del usuario',
-            'Firma del técnico',
+            'Fecha',
         ];
     }
 
@@ -66,10 +64,11 @@ class DataExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
             $data->medidor,
             $data->lectura,
             $data->observacion_inspeccion,
-            $data->url_foto,
             optional($data->user)->name,
-            $data->firmaUsuario, 
-            $data->firmaTecnico, 
+            $data->created_at ? $data->created_at->format('Y-m-d') : 'Unknow'
+            // $data->url_foto,
+            // $data->firmaUsuario, 
+            // $data->firmaTecnico, 
         ];
     }
 
