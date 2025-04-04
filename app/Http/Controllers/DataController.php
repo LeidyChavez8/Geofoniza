@@ -639,7 +639,7 @@ class DataController extends Controller
             "Fuga Imperceptible",
             "Fuga Perceptible",
             "Medidor Instalado en Reversa",
-            "Predio sin de Fuga",       
+            "Predio sin Fuga",       
             "Fuga No Visible No Localizada",
             "Sector sin Suministro de Agua",
             "Acceso Dificultoso",
