@@ -71,7 +71,7 @@
             <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="120" height="60">
         </p>
         <p>
-            Firma Técnico:
+            {{$data->user->name}}
             <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Técnico" width="120" height="60">
         </p>
     </div>
