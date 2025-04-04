@@ -41,7 +41,13 @@
                 <!-- Botón para Exportar a Excel -->
                 <form id="exportForm" action="{{ route('export.excel') }}" method="GET">
                     <input type="hidden" name="ciclo" id="exportCiclo">
-                    <button type="submit" class="btn btn-primary">Exportar a Excel</button>
+                    <button type="submit" class="btn btn-primary">Exportar parcial</button>
+                </form>
+
+                <!-- Botón para Exportar a Excel con todos los campos -->
+                <form id="exportForm" action="{{ route('export.excel.complete') }}" method="GET">
+                    <input type="hidden" name="ciclo" id="exportCiclo">
+                    <button type="submit" class="btn btn-primary">Exportar completo</button>
                 </form>
             </div>
 

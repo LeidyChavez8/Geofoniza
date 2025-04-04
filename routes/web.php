@@ -56,6 +56,7 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/export', [DataController::class, 'exportarIndex'])->name('export');
     Route::get('/export-filtrar', [DataController::class, 'exportarFiltrar'])->name('export.filtrar');
     Route::get('/export-data', [DataController::class, 'exportData'])->name('export.excel');
+    Route::get('/export-data-complete', [DataController::class, 'exportDataComplete'])->name('export.excel.complete');
 
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\DataExport;
+use App\Exports\DataExportComplete;
 use App\Imports\DataImport;
 use App\Imports\DataUpdateImport;
 use App\Models\Data;
@@ -845,5 +846,29 @@ class DataController extends Controller
 
         // Realizar la exportación a Excel con el nombre generado
         return Excel::download(new DataExport($ciclo), $nombreArchivo);
+    }
+
+    public function exportDataComplete(Request $request)
+    {
+        $ciclo = $request->input('ciclo');
+
+        if($ciclo === 'null') {
+            return redirect()->back()->with('error', 'Debes seleccionar un ciclo para exportar.');
+        }
+        // Filtrar los registros según el ciclo y el estado = 1
+        $query = Data::where('estado', 1);
+        if ($ciclo && $ciclo !== 'all') {
+            $query->where('ciclo', $ciclo);
+        }
+        // Obtener la cantidad de registros que serán exportados
+        $cantidadRegistros = $query->count();
+        // Obtener la hora actual
+        $horaActual = now()->format('Y-m-d_H-i-s');  // Formato: año-mes-día_hora-minuto-segundo
+
+        // Crear el nombre del archivo
+        $nombreArchivo = 'Apptualiza_' . $horaActual . '_' . $cantidadRegistros . '.xlsx';
+
+        // Realizar la exportación a Excel con el nombre generado
+        return Excel::download(new DataExportComplete($ciclo), $nombreArchivo);
     }
 }
