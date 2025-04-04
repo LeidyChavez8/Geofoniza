@@ -332,7 +332,7 @@ class DataController extends Controller
             'medidor' => 'required|string',
             'lectura' => 'required|string',
             'aforo' => 'required|string',
-            'observacion_inspeccion' => 'required|string',
+            'observacion_inspeccion' => 'required|string|max:350',
             'resultado' => 'required|string',
             'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
             'firmaUsuario' => 'required|string',
@@ -358,6 +358,7 @@ class DataController extends Controller
         
             'observacion_inspeccion.required' => 'La observación es obligatoria.',
             'observacion_inspeccion.string' => 'La observación debe ser un texto válido.',
+            'observacion_inspeccion.max' => 'La observación no puede contener más de 350 caracteres.',
         
             'resultado.required' => 'El resultado es obligatorio.',
             'resultado.string' => 'El resultado debe ser un texto válido.',
