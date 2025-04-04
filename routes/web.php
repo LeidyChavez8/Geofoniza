@@ -79,4 +79,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/ticket-options/{id}', [TicketController::class, 'showTicketOptions'])->name('ticket.options');
     Route::get('/ticket-generate/{id}', [TicketController::class, 'generateTicket'])->name('ticket.generate');
     Route::get('/ticket-download/{id}', [TicketController::class, 'generateTicket'])->name('ticket.download');
+
+    Route::get('/acta-generate/{id}', [TicketController::class, 'generateActa'])->name('acta.generate');
 });

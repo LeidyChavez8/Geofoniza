@@ -58,4 +58,32 @@ class TicketController extends Controller
         // // Pasar los datos a la vista
         return view('Data.DataUser.download', compact('data'));
     }
+
+    public function generateActa($id)
+    {
+
+        $data = Data::findOrFail($id);
+        // Generar el PDF usando la vista
+
+        // FIRMA DEL USUARIO
+        $firmaUsuario = file_get_contents($data->firmaUsuario);
+        
+        $firmaUsuarioBase64 = base64_encode($firmaUsuario);
+
+        $data->firmaUsuario = 'data:image/png;base64,' . $firmaUsuarioBase64;
+
+    // FIRMA DEL ADMIN
+        $firmaTecnico = file_get_contents($data->firmaTecnico);
+
+        $firmaTecnicoBase64 = base64_encode($firmaTecnico);
+
+        $data->firmaTecnico = 'data:image/png;base64,' . $firmaTecnicoBase64;
+
+
+        $pdf = Pdf::loadView('pdf.revisionTecnica', compact('data'));
+
+        // Devolver el PDF como respuesta para visualizarlo en el navegador
+        return $pdf->stream('carta.pdf');
+    }
+
 }
