@@ -175,47 +175,6 @@
     <button type="button" id="clear-usuario" class="btn-clear">Limpiar firma del usuario</button>
 </div>
 
-{{-- FIRMA DEL TÉCNICO --}}
-<div class="form-group firma-container">
-    <label>Firma del técnico</label>
-    
-    <div class="firma-tecnico-options">
-        <div class="option-buttons">
-            <button type="button" id="option-dibujar" class="option-btn active">Dibujar firma</button>
-            <button type="button" id="option-adjuntar" class="option-btn">Adjuntar imagen</button>
-        </div>
-        
-        <div id="dibujar-container" class="firma-option-container">
-            <canvas id="signature-pad-tecnico" class="firma" width="550" height="170"></canvas>
-            <div class="firma-actions">
-                <button type="button" id="clear-tecnico" class="btn-clear">Limpiar firma del técnico</button>
-            </div>
-        </div>
-        
-        <div id="adjuntar-container" class="firma-option-container" style="display: none;">
-            <div class="file-upload-wrapper">
-                <label for="imagen-firma" class="file-upload-label">
-                    <span class="upload-icon">📎</span>
-                    <span class="upload-text">Seleccionar imagen de firma</span>
-                </label>
-                <input type="file" id="imagen-firma" accept="image/*" class="form-control file-upload-input">
-            </div>
-            <div class="preview-container" style="display: none;">
-                <img id="preview-firma" src="" alt="Vista previa de firma">
-            </div>
-            <div class="firma-actions">
-                <button type="button" id="clear-imagen" class="btn-clear">Eliminar imagen</button>
-            </div>
-        </div>
-    </div>
-    
-    <input type="hidden" id="firmaTecnico" name="firmaTecnico" class="form-control">
-    <input type="hidden" id="metodoFirma" name="metodoFirma" value="dibujar">
-    @error('firmaTecnico')
-        <div class="alert alert-danger">{{ $message }}</div>
-    @enderror
-</div>
-
 <!-- Reemplaza el botón con un checkbox y un texto -->
 <div class="form-group checkbox-label">
     <input type="checkbox" name="yes" required {{ old('yes') ? 'checked' : '' }}>
@@ -245,10 +204,6 @@
 </form>
 </div>
 
-<style>
-
-</style>
-
 <script>
     const checkbox = document.querySelector('.dark-mode-switch input[type="checkbox"]');
     const modeText = document.querySelector('.dark-mode-switch .mode-text');
@@ -276,134 +231,8 @@ document.addEventListener('DOMContentLoaded', function () {
         signaturePadUsuario.clear();
     });
 
-    // Inicializar firma del técnico con signature pad
-    const canvasTecnico = document.getElementById('signature-pad-tecnico');
-    const clearButtonTecnico = document.getElementById('clear-tecnico');
-    const signaturePadTecnico = new SignaturePad(canvasTecnico, {
-        minWidth: 1,
-        maxWidth: 3,
-        penColor: "black",
-    });
-
-    clearButtonTecnico.addEventListener('click', function () {
-        signaturePadTecnico.clear();
-    });
-
-    // Elementos para adjuntar imagen
-    const optionDibujar = document.getElementById('option-dibujar');
-    const optionAdjuntar = document.getElementById('option-adjuntar');
-    const dibujarContainer = document.getElementById('dibujar-container');
-    const adjuntarContainer = document.getElementById('adjuntar-container');
-    const imagenFirma = document.getElementById('imagen-firma');
-    const previewFirma = document.getElementById('preview-firma');
-    const previewContainer = document.querySelector('.preview-container');
-    const clearImagen = document.getElementById('clear-imagen');
-    const inputFirmaTecnico = document.getElementById('firmaTecnico');
-    const metodoFirma = document.getElementById('metodoFirma');
-    const form = document.querySelector('form');
-
-    // Añadir efecto visual al área de soltar archivo
-    const fileUploadLabel = document.querySelector('.file-upload-label');
-    
-    // Cambiar entre opciones de firma con animación
-    optionDibujar.addEventListener('click', function() {
-        optionDibujar.classList.add('active');
-        optionAdjuntar.classList.remove('active');
-        
-        adjuntarContainer.style.opacity = '0';
-        setTimeout(() => {
-            adjuntarContainer.style.display = 'none';
-            dibujarContainer.style.display = 'block';
-            setTimeout(() => {
-                dibujarContainer.style.opacity = '1';
-            }, 50);
-        }, 300);
-        
-        metodoFirma.value = 'dibujar';
-    });
-
-    optionAdjuntar.addEventListener('click', function() {
-        optionAdjuntar.classList.add('active');
-        optionDibujar.classList.remove('active');
-        
-        dibujarContainer.style.opacity = '0';
-        setTimeout(() => {
-            dibujarContainer.style.display = 'none';
-            adjuntarContainer.style.display = 'block';
-            setTimeout(() => {
-                adjuntarContainer.style.opacity = '1';
-            }, 50);
-        }, 300);
-        
-        metodoFirma.value = 'adjuntar';
-    });
-
-    // Inicialmente establece la opacidad
-    dibujarContainer.style.transition = 'opacity 0.3s ease';
-    adjuntarContainer.style.transition = 'opacity 0.3s ease';
-    dibujarContainer.style.opacity = '1';
-    adjuntarContainer.style.opacity = '0';
-
-    // Previsualizar imagen seleccionada
-    imagenFirma.addEventListener('change', function(e) {
-        if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            
-            // Actualizar texto en la etiqueta
-            const fileName = e.target.files[0].name;
-            const uploadText = document.querySelector('.upload-text');
-            uploadText.textContent = fileName.length > 25 ? fileName.substring(0, 22) + '...' : fileName;
-            
-            reader.onload = function(e) {
-                previewFirma.src = e.target.result;
-                previewContainer.style.display = 'block';
-                
-                // Animar la aparición
-                previewContainer.style.opacity = '0';
-                setTimeout(() => {
-                    previewContainer.style.opacity = '1';
-                }, 50);
-            }
-            
-            reader.readAsDataURL(e.target.files[0]);
-        }
-    });
-
-    // Transición para previewContainer
-    previewContainer.style.transition = 'opacity 0.3s ease';
-
-    // Limpiar imagen adjuntada
-    clearImagen.addEventListener('click', function() {
-        imagenFirma.value = '';
-        
-        // Resetear texto del botón
-        const uploadText = document.querySelector('.upload-text');
-        uploadText.textContent = 'Seleccionar imagen de firma';
-        
-        // Animar la desaparición
-        previewContainer.style.opacity = '0';
-        setTimeout(() => {
-            previewFirma.src = '';
-            previewContainer.style.display = 'none';
-        }, 300);
-    });
-
-    // Efectos visuales para drag and drop
-    ['dragenter', 'dragover'].forEach(eventName => {
-        fileUploadLabel.addEventListener(eventName, function(e) {
-            e.preventDefault();
-            fileUploadLabel.classList.add('dragging');
-        }, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        fileUploadLabel.addEventListener(eventName, function(e) {
-            e.preventDefault();
-            fileUploadLabel.classList.remove('dragging');
-        }, false);
-    });
-
     // Manejar envío del formulario
+    const form = document.querySelector('form');
     form.addEventListener('submit', function (event) {
         // Validar firma del usuario
         if (signaturePadUsuario.isEmpty()) {
@@ -412,26 +241,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         } else {
             inputUsuario.value = signaturePadUsuario.toDataURL();
-        }
-
-        // Validar firma del técnico según el método seleccionado
-        if (metodoFirma.value === 'dibujar') {
-            if (signaturePadTecnico.isEmpty()) {
-                alert('Por favor, asegúrate de firmar en el campo del técnico antes de enviar.');
-                event.preventDefault();
-                return;
-            } else {
-                inputFirmaTecnico.value = signaturePadTecnico.toDataURL();
-            }
-        } else if (metodoFirma.value === 'adjuntar') {
-            if (!imagenFirma.files || imagenFirma.files.length === 0) {
-                alert('Por favor, adjunta una imagen de firma del técnico antes de enviar.');
-                event.preventDefault();
-                return;
-            } else {
-                // La imagen ya se convirtió a base64 durante la previsualización
-                inputFirmaTecnico.value = previewFirma.src;
-            }
         }
     });
 });

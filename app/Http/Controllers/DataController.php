@@ -336,7 +336,7 @@ class DataController extends Controller
             'resultado' => 'required|string',
             'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
             'firmaUsuario' => 'required|string',
-            'firmaTecnico' => 'required|string',
+            // 'firmaTecnico' => 'required|string',
         ], [
             'numeroPersonas.required' => 'El número de personas es obligatorio.',
             'numeroPersonas.integer' => 'El número de personas debe ser un número válido.',
@@ -371,8 +371,8 @@ class DataController extends Controller
             'firmaUsuario.required' => 'La firma del usuario es obligatoria.',
             'firmaUsuario.string' => 'La firma del usuario debe ser un texto válido.',
         
-            'firmaTecnico.required' => 'La firma del técnico es obligatoria.',
-            'firmaTecnico.string' => 'La firma del técnico debe ser un texto válido.',
+            // 'firmaTecnico.required' => 'La firma del técnico es obligatoria.',
+            // 'firmaTecnico.string' => 'La firma del técnico debe ser un texto válido.',
         ]);
 
         $data->fill($validatedData);
@@ -460,55 +460,57 @@ class DataController extends Controller
             }
             
 
-            if($request->has('firmaTecnico')){
-                try {
-                    $image = $request->input('firmaTecnico');
-                    $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
-    
-                    $imageData = base64_decode($image);
-        
-                   // Crear un archivo temporal
-                    $tempFile = tempnam(sys_get_temp_dir(), 'upload_');
-                    file_put_contents($tempFile, $imageData);
-                
-                    $_FILES['image'] = [
-                        'name'     => 'imagen.png',
-                        'type'     => 'image/png',
-                        'tmp_name' => $tempFile,
-                        'error'    => 0,
-                        'size'     => filesize($tempFile)
-                    ];
+            try {
+                // Obtener el id del usuario
+                $userFirmaPath = $data->user->firma_path;
+            
+                // Ruta local donde está la firma (por ejemplo: storage/app/public/firmas/123.png)
+                $localPath = storage_path("app/public/{$userFirmaPath}");
 
-                    $fileName =uniqid(). '.png';
-                    $filePath = "Apptualiza/$mesActual/$userFolder/$direccion/firma del tecnico/$fileName";
-        
+                // dd($localPath);
+                // Verificar que el archivo exista
+                if (!file_exists($localPath)) {
+                    // dd('mal');
 
-                    Gdrive::put($filePath, $_FILES['image']['tmp_name']);                
-                    $fileMetaData = $disk->getAdapter()->getService()->files->listFiles([
-                        'q' => "name='$fileName'"
-                    ]);
-                    
-                    // Configurar permisos y obtener URL pública
-                    if (!empty($fileMetaData->getFiles())) {
-                        $fileId = $fileMetaData->getFiles()[0]->getId();
-                        $permissions = new \Google\Service\Drive\Permission([
-                            'type' => 'anyone',
-                            'role' => 'reader',
-                        ]);
-                        $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
-                
-                        // Generar URL pública
-                        $fileUrl = "https://drive.google.com/uc?id=$fileId";
-                    } else {
-                        $fileUrl = null;
-                    }
-                    
-                    $data->firmaTecnico = $fileUrl;
-
-                } catch (Exception $e){
-                    return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
+                    return redirect()->back()->with('error', 'No se encontró la firma del usuario con ID: ' . $data->user->id);
                 }
+            
+                // Generar un nuevo nombre de archivo único para Google Drive
+                $fileName = uniqid() . '.png';
+            
+                // Ruta destino en Drive
+                $filePath = "Apptualiza/$mesActual/$userFolder/$direccion/firma del tecnico/$fileName";
+            
+                // Subir el archivo local a Google Drive
+                Gdrive::put($filePath, $localPath);
+            
+                // Buscar el archivo subido en Drive para obtener su ID
+                $fileMetaData = $disk->getAdapter()->getService()->files->listFiles([
+                    'q' => "name='$fileName'"
+                ]);
+            
+                // Configurar permisos y generar URL pública
+                if (!empty($fileMetaData->getFiles())) {
+                    $fileId = $fileMetaData->getFiles()[0]->getId();
+            
+                    $permissions = new \Google\Service\Drive\Permission([
+                        'type' => 'anyone',
+                        'role' => 'reader',
+                    ]);
+                    $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
+            
+                    $fileUrl = "https://drive.google.com/uc?id=$fileId";
+                } else {
+                    $fileUrl = null;
+                }
+            
+                // Guardar la URL en el objeto
+                $data->firmaTecnico = $fileUrl;
+            
+            } catch (Exception $e) {
+                dd($e->getMessage());
 
+                return redirect()->back()->with('error', 'Error al subir la firma: ' . $e->getMessage());
             }
 
         } catch (Exception $e){

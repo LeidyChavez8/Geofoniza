@@ -12,7 +12,7 @@
         <h2>Crear Nuevo Usuario</h2>
     </div>
 
-    <form action="{{ route('users.store') }}" method="POST">
+    <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
     
         <div class="form-group">
@@ -56,6 +56,14 @@
             @enderror
         </div>
     
+        <div class="form-group" id="firma-container" style="{{ old('rol') == 'user' ? '' : 'display: none;' }}">
+            <label for="firma">Firma <span style="color: rgb(246, 32, 32)">*</span></label>
+            <input type="file" class="form-control" id="firma" name="firma" accept="image/*">
+            @error('firma')
+                <div class="alert alert-danger mt-1">{{ $message }}</div>
+            @enderror
+        </div>
+    
         <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('users.index') }}'">
                 Cancelar
@@ -66,4 +74,19 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rolSelect = document.getElementById('rol');
+        const firmaContainer = document.getElementById('firma-container');
+        
+        rolSelect.addEventListener('change', function() {
+            if (this.value === 'user') {
+                firmaContainer.style.display = 'block';
+            } else {
+                firmaContainer.style.display = 'none';
+            }
+        });
+    });
+</script>
 @endsection

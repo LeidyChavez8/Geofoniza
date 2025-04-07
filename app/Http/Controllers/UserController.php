@@ -7,6 +7,7 @@ use App\Models\Data;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Storage;
 
 class UserController extends Controller
 {
@@ -51,12 +52,25 @@ class UserController extends Controller
             'rol.string' => 'El rol debe ser una cadena de texto.',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'rol' => $request->rol,
-        ]);
+        if ($request->rol == 'user') {
+            $request->validate([
+                'firma' => 'required|file|image|max:5048',
+            ]);
+        }
+
+        $user = new User();
+        $user->name = $request['name'];
+        $user->email = $request['email'];
+        $user->password = Hash::make($request['password']);
+        $user->rol = $request['rol'];
+
+        if ($request->rol == 'user' && $request->hasFile('firma')) {
+            // Guardar la firma en storage/app/public/firmas
+            $firmaPath = $request->file('firma')->store('firmas', 'public');
+            $user->firma_path = $firmaPath;
+        }
+        
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
     }
@@ -68,19 +82,54 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:6',
             'rol' => 'required|string',
         ]);
+        
+        // Si el rol es usuario, la firma es obligatoria si no tiene una y validar si se sube una nueva
+        if ($request->rol == 'user') {
+            if (!$user->firma_path && !$request->hasFile('firma')) {
+                $request->validate([
+                    'firma' => 'required|file|image|max:5048',
+                ]);
+            } elseif ($request->hasFile('firma')) {
+                $request->validate([
+                    'firma' => 'file|image|max:5048',
+                ]);
+            }
+        }
+            // Manejar la firma si es usuario
+        if ($request->rol == 'user' && $request->hasFile('firma')) {
+            // Eliminar la firma anterior si existe
+            if ($user->firma_path && Storage::disk('public')->exists($user->firma_path)) {
+                Storage::disk('public')->delete($user->firma_path);
+            }
+            
+            // Guardar la nueva firma
+            $firmaPath = $request->file('firma')->store('firmas', 'public');
+            $user->firma_path = $firmaPath;
+        } 
+        // Si el rol cambia de usuario a admin, eliminar la firma
+        elseif ($request->rol == 'admin' && $user->firma_path) {
+            if (Storage::disk('public')->exists($user->firma_path)) {
+                Storage::disk('public')->delete($user->firma_path);
+            }
+            $user->firma_path = null;
+        }
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->filled('password') ? bcrypt($request->password) : $user->password,
-            'rol' => $request->rol,
-        ]);
+        $user->name = $request['name'];
+        
+        $user->email = $request['email'];
+        
+        $user->password = $request->filled('password') ? bcrypt($request->password) : $user->password;
+
+        $user->rol = $request->rol;
+        
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
     }
