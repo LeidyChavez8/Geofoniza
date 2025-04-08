@@ -193,9 +193,9 @@
         </tr>
         <tr>
             <td class="label">Fecha Visita:</td>
-            <td>{{ $data->created_at->format('d F Y') }}</td>
+            <td>{{ $data->updated_at->format('d F Y') }}</td>
             <td class="label">Hora:</td>
-            <td>{{ $data->created_at->format('H:i') }}</td>
+            <td>{{ $data->updated_at->format('H:i') }}</td>
         </tr>
         <tr>
             <td class="label">Técnico:</td>
