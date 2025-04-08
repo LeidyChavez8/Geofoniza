@@ -41,7 +41,7 @@
     <div class="details">
         <ul>
             {{-- <li>Hora de inicio: {{ $data->updated_at ?? 'Desconocido' }}</li> --}}
-            <li>Hora: <span class="text">{{ $data->updated_at ?? 'Desconocido' }}</span></li>
+            <li>Hora: {{ $data->updated_at ?? 'Desconocido' }}</li>
             <li>Cliente: {{ $data->nombres ?? 'Desconocido' }}</li>
             <li>Cédula / NIT: {{ $data->cedula ?? 'Desconocido' }}</li>
             <li>Dirección: {{ $data->direccion ?? 'Desconocido' }}</li>
