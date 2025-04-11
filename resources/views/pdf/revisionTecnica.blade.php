@@ -189,11 +189,11 @@
             <td class="label">Correo:</td>
             <td>{{$data->correo}}</td>
             <td class="label">Categoría:</td>
-            <td>{{$data->categoria}}</td>
+            <td>{{ ucfirst($data->categoria) }}</td>
         </tr>
         <tr>
             <td class="label">Fecha Visita:</td>
-            <td>{{ $data->updated_at->format('d F Y') }}</td>
+            <td>{{ $data->updated_at->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</td>
             <td class="label">Hora:</td>
             <td>{{ $data->updated_at->format('H:i') }}</td>
         </tr>
@@ -229,7 +229,7 @@
             <td class="label">Ciclo:</td>
             <td>{{$data->ciclo}}</td>
             <td class="label">Uso:</td>
-            <td>{{$data->categoria}}</td>
+            <td>{{ ucfirst($data->categoria) }}</td>
         </tr>
     </table>
 
