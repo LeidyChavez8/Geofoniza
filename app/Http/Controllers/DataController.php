@@ -308,6 +308,7 @@ class DataController extends Controller
             "Fuga Visible",     
             "Fuga En Instalación",
             "No Hay Medidor en el Predio",
+            "Fuga Aguas Residuales",
         ];
 
         $data -> resultado = $resultado;
@@ -650,6 +651,7 @@ class DataController extends Controller
             "Fuga Visible",     
             "Fuga En Instalación",
             "No Hay Medidor en el Predio",
+            "Fuga Aguas Residuales",
         ];
 
         return view('Data.Completados.edit', compact('data', 'resultados'));

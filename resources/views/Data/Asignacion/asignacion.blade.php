@@ -205,7 +205,9 @@
                             </label>
                             <select class="form-control" name="operario" id="operario">
                                 @foreach ($operarios as $operario)
-                                    <option value="{{ $operario->id }}">{{ $operario->name }}</option>
+                                    <option value="{{ $operario->id }}" {{ $operario->firma_path == null ? 'disabled' : '' }}>
+                                        {{ $operario->name }} {{ $operario->firma_path == null ? '(Sin firma)' : '' }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
