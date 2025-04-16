@@ -171,13 +171,19 @@
             <td width="15%" class="label">Orden:</td>
             <td width="35%">{{$data->orden}}</td>
             <td width="15%" class="label">Cliente:</td>
-            <td width="35%">{{$data->nombres}}</td>
+            <td width="35%">{{ ucwords(strtolower($data->nombres)) }}</td>
         </tr>
         <tr>
             <td class="label">Dirección:</td>
             <td>{{$data->direccion}}</td>
             <td class="label">Barrio:</td>
             <td>{{$data->barrio}}</td>
+        </tr>
+        <tr>
+            <td class="label">Municipio:</td>
+            <td>{{ucwords(strtolower($data->municipio)) ?? 'Desconocido'}}</td>
+            <td class="label">Técnico:</td>
+            <td>{{ucfirst($data->user->name)}}</td>
         </tr>
         <tr>
             <td class="label">Cédula/NIT:</td>
@@ -191,17 +197,12 @@
             <td class="label">Categoría:</td>
             <td>{{ ucfirst($data->categoria) }}</td>
         </tr>
+
         <tr>
             <td class="label">Fecha Visita:</td>
             <td>{{ $data->updated_at->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</td>
             <td class="label">Hora:</td>
             <td>{{ $data->updated_at->format('H:i') }}</td>
-        </tr>
-        <tr>
-            <td class="label">Técnico:</td>
-            <td>{{$data->user->name}}</td>
-            <td class="label"></td>
-            <td></td>
         </tr>
     </table>
 

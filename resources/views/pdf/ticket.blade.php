@@ -45,6 +45,7 @@
             <li>Cliente: {{ $data->nombres ?? 'Desconocido' }}</li>
             <li>Cédula / NIT: {{ $data->cedula ?? 'Desconocido' }}</li>
             <li>Dirección: {{ $data->direccion ?? 'Desconocido' }}</li>
+            <li>Municipio: {{ ucwords(strtolower($data->municipio)) ?? 'Desconocido' }}</li>
             <li>Barrio: {{ $data->barrio ?? 'Desconocido' }}</li>
             <li>Teléfono: {{ $data->telefono ?? 'Desconocido' }}</li>
             <li>Correo: {{ $data->correo ?? 'Desconocido' }}</li>

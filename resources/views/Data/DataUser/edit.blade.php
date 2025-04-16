@@ -15,8 +15,6 @@
 </head>
 
 <body>
-
-
     <div class="container">
         <h2> Actualizar datos</h2>
 
@@ -142,7 +140,7 @@
                 <label for="resultado">Resultado:</label>
                 <select name="resultado" id="resultado" class="form-control">
                     <option value="">Seleccione el resultado de la inspección</option>
-                    @foreach ($data->resultado as $item)
+                    @foreach ($resultados as $item)
                         <option value="{{ $item }}" {{ old('resultado') == $item ? 'selected' : '' }}>{{ $item }}</option>
                     @endforeach
                 </select>
@@ -161,91 +159,90 @@
             </div>
 
 
-{{-- FIRMA DEL USUARIO --}}
-<div class="form-group firma-container">
-    <label>Firma del usuario</label>
-    <canvas id="signature-pad-usuario" class="firma" width="550" height="170"></canvas>
-    <input type="hidden" id="firmaUsuario" name="firmaUsuario" class="form-control">
-    @error('firmaUsuario')
-        <div class="alert alert-danger">{{ $message }}</div>
-    @enderror
-</div>
+            {{-- FIRMA DEL USUARIO --}}
+            <div class="form-group firma-container">
+                <label>Firma del usuario</label>
+                <canvas id="signature-pad-usuario" class="firma" width="550" height="170"></canvas>
+                <input type="hidden" id="firmaUsuario" name="firmaUsuario" class="form-control">
+                @error('firmaUsuario')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
 
-<div class="firma-actions">
-    <button type="button" id="clear-usuario" class="btn-clear">Limpiar firma del usuario</button>
-</div>
+            <div class="firma-actions">
+                <button type="button" id="clear-usuario" class="btn-clear">Limpiar firma del usuario</button>
+            </div>
 
-<!-- Reemplaza el botón con un checkbox y un texto -->
-<div class="form-group checkbox-label">
-    <input type="checkbox" name="yes" required {{ old('yes') ? 'checked' : '' }}>
-    <div class="terminos">
-        <label class="terminos">Autoriza a RIB Logísticas SAS a utilizar y
-            almacenar
-            sus datos personales, incluyendo su número de teléfono y correo electrónico, conforme a la Ley
-            1581
-            de
-            2012. Esta información será utilizada únicamente para fines relacionados con la prestación de
-            nuestros
-            servicios.</label>
+            <!-- Reemplaza el botón con un checkbox y un texto -->
+            <div class="form-group checkbox-label">
+                <input type="checkbox" name="yes" required {{ old('yes') ? 'checked' : '' }}>
+                <div class="terminos">
+                    <label class="terminos">Autoriza a RIB Logísticas SAS a utilizar y
+                        almacenar
+                        sus datos personales, incluyendo su número de teléfono y correo electrónico, conforme a la Ley
+                        1581
+                        de
+                        2012. Esta información será utilizada únicamente para fines relacionados con la prestación de
+                        nuestros
+                        servicios.</label>
+                </div>
+            </div>
+
+            <!-- Contenedor para centrar el botón de actualización -->
+            <div class="btn-group">
+                <button onclick="window.location.href='javascript:history.back()'"
+                    type="button" class="btn btn-tertiary">
+                    volver
+                </button>
+
+                <button type="submit" id="update-button" class="btn btn-primary">
+                    Continuar
+                </button>
+            </div>
+        </form>
     </div>
-</div>
 
-<!-- Contenedor para centrar el botón de actualización -->
-<div class="btn-group">
-    <button onclick="window.location.href='javascript:history.back()'"
-        type="button" class="btn btn-tertiary">
-        volver
-    </button>
+    <script>
+        const checkbox = document.querySelector('.dark-mode-switch input[type="checkbox"]');
+        const modeText = document.querySelector('.dark-mode-switch .mode-text');
 
-    <button type="submit" id="update-button" class="btn btn-primary">
-        Continuar
-    </button>
-</div>
-</form>
-</div>
-
-<script>
-    const checkbox = document.querySelector('.dark-mode-switch input[type="checkbox"]');
-    const modeText = document.querySelector('.dark-mode-switch .mode-text');
-
-    // Check for existing dark mode preference
-    if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark');
-    }
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Inicializar firma del usuario
-    const canvasUsuario = document.getElementById('signature-pad-usuario');
-    const clearButtonUsuario = document.getElementById('clear-usuario');
-    const inputUsuario = document.getElementById('firmaUsuario');
-    const signaturePadUsuario = new SignaturePad(canvasUsuario, {
-        minWidth: 1,
-        maxWidth: 3,
-        penColor: "black",
-    });
-
-    clearButtonUsuario.addEventListener('click', function () {
-        signaturePadUsuario.clear();
-    });
-
-    // Manejar envío del formulario
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function (event) {
-        // Validar firma del usuario
-        if (signaturePadUsuario.isEmpty()) {
-            alert('Por favor, asegúrate de firmar en el campo de usuario antes de enviar.');
-            event.preventDefault();
-            return;
-        } else {
-            inputUsuario.value = signaturePadUsuario.toDataURL();
+        // Check for existing dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark');
         }
-    });
-});
-</script>
+    </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar firma del usuario
+            const canvasUsuario = document.getElementById('signature-pad-usuario');
+            const clearButtonUsuario = document.getElementById('clear-usuario');
+            const inputUsuario = document.getElementById('firmaUsuario');
+            const signaturePadUsuario = new SignaturePad(canvasUsuario, {
+                minWidth: 1,
+                maxWidth: 3,
+                penColor: "black",
+            });
+
+            clearButtonUsuario.addEventListener('click', function () {
+                signaturePadUsuario.clear();
+            });
+
+            // Manejar envío del formulario
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (event) {
+                // Validar firma del usuario
+                if (signaturePadUsuario.isEmpty()) {
+                    alert('Por favor, asegúrate de firmar en el campo de usuario antes de enviar.');
+                    event.preventDefault();
+                    return;
+                } else {
+                    inputUsuario.value = signaturePadUsuario.toDataURL();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

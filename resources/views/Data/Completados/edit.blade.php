@@ -12,6 +12,10 @@
 
 
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 </head>
 
 <body>
@@ -91,8 +95,13 @@
             {{-- Campo Ciclo --}}
             <div class="mb-3">
                 <label for="ciclo" class="form-label">Ciclo</label>
-                <input type="text" class="form-control" id="ciclo" name="ciclo"
-                    value="{{  old('ciclo') ?? $data->ciclo }}" placeholder="Ciclo">
+                <select name="ciclo" id="ciclo" class="form-control">
+                    @foreach ($ciclos as $item)
+                        <option value="{{ $item }}" {{ old('ciclo', $data->ciclo) == $item ? 'selected' : '' }} placeholder="Ciclo">
+                            {{ $item }}
+                        </option>
+                    @endforeach
+                </select>
                 @error('ciclo')
                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                 @enderror
@@ -169,7 +178,6 @@
             <div class="form-group">
                 <label for="resultado">Resultado:</label>
                 <select name="resultado" id="resultado" class="form-control">
-                    <option value="">Seleccione el resultado de la inspección</option>
                     @foreach ($resultados as $item)
                         <option value="{{ $item }}" {{ old('resultado', $data->resultado) == $item ? 'selected' : '' }} placeholder="Resultado">
                             {{ $item }}
@@ -204,6 +212,96 @@
             document.body.classList.add('dark');
         }
     </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#ciclo').select2({
+                placeholder: "Selecciona o escribe un ciclo",
+                allowClear: true,
+                width: '100%',
+                // Matcher personalizado para búsqueda sin distinguir mayúsculas
+                matcher: function(params, data) {
+                    // Si no hay término de búsqueda, devolver todos los elementos
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+                    
+                    // Si no hay texto, no mostrar
+                    if (typeof data.text === 'undefined') {
+                        return null;
+                    }
+                    
+                    // Convertir a minúsculas para comparación
+                    var termLower = params.term.toLowerCase();
+                    var textLower = data.text.toLowerCase();
+                    
+                    // Verificar si contiene el término
+                    if (textLower.indexOf(termLower) > -1) {
+                        return data;
+                    }
+                    
+                    return null;
+                }
+            });
+        });
+    </script>
+
+    <!-- CSS para aplicar exactamente tus estilos -->
+    <style>
+        /* Aplicar los estilos exactos de .form-control al contenedor de Select2 */
+        .select2-container .select2-selection--single {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            border: 1px solid var(--primary-color-light);
+            border-radius: var(--border-radius-small);
+            background-color: var(--sidebar-color);
+            color: var(--text-color);
+            height: auto;
+        }
+
+        /* Ajustar el texto renderizado */
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            padding-left: 0;
+            padding-right: 20px;
+            color: var(--text-color);
+            line-height: normal;
+        }
+
+        /* Ajustar posición de la flecha del dropdown */
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 100%;
+            top: 0;
+        }
+
+        /* Estilo del dropdown */
+        .select2-dropdown {
+            border: 1px solid var(--primary-color-light);
+            border-radius: var(--border-radius-small);
+            background-color: var(--sidebar-color);
+        }
+
+        /* Estilo de las opciones */
+        .select2-container--default .select2-results__option {
+            padding: 8px 12px;
+            color: var(--text-color);
+        }
+
+        /* Estilo hover en las opciones */
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--primary-color-light);
+            color: var(--text-color);
+        }
+
+        /* Estilo del input de búsqueda */
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid var(--primary-color-light);
+            background-color: var(--sidebar-color);
+            color: var(--text-color);
+            padding: 8px 10px;
+            border-radius: var(--border-radius-small);
+        }
+    </style>
 
 </body>
 
