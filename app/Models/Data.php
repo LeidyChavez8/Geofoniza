@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+
 class Data extends Model
 {
     use HasFactory;
@@ -35,12 +35,25 @@ class Data extends Model
     protected static function boot()
     {
         parent::boot();
+    
         static::creating(function ($orden) {
-            do {
-                $randomCode = 'OR-' . strtoupper(Str::random(5));
-            } while (self::where('orden', $randomCode)->exists());
-
-            $orden->orden = $randomCode;
+            // Obtener el último número de orden
+            $lastOrden = self::orderBy('orden', 'desc')->first();
+    
+            if ($lastOrden && preg_match('/^OR-(\d+)$/', $lastOrden->orden, $matches)) {
+                $lastNumber = (int) $matches[1];
+            } else {
+                $lastNumber = 0;
+            }
+    
+            // Incrementar el número
+            $newNumber = $lastNumber + 1;
+    
+            // Formatear con ceros a la izquierda
+            $formattedNumber = str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+    
+            // Asignar el nuevo código de orden
+            $orden->orden = 'OR-' . $formattedNumber;
         });
     }
 
