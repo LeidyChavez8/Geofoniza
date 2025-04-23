@@ -52,7 +52,7 @@
                     <li class="nav-link">
                         <a href="{{ route('home') }}">
                             <i class='bx bx-home-alt icon'></i>
-                            <span class="text nav-text">Inicio</span>
+                            <span class="text nav-text">General</span>
                         </a>
                     </li>
                     

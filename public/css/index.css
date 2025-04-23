@@ -9,7 +9,6 @@ body {
     justify-items: center;
     align-items: center;
 
-
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -32,6 +31,11 @@ body {
 
     justify-items: center;
     align-items: center;
+    cursor: pointer;
+}
+
+.card-body {
+    text-align: center;
 }
 
 .card:hover {

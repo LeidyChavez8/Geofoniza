@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\TicketController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,11 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/asignar', [DataController::class, 'asignarIndex'])->name('asignar.index');
     Route::get('/asignar-filtrar', [DataController::class, 'asignarFiltrar'])->name('asignar.filtrar');
     Route::post('/asignar-operario', [DataController::class, 'asignarOperario'])->name('asignar.operario');
+    
+    
+    //DATA
+    Route::delete('/visita/eliminar/{id}', [DataController::class, 'destroy'])->name('data.destroy');
+
 
     // DESASIGNAR
     Route::get('/desasignar', [DataController::class, 'desasignarIndex'])->name('desasignar.index');
@@ -59,6 +65,10 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/export-data-complete', [DataController::class, 'exportDataComplete'])->name('export.excel.complete');
 
     Route::get('/database/download', [DataController::class, 'download'])->name('database.download');
+
+
+    //RUTAS PARA SERVICIOS
+    Route::resource('servicio', ServicioController::class);
 });
 
 Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
@@ -77,8 +87,11 @@ Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
 Route::middleware('auth')->group(function () {
     //TICKETS 
     Route::get('/ticket-options/{id}', [TicketController::class, 'showTicketOptions'])->name('ticket.options');
+    
     Route::get('/ticket-generate/{id}', [TicketController::class, 'generateTicket'])->name('ticket.generate');
     Route::get('/ticket-download/{id}', [TicketController::class, 'generateTicket'])->name('ticket.download');
 
     Route::get('/acta-generate/{id}', [TicketController::class, 'generateActa'])->name('acta.generate');
+
+    Route::get('/remision-generate/{id}', [TicketController::class, 'generateRemision'])->name('remision.generate');
 });

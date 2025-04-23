@@ -86,4 +86,28 @@ class TicketController extends Controller
         return $pdf->stream('carta.pdf');
     }
 
+
+    public function generateRemision($id)
+    {
+        $data = Data::findOrFail($id);
+
+        // FIRMA DEL Líder de Proyecto e innovación
+        $path = storage_path('app/public/firmas/remision/santiago_firma.png');
+        
+        $firmaBase64 = base64_encode(file_get_contents($path));
+
+        $data->firma = 'data:image/png;base64,' . $firmaBase64;
+
+        // Obtener datos para el PDF (puedes ajustar esta consulta según tus necesidades)
+
+        $data->load('detalleVisita.servicio');
+
+        // Generar el PDF usando la vista
+        $pdf = Pdf::loadView('pdf.remisionCotizacion',compact('data'));
+
+        // Devolver el PDF como respuesta para visualizarlo en el navegador
+        return $pdf->stream('carta.pdf');
+    }
+
+
 }

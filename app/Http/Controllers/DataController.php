@@ -7,6 +7,8 @@ use App\Exports\DataExportComplete;
 use App\Imports\DataImport;
 use App\Imports\DataUpdateImport;
 use App\Models\Data;
+use App\Models\DetalleVisita;
+use App\Models\Servicio;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +21,24 @@ use Illuminate\Validation\Rule;
 
 class DataController extends Controller
 {
+
+    public function destroy($id){
+        $visita = Data::findOrFail($id);
+
+        // Eliminar los detalles asociados
+        DetalleVisita::where('id_data', $visita->id)->delete();
+    
+        // Luego eliminar la visita
+        $visita->delete();
+    
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Visita eliminada correctamente']);
+        }
+    
+        return redirect()->route('asignar.index')->with('success', 'Visita eliminada correctamente');
+    }
+
+
     // =============================    SIDEBAR     =============================
     public function sidebarSearch(Request $request)
     {
@@ -509,13 +529,10 @@ class DataController extends Controller
                 $data->firmaTecnico = $fileUrl;
             
             } catch (Exception $e) {
-                dd($e->getMessage());
-
                 return redirect()->back()->with('error', 'Error al subir la firma: ' . $e->getMessage());
             }
 
         } catch (Exception $e){
-            dd($e->getMessage());
             return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
         }
 
@@ -529,8 +546,7 @@ class DataController extends Controller
     // =============================      AGENDAR      =============================
    
      // Mostrar formulario vacío para crear nuevo registro
-    public function create()
-    {
+    public function create(){
         $ciclos = [
             "BRN - ELE",
             "BRN - CLD",
@@ -672,12 +688,15 @@ class DataController extends Controller
             "USR - R1",
         ];
 
-        return view('Data.Agendar.agendar', compact('ciclos'));
+        $servicios = Servicio::all();
+
+        return view('Data.Agendar.agendar', compact('ciclos','servicios'));
     }
 
     // Guardar nuevo registro
     public function store(Request $request)
     {
+       
         $ciclos = [
             "BRN - ELE",
             "BRN - CLD",
@@ -826,6 +845,10 @@ class DataController extends Controller
             'barrio' => 'required|string|max:100',
             'telefono' => 'required|digits:10',
             'correo' => 'email|max:255',
+            'cotizacion_items' => 'required|json',
+            // 'servicio_id' => 'required|exists:servicios,id',
+            // 'descuento' => 'required|numeric|min:0|max:100',
+            'total' => 'required|numeric|regex:/^\d{1,9}(\.\d{1,2})?$/',
             'ciclo' => ['required', 'string', 'max:255', Rule::in($ciclos)],
         ], [
             'nombres.required' => 'El nombre es obligatorio.',
@@ -840,8 +863,13 @@ class DataController extends Controller
             'telefono.digits' => 'El teléfono debe contener exactamente 10 dígitos.',
             'correo.email' => 'Debe ingresar un correo válido.',
             'ciclo' => 'Debe ingresar un ciclo válido.',
+            'servicio_id' => 'Seleccione un servicio válido',
+            'total.required' => 'El total es obligatorio.',
+            'total.numeric' => 'El total debe ser un número válido.',
+            'total.regex' => 'El total debe tener como máximo 9 dígitos enteros y 2 decimales.',
         ]);
         
+
         // Mapa ciclo → municipio
         $cicloMunicipios = [
             "BRN - ELE" => "BARANOA",
@@ -983,17 +1011,31 @@ class DataController extends Controller
             "TBR - R5" => "TUBARÁ",
             "USR - R1" => "USIACURÍ"
         ];
+        $cotizacion_items = json_decode($validatedData['cotizacion_items']);
+        
+        try{
+            // Crear registro
+            $data = Data::create($validatedData);
 
-        // Crear registro
-        $data = Data::create($validatedData);
+            // Obtener ciclo directamente desde el validatedData
+            $ciclo = $validatedData['ciclo'];
 
-        // Obtener ciclo directamente desde el validatedData
-        $ciclo = $validatedData['ciclo'];
+            // Asignar municipio según el ciclo
+            $data->municipio = $cicloMunicipios[$ciclo] ?? null;
+            $data->save();
 
-        // Asignar municipio según el ciclo
-        $data->municipio = $cicloMunicipios[$ciclo] ?? null;
-        $data->save();
+            foreach ($cotizacion_items as $item) {
+                DetalleVisita::create([
+                    'id_servicio' => $item->servicio_id,
+                    'id_data' => $data->id,
+                    'descuento' => $item->descuento,
+                    'subtotal' => $item->subtotal,
+                ]);    
+            }
 
+        }catch(Exception $e){
+            return redirect()->back()->with('error', 'El registro ha fallado.');
+        }
         return redirect()->route('schedule.create')->with('success', 'Registro creado exitosamente.');
     }
 

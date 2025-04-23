@@ -161,6 +161,9 @@
                                     @endif
                                 </a>
                             </th>
+                            <th>
+                                Acciones
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -178,6 +181,40 @@
                                 <td>{{ $programacion->telefono }}</td>
                                 <td>{{ $programacion->correo }}</td>
                                 <td>{{ $programacion->orden }}</td>
+
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{route('remision.generate', $programacion->id)}}"><i class='bx bxs-star' style="font-size:25px; color: #ad0000;"></i></a>
+                                        
+                                        <a href="#" onclick="eliminarVisita({{ $programacion->id }}); return false;" title="Eliminar visita">
+                                            <i class='bx bx-trash' style="font-size:25px; color:red; cursor:pointer;"></i>
+                                        </a>
+
+                                        {{-- <form id="delete-form-{{ $programacion->id }}" action="{{ route('data.destroy', $programacion->id) }}" method="POST" style="display: none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                        
+                                        <a href="#" onclick="event.preventDefault(); if(confirm('¿Está seguro de eliminar esta visita?')) { document.getElementById('delete-form-{{ $programacion->id }}').submit(); }">
+                                            <i class='bx bx-trash' style="font-size:25px"></i>
+                                        </a> --}}
+
+                                        {{-- <button class="btn btn-tertiary" style="width: unset; " onclick="window.location.href=''">
+                                            <i class='bx bx-edit-alt'></i>
+                                        </button>
+                                        --}}
+
+
+                                        {{-- <form action="{{route('data.destroy',$programacion->id)}}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-primary" onclick="return confirm('¿Está seguro de eliminar esta visita?')">
+                                                <i class='bx bx-trash' style="font-size:25px"></i>
+                                            </button>
+                                        </form>  --}}
+
+                                    </div>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -222,6 +259,10 @@
                 </div>
             </div>
         </form>
+
+
+
+        
 
         <div class="pagination-container">
             {{-- @if ($data->hasPages()) --}}
@@ -371,4 +412,31 @@
         }
     </script>
 
+
+    <script>
+        function eliminarVisita(id) {
+            if (!confirm('¿Está seguro de eliminar esta visita?')) return;
+
+            fetch(`/visita/eliminar/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Visita eliminada correctamente');
+                    location.reload();
+                } else {
+                    alert('Hubo un error al eliminar la visita.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al intentar eliminar.');
+            });
+        }
+    </script>
 @endsection

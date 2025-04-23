@@ -17,6 +17,8 @@ class Data extends Model
         'telefono',
         'correo',
         'ciclo',
+
+        'total',
         
         'medidor',
         'lectura',
@@ -60,6 +62,10 @@ class Data extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function detalleVisita(){
+        return $this->hasMany(DetalleVisita::class, 'id_data');
     }
 }
 

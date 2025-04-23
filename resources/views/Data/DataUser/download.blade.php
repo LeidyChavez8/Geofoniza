@@ -31,10 +31,12 @@
         <p>Por favor, selecciona una opción:</p>
 
         <div class="buttons">
-            <!-- Botón para visualizar el ticket en el navegador -->
+            <!-- Botones para visualizar pdfs de la visita en el navegador -->
             <a href="{{route('ticket.generate', $data->id)}}" target="_blank">Visualizar Ticket</a>
             
             <a href="{{route('acta.generate', $data->id)}}" target="_blank">Visualizar Acta de revisión técnica</a>
+
+            <a href="{{route('remision.generate', $data->id)}}" target="_blank">Visualizar remisión</a>
 
             <!-- Botón para descargar el ticket -->
             <a href="{{ route('ticket.download',$data->id) }}" >Descargar Ticket</a>
