@@ -15,7 +15,7 @@ class ServicioController extends Controller
     {
         $servicios = Servicio::all();
 
-        return view('servicios.index', compact('servicios'));
+        return view('Servicios.index', compact('servicios'));
     }
 
     /**
@@ -23,7 +23,7 @@ class ServicioController extends Controller
      */
     public function create()
     {
-        return view('servicios.create');
+        return view('Servicios.create');
     }
 
     /**
@@ -83,7 +83,7 @@ class ServicioController extends Controller
             return redirect()->back()->with('error','Error al editar servicio: '. $e->getMessage());
         }
 
-        return view('servicios.edit',compact('servicio'));
+        return view('Servicios.edit',compact('servicio'));
     }
 
     /**
