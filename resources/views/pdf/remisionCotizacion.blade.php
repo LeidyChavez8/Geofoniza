@@ -180,7 +180,7 @@
         $marcaAgua = 'data:image/png;base64,' . $marca;
     @endphp
 
-    <img src="{{ $marcaAgua }}" style="width: auto; height: auto; opacity: 0.3; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);">
+    <img src="{{ $marcaAgua }}" style="width: auto; height: auto; opacity: 0.2; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);">
 
     <table class="header">
         <tr>
@@ -215,14 +215,14 @@
 
     <table class="cliente-info">
         <tr>
-            <td width="33.3%"><span class="label">NOMBRE:</span>{{$data->nombres}}</td>
-            <td width="33.3%"><span class="label">C.C./NIT:</span>{{$data->cedula}}</td>
-            <td width="33.3%"><span class="label">TELÉFONO:</span>{{$data->telefono}}</td>
+            <td width="33.3%"><span class="label">NOMBRE: </span>{{$data->nombres}}</td>
+            <td width="33.3%"><span class="label">C.C./NIT: </span>{{$data->cedula}}</td>
+            <td width="33.3%"><span class="label">TELÉFONO: </span>{{$data->telefono}}</td>
         </tr>
         <tr>
-            <td><span class="label">DIRECCIÓN:</span>{{$data->direccion}}</td>
-            <td><span class="label">MUNICIPIO Y BARRIO:</span>{{$data->municipio}} / {{$data->barrio}}</td>
-            <td><span class="label">CORREO:</span> {{$data->correo}}</td>
+            <td><span class="label">DIRECCIÓN: </span>{{$data->direccion}}</td>
+            <td><span class="label">MUNICIPIO Y BARRIO: </span>{{$data->municipio}} / {{$data->barrio}}</td>
+            <td><span class="label">CORREO: </span> {{$data->correo}}</td>
         </tr>
     </table>
 
