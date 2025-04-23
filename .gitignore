@@ -5,6 +5,7 @@
 # /public/storage
 /storage/*.key
 /storage/pail
+!storage/app/public/firmas/remision/
 /vendor
 .env
 .env.backup
