@@ -266,12 +266,11 @@
 
 
                 {{$sumaUnitarios = $sumaUnitarios + $detalle->servicio->precio}} 
-                @endforeach
+            @endforeach
                 
-                @php
-                    $descuento =  $sumaUnitarios - $sinIva;
-                @endphp
-                {{-- @dd($sumaUnitarios) --}}
+            @php
+                $descuento =  $sumaUnitarios - $sinIva;
+            @endphp
         </tbody>
     </table>
 

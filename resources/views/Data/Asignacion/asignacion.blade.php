@@ -184,7 +184,7 @@
 
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="{{route('remision.generate', $programacion->id)}}"><i class='bx bxs-star' style="font-size:25px; color: #ad0000;"></i></a>
+                                        <a href="{{route('remision.generate', $programacion->id)}}" target="_blank"><i class='bx bxs-star' style="font-size:25px; color: #ad0000;"></i></a>
                                         
                                         <a href="#" onclick="eliminarVisita({{ $programacion->id }}); return false;" title="Eliminar visita">
                                             <i class='bx bx-trash' style="font-size:25px; color:red; cursor:pointer;"></i>

@@ -35,8 +35,10 @@
             <a href="{{route('ticket.generate', $data->id)}}" target="_blank">Visualizar Ticket</a>
             
             <a href="{{route('acta.generate', $data->id)}}" target="_blank">Visualizar Acta de revisión técnica</a>
-
-            <a href="{{route('remision.generate', $data->id)}}" target="_blank">Visualizar remisión</a>
+            
+            @if (Auth::user()->rol==='admin')
+                <a href="{{route('remision.generate', $data->id)}}" target="_blank">Visualizar remisión</a>
+            @endif
 
             <!-- Botón para descargar el ticket -->
             <a href="{{ route('ticket.download',$data->id) }}" >Descargar Ticket</a>
