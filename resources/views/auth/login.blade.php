@@ -16,7 +16,7 @@
 </head>
 <body>
     <div>
-        <a href="https://rib.com.co/wp/" class="Volver btn btn-primary">
+        <a href="https://rib.com.co/wp/" class="volver btn btn-primary">
             Volver a RIB Logisticas S.A.S
         </a>
     </div>
