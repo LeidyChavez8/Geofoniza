@@ -353,7 +353,7 @@ class DataController extends Controller
             'medidor' => 'required|string',
             'lectura' => 'required|string',
             'aforo' => 'required|string',
-            'observacion_inspeccion' => 'required|string|max:350',
+            'observacion_inspeccion' => 'required|string|max:700',
             'resultado' => 'required|string',
             'foto' => 'required|image|mimes:jpeg,png,jpg,bmp,tiff|max:51200',
             'firmaUsuario' => 'required|string',

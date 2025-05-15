@@ -1,3 +1,10 @@
+.Volver {
+    position: absolute;
+    top: 20px;      /* Espaciado desde arriba */
+    left: 20px;     /* Espaciado desde la izquierda */
+    width: 15%;
+}
+
 
 body {
     min-height: 100vh;
@@ -91,6 +98,14 @@ body {
 }
 
 @media (max-width: 768px) {
+
+    .Volver {
+    position: absolute;
+    top: 20px;      /* Espaciado desde arriba */
+    left: 20px;     /* Espaciado desde la izquierda */
+    width: 50%;
+    }
+
     .login-container {
         flex-direction: column;
         margin: 0;
