@@ -1,8 +1,8 @@
 {
     "centurygothic": {
-        "normal": "C:\\laragon\\www\\Geofoniza\\storage\\fonts\/centurygothic_normal_1e5f5ce2b8193cbb4223ae6301adbdbf",
-        "bold": "C:\\laragon\\www\\Geofoniza\\storage\\fonts\/centurygothic_bold_e5a6f9f716a8884fb96849d81bc360c5",
-        "italic": "C:\\laragon\\www\\Geofoniza\\storage\\fonts\/centurygothic_italic_6efc050f09a9cc240f996d4357029483",
-        "bold_italic": "centurygothic_bold_italic_1f4d242362e2cbd57fae88273f28ed75"
+        "normal": "\/var\/www\/html\/Geofoniza\/storage\/fonts\/centurygothic_normal_a9b072122d4d270d3f6333332c881740",
+        "bold": "\/var\/www\/html\/Geofoniza\/storage\/fonts\/centurygothic_bold_57b5f32cbcbf7d4bd7919bf5cb50942a",
+        "italic": "\/var\/www\/html\/Geofoniza\/storage\/fonts\/centurygothic_italic_b0c062ca05ffa614221adb239c16671e",
+        "bold_italic": "centurygothic_bold_italic_f737a9d2a8fb20fce5ac4fcabbc8c6ef"
     }
 }
