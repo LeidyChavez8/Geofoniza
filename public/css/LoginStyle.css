@@ -1,4 +1,4 @@
-.Volver {
+.volver {
     position: absolute;
     top: 20px;      /* Espaciado desde arriba */
     left: 20px;     /* Espaciado desde la izquierda */
@@ -99,7 +99,7 @@ body {
 
 @media (max-width: 768px) {
 
-    .Volver {
+    .volver {
     position: absolute;
     top: 20px;      /* Espaciado desde arriba */
     left: 20px;     /* Espaciado desde la izquierda */
