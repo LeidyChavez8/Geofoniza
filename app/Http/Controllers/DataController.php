@@ -17,24 +17,26 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Yaza\LaravelGoogleDriveStorage\Gdrive;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 
 class DataController extends Controller
 {
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $visita = Data::findOrFail($id);
 
         // Eliminar los detalles asociados
         DetalleVisita::where('id_data', $visita->id)->delete();
-    
+
         // Luego eliminar la visita
         $visita->delete();
-    
+
         if (request()->expectsJson()) {
             return response()->json(['success' => true, 'message' => 'Visita eliminada correctamente']);
         }
-    
+
         return redirect()->route('asignar.index')->with('success', 'Visita eliminada correctamente');
     }
 
@@ -56,7 +58,7 @@ class DataController extends Controller
         ];
 
         // Busca una coincidencia en las secciones
-        $resultado = array_filter($secciones, function($seccion) use ($query){
+        $resultado = array_filter($secciones, function ($seccion) use ($query) {
             return stripos($seccion, $query) !== false; // Buscar la coincidencia
         }, ARRAY_FILTER_USE_KEY);
 
@@ -147,12 +149,12 @@ class DataController extends Controller
         if ($request->filled('buscador-correo')) {
             $query->where('correo', 'like', '%' . $request->input('buscador-correo') . '%');
         }
-        
+
         if ($request->filled('buscador-orden')) {
             $query->where('orden', 'like', '%' . $request->input('buscador-orden') . '%');
         }
 
-        
+
 
         // Aplicar el ordenamiento
         $data = $query
@@ -262,11 +264,11 @@ class DataController extends Controller
         if ($request->filled('buscador-correo')) {
             $query->where('correo', 'like', '%' . $request->input('buscador-correo') . '%');
         }
-        
+
         if ($request->filled('buscador-orden')) {
             $query->where('orden', 'like', '%' . $request->input('buscador-orden') . '%');
         }
-        
+
 
         // Aplicar el ordenamiento
         $data = $query
@@ -321,12 +323,12 @@ class DataController extends Controller
             "Fuga Imperceptible",
             "Fuga Perceptible",
             "Medidor Instalado en Reversa",
-            "Predio sin Fuga",       
+            "Predio sin Fuga",
             "Fuga No Visible No Localizada",
             "Sector sin Suministro de Agua",
             "Acceso Dificultoso",
             "Revisión Inconclusa",
-            "Fuga Visible",     
+            "Fuga Visible",
             "Fuga En Instalación",
             "No Hay Medidor en el Predio",
             "Fuga Aguas Residuales",
@@ -341,11 +343,11 @@ class DataController extends Controller
         $data = Data::findOrFail($id);
 
         $direccion = $data->direccion;
-        
+
         $request->merge([
             'numeroPersonas' => (int) $request->numeroPersonas,
         ]);
-        
+
         $validatedData = $request->validate([
             'numeroPersonas' => 'required|integer',
             'categoria' => 'required|string|in:residencial,comercial,industrial',
@@ -361,192 +363,98 @@ class DataController extends Controller
         ], [
             'numeroPersonas.required' => 'El número de personas es obligatorio.',
             'numeroPersonas.integer' => 'El número de personas debe ser un número válido.',
-        
+
             'categoria.required' => 'La categoría es obligatoria.',
             'categoria.in' => 'La categoría debe ser Residencial, Comercial o Industrial.',
-        
+
             'puntoHidraulico.required' => 'El punto hidráulico es obligatorio.',
             'puntoHidraulico.integer' => 'El punto hidráulico debe ser un número válido.',
-        
+
             'medidor.required' => 'El medidor es obligatorio.',
             'medidor.string' => 'El medidor debe ser un texto válido.',
-        
+
             'lectura.required' => 'La lectura es obligatoria.',
             'lectura.integer' => 'La lectura debe ser un número entero.',
-        
+
             'aforo.required' => 'El aforo es obligatorio.',
             'aforo.string' => 'El aforo debe ser un texto válido.',
-        
+
             'observacion_inspeccion.required' => 'La observación es obligatoria.',
             'observacion_inspeccion.string' => 'La observación debe ser un texto válido.',
             'observacion_inspeccion.max' => 'La observación no puede contener más de 350 caracteres.',
-        
+
             'resultado.required' => 'El resultado es obligatorio.',
             'resultado.string' => 'El resultado debe ser un texto válido.',
-        
+
             'foto.required' => 'La evidencia es obligatoria.',
             'foto.image' => 'La evidencia debe ser una imagen válida.',
             'foto.mimes' => 'La evidencia debe estar en formato JPEG, PNG, JPG, BMP o TIFF.',
             'foto.max' => 'La evidencia no debe superar los 50MB.',
-        
+
             'firmaUsuario.required' => 'La firma del usuario es obligatoria.',
             'firmaUsuario.string' => 'La firma del usuario debe ser un texto válido.',
-        
+
             // 'firmaTecnico.required' => 'La firma del técnico es obligatoria.',
             // 'firmaTecnico.string' => 'La firma del técnico debe ser un texto válido.',
         ]);
 
         $data->fill($validatedData);
 
-
-        // Subir la foto a Google Drive
+        // Subir la foto localmente
         $mesActual = date('F');
-        $userFolder = auth()->user()->name; // Subcarpeta personalizada por usuario
-        $fileName = $validatedData['foto']->getClientOriginalName();
-        $filePath = "Apptualiza/"."$mesActual/$userFolder/$direccion/evidencia/$fileName";
+        $userFolder = auth()->user()->name;
+        $direccion = $data->direccion; 
+        $fotoFile = $validatedData['foto'];
+        $fotoFileName = uniqid() . '.' . $fotoFile->getClientOriginalExtension();
+        $fotoPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/evidencia/{$fotoFileName}";
 
-        // Subida de foto
-        Gdrive::put($filePath, $validatedData['foto']);
-
-        // Establecer permisos públicos
-        $disk = Storage::disk('google');
-        $fileMetaData = $disk->getAdapter()->getService()->files->listFiles([
-            'q' => "name='$fileName'"
-        ]);
-
-        if (!empty($fileMetaData->getFiles())) {
-            $fileId = $fileMetaData->getFiles()[0]->getId();
-            $permissions = new \Google\Service\Drive\Permission([
-                'type' => 'anyone',
-                'role' => 'reader',
-            ]);
-            $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
-
-            // Obtener URL pública
-            $fileUrl = "https://drive.google.com/uc?id=$fileId";
-        } else {
-            $fileUrl = null;
-        }
-
-        $data ->url_foto = $fileUrl;
-        
+        Storage::disk('public')->put($fotoPath, File::get($fotoFile));
+        $data->url_foto = Storage::disk('public')->url($fotoPath);
 
         try {
             if ($request->has('firmaUsuario')) {
                 $image = $request->input('firmaUsuario');
                 $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
-
                 $imageData = base64_decode($image);
-            
-            
-                // Crear un archivo temporal
-                $tempFile = tempnam(sys_get_temp_dir(), 'upload_');
-                file_put_contents($tempFile, $imageData);
-            
-                $_FILES['image'] = [
-                    'name'     => 'imagen.png',
-                    'type'     => 'image/png',
-                    'tmp_name' => $tempFile,
-                    'error'    => 0,
-                    'size'     => filesize($tempFile)
-                ];
 
-                $fileName =uniqid(). '.png';
-                $filePath = "Apptualiza/$mesActual/$userFolder/$direccion/firma del usuario/$fileName";
-            
+                $firmaUsuarioFileName = uniqid() . '.png';
+                $firmaUsuarioPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/firma del usuario/{$firmaUsuarioFileName}";
 
-                Gdrive::put($filePath, $_FILES['image']['tmp_name']);                
-                $fileMetaData = $disk->getAdapter()->getService()->files->listFiles([
-                    'q' => "name='$fileName'"
-                ]);
-                
-                // Configurar permisos y obtener URL pública
-                if (!empty($fileMetaData->getFiles())) {
-                    $fileId = $fileMetaData->getFiles()[0]->getId();
-                    $permissions = new \Google\Service\Drive\Permission([
-                        'type' => 'anyone',
-                        'role' => 'reader',
-                    ]);
-                    $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
-            
-                    // Generar URL pública
-                    $fileUrl = "https://drive.google.com/uc?id=$fileId";
-                } else {
-                    $fileUrl = null;
-                }
-
-                $data->firmaUsuario = $fileUrl;
-            
-                unlink($tempFile);
+                Storage::disk('public')->put($firmaUsuarioPath, $imageData);
+                $data->firmaUsuario = Storage::disk('public')->url($firmaUsuarioPath);
             }
-            
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Error al procesar la firma del usuario: ' . $e->getMessage());
+        }
 
-            try {
-                // Obtener el id del usuario
-                $userFirmaPath = $data->user->firma_path;
-            
-                // Ruta local donde está la firma (por ejemplo: storage/app/public/firmas/123.png)
-                $localPath = storage_path("app/public/{$userFirmaPath}");
+        try {
+            $userFirmaPath = $data->user->firma_path;
+            $localPath = Storage::disk('public')->path($userFirmaPath);
 
-                // dd($localPath);
-                // Verificar que el archivo exista
-                if (!file_exists($localPath)) {
-                    // dd('mal');
+            if (file_exists($localPath)) {
+                $firmaTecnicoFileName = uniqid() . '.png';
+                $firmaTecnicoPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/firma del tecnico/{$firmaTecnicoFileName}";
 
-                    return redirect()->back()->with('error', 'No se encontró la firma del usuario con ID: ' . $data->user->id);
-                }
-            
-                // Generar un nuevo nombre de archivo único para Google Drive
-                $fileName = uniqid() . '.png';
-            
-                // Ruta destino en Drive
-                $filePath = "Apptualiza/$mesActual/$userFolder/$direccion/firma del tecnico/$fileName";
-            
-                // Subir el archivo local a Google Drive
-                Gdrive::put($filePath, $localPath);
-            
-                // Buscar el archivo subido en Drive para obtener su ID
-                $fileMetaData = $disk->getAdapter()->getService()->files->listFiles([
-                    'q' => "name='$fileName'"
-                ]);
-            
-                // Configurar permisos y generar URL pública
-                if (!empty($fileMetaData->getFiles())) {
-                    $fileId = $fileMetaData->getFiles()[0]->getId();
-            
-                    $permissions = new \Google\Service\Drive\Permission([
-                        'type' => 'anyone',
-                        'role' => 'reader',
-                    ]);
-                    $disk->getAdapter()->getService()->permissions->create($fileId, $permissions);
-            
-                    $fileUrl = "https://drive.google.com/uc?id=$fileId";
-                } else {
-                    $fileUrl = null;
-                }
-            
-                // Guardar la URL en el objeto
-                $data->firmaTecnico = $fileUrl;
-            
-            } catch (Exception $e) {
-                return redirect()->back()->with('error', 'Error al subir la firma: ' . $e->getMessage());
+                Storage::disk('public')->put($firmaTecnicoPath, file_get_contents($localPath));
+                $data->firmaTecnico = Storage::disk('public')->url($firmaTecnicoPath);
+            } else {
+                return redirect()->back()->with('error', 'No se encontró la firma del técnico.');
             }
-
-        } catch (Exception $e){
-            return redirect()->back()->with('error','Error al procesar la firma' . $e->getMessage());
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Error al subir la firma del técnico: ' . $e->getMessage());
         }
 
         $data->estado = 1;
-
         $data->save();
 
         return redirect()->route('ticket.options', ['id' => $data->id])->with('success', 'Datos actualizados correctamente');
     }
 
     // =============================      AGENDAR      =============================
-   
-     // Mostrar formulario vacío para crear nuevo registro
-    public function create(){
+
+    // Mostrar formulario vacío para crear nuevo registro
+    public function create()
+    {
         $ciclos = [
             "BRN - ELE",
             "BRN - CLD",
@@ -690,13 +598,13 @@ class DataController extends Controller
 
         $servicios = Servicio::all();
 
-        return view('Data.Agendar.agendar', compact('ciclos','servicios'));
+        return view('Data.Agendar.agendar', compact('ciclos', 'servicios'));
     }
 
     // Guardar nuevo registro
     public function store(Request $request)
     {
-       
+
         $ciclos = [
             "BRN - ELE",
             "BRN - CLD",
@@ -868,7 +776,7 @@ class DataController extends Controller
             'total.numeric' => 'El total debe ser un número válido.',
             'total.regex' => 'El total debe tener como máximo 9 dígitos enteros y 2 decimales.',
         ]);
-        
+
 
         // Mapa ciclo → municipio
         $cicloMunicipios = [
@@ -1012,8 +920,8 @@ class DataController extends Controller
             "USR - R1" => "USIACURÍ"
         ];
         $cotizacion_items = json_decode($validatedData['cotizacion_items']);
-        
-        try{
+
+        try {
             // Crear registro
             $data = Data::create($validatedData);
 
@@ -1030,10 +938,10 @@ class DataController extends Controller
                     'id_data' => $data->id,
                     'descuento' => $item->descuento,
                     'subtotal' => $item->subtotal,
-                ]);    
+                ]);
             }
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return redirect()->back()->with('error', 'El registro ha fallado.');
         }
         return redirect()->route('schedule.create')->with('success', 'Registro creado exitosamente.');
@@ -1111,9 +1019,10 @@ class DataController extends Controller
     }
 
 
-    public function editCompletados($dataId){
+    public function editCompletados($dataId)
+    {
         $data = Data::find($dataId);
-        
+
         $resultados = [
             "Fuga Imperceptible",
             "Fuga Perceptible",
@@ -1272,7 +1181,8 @@ class DataController extends Controller
 
         return view('Data.Completados.edit', compact('data', 'resultados', 'ciclos'));
     }
-    public function updateCompletados(Request $request, $dataId){
+    public function updateCompletados(Request $request, $dataId)
+    {
         $data = Data::findOrFail($dataId);
 
         $ciclos = [
@@ -1436,44 +1346,44 @@ class DataController extends Controller
         ], [
             'nombres.required' => 'El nombre es obligatorio.',
             'nombres.regex' => 'El nombre solo puede contener letras, espacios y guiones.',
-            
+
             'cedula.required' => 'La cédula es obligatoria.',
             'cedula.numeric' => 'La cédula solo puede contener números.',
             'cedula.digits_between' => 'La cédula debe tener entre 6 y 10 dígitos.',
-            
+
             'direccion.required' => 'La dirección es obligatoria.',
             'direccion.regex' => 'Solo ingrese caracteres alfanuméricos.',
-            
+
             'barrio.required' => 'El barrio es obligatorio.',
-            
+
             'telefono.required' => 'El teléfono es obligatorio.',
             'telefono.digits' => 'El teléfono debe contener exactamente 10 dígitos.',
-            
+
             'correo.email' => 'Debe ingresar un correo válido.',
-            
+
             'ciclo.string' => 'Debe ingresar un ciclo válido.',
             'ciclo.in' => 'Debe ingresar un ciclo válido.',
-        
+
             'numeroPersonas.required' => 'El número de personas es obligatorio.',
             'numeroPersonas.integer' => 'El número de personas debe ser un número válido.',
-            
+
             'categoria.required' => 'La categoría es obligatoria.',
             'categoria.in' => 'La categoría debe ser Residencial, Comercial o Industrial.',
-            
+
             'puntoHidraulico.required' => 'El punto hidráulico es obligatorio.',
             'puntoHidraulico.integer' => 'El punto hidráulico debe ser un número válido.',
-            
+
             'medidor.required' => 'El medidor es obligatorio.',
             'medidor.string' => 'El medidor debe ser un texto válido.',
-            
+
             'lectura.required' => 'La lectura es obligatoria.',
-            
+
             'aforo.required' => 'El aforo es obligatorio.',
             'aforo.string' => 'El aforo debe ser un texto válido.',
-            
+
             'observacion_inspeccion.required' => 'La observación es obligatoria.',
             'observacion_inspeccion.string' => 'La observación debe ser un texto válido.',
-            
+
             'resultado.required' => 'El resultado es obligatorio.',
             'resultado.string' => 'El resultado debe ser un texto válido.',
         ]);
@@ -1657,7 +1567,7 @@ class DataController extends Controller
             // filtramos por el id del usuario
             $query->whereIn('id_user', $userId);
         }
-        
+
         if ($request->filled('buscador-orden')) {
             $query->where('orden', 'like', '%' . $request->input('buscador-orden') . '%');
         }
@@ -1738,7 +1648,7 @@ class DataController extends Controller
     {
         $ciclo = $request->input('ciclo');
 
-        if($ciclo === 'null') {
+        if ($ciclo === 'null') {
             return redirect()->back()->with('error', 'Debes seleccionar un ciclo para exportar.');
         }
         // Filtrar los registros según el ciclo y el estado = 1
@@ -1762,7 +1672,7 @@ class DataController extends Controller
     {
         $ciclo = $request->input('ciclo');
 
-        if($ciclo === 'null') {
+        if ($ciclo === 'null') {
             return redirect()->back()->with('error', 'Debes seleccionar un ciclo para exportar.');
         }
         // Filtrar los registros según el ciclo y el estado = 1
