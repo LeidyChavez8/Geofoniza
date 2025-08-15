@@ -9,124 +9,111 @@ use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {    
-    private function getFileContents($path)
+        private function getFileContents($path)
     {
-        // Check if the path is a remote URL (e.g., from Google Drive)
+        // Check if the path is a remote URL
         if (filter_var($path, FILTER_VALIDATE_URL)) {
-            // It's a URL, read it directly.
-            // This requires allow_url_fopen to be enabled in php.ini
-            return file_get_contents($path);
+            // Read directly from the URL. Requires allow_url_fopen to be enabled.
+            return @file_get_contents($path);
         }
 
-        // It's a local path, read it from the local disk.
-        // Assumes it's a relative path saved in the database.
-        $localPath = Storage::disk('public')->path($path);
-        return file_get_contents($localPath);
+        // It's a local path, so we use Laravel's Storage facade to handle it.
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->get($path);
+        }
+
+        return false;
     }
 
+    /**
+     * Convertir imagen a Base64 para usar en el PDF.
+     */
+    private function convertToBase64($path)
+    {
+        try {
+            $contenido = $this->getFileContents($path);
+            if ($contenido === false) {
+                return ''; // Si el contenido no se puede leer, devuelve vacío
+            }
+            return 'data:image/png;base64,' . base64_encode($contenido);
+        } catch (\Exception $e) {
+            return ''; // En caso de cualquier error, devolver vacío
+        }
+    }
+
+    /**
+     * Generar Ticket en PDF.
+     */
     public function generateTicket($id, Request $request)
     {
         $data = Data::findOrFail($id);
 
-        if($data->estado != 1) {
+        if ($data->estado != 1) {
             abort(404);
         }
 
-        if(Auth::user()->rol != 'admin'){
-            if ($data->id_user != Auth::id()) {
-                abort(403, 'No tienes permiso para ver este ticket.');
-            }
+        if (Auth::user()->rol != 'admin' && $data->id_user != Auth::id()) {
+            abort(403, 'No tienes permiso para ver este ticket.');
         }
 
-        // FIRMA DEL USUARIO
-        try {
-            $firmaUsuarioContenido = $this->getFileContents($data->firmaUsuario);
-            $firmaUsuarioBase64 = base64_encode($firmaUsuarioContenido);
-            $data->firmaUsuario = 'data:image/png;base64,' . $firmaUsuarioBase64;
-        } catch (\Exception $e) {
-            // Handle cases where the file might be missing
-            $data->firmaUsuario = ''; // or a placeholder
-        }
+        // Firmas en Base64
+        $data->firmaUsuario = $this->convertToBase64($data->firmaUsuario);
+        $data->firmaTecnico = $this->convertToBase64($data->firmaTecnico);
 
-        // FIRMA DEL ADMIN
-        try {
-            $firmaTecnicoContenido = $this->getFileContents($data->firmaTecnico);
-            $firmaTecnicoBase64 = base64_encode($firmaTecnicoContenido);
-            $data->firmaTecnico = 'data:image/png;base64,' . $firmaTecnicoBase64;
-        } catch (\Exception $e) {
-            $data->firmaTecnico = ''; // or a placeholder
-        }
-
-        // Generar el ticket PDF y guardarlo temporalmente
+        // Generar PDF
         $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
-                 ->setPaper([0, 0, 227, 830], 'portrait'); // Tamaño ajustado
-                 
+            ->setPaper([0, 0, 227, 830], 'portrait');
+
         $pdf->render();
 
-        if($request->routeIs('ticket.generate')) {
+        if ($request->routeIs('ticket.generate')) {
             return $pdf->stream();
-        } else if($request->routeIs('ticket.download')) {
-            return $pdf->download('ticket'.$data->orden .'.pdf');
+        } elseif ($request->routeIs('ticket.download')) {
+            return $pdf->download('ticket' . $data->orden . '.pdf');
         }
     }
 
+    /**
+     * Mostrar opciones de ticket.
+     */
     public function showTicketOptions($id)
     {
-        // Obtener los datos del registro
         $data = Data::findOrFail($id);
-
-        // // Pasar los datos a la vista
         return view('Data.DataUser.download', compact('data'));
     }
 
+    /**
+     * Generar Acta PDF.
+     */
     public function generateActa($id)
     {
         $data = Data::findOrFail($id);
-        // Generar el PDF usando la vista
 
-        // FIRMA DEL USUARIO
-        try {
-            $firmaUsuarioContenido = $this->getFileContents($data->firmaUsuario);
-            $firmaUsuarioBase64 = base64_encode($firmaUsuarioContenido);
-            $data->firmaUsuario = 'data:image/png;base64,' . $firmaUsuarioBase64;
-        } catch (\Exception $e) {
-            $data->firmaUsuario = '';
-        }
-
-        // FIRMA DEL ADMIN
-        try {
-            $firmaTecnicoContenido = $this->getFileContents($data->firmaTecnico);
-            $firmaTecnicoBase64 = base64_encode($firmaTecnicoContenido);
-            $data->firmaTecnico = 'data:image/png;base64,' . $firmaTecnicoBase64;
-        } catch (\Exception $e) {
-            $data->firmaTecnico = '';
-        }
+        // Firmas
+        $data->firmaUsuario = $this->convertToBase64($data->firmaUsuario);
+        $data->firmaTecnico = $this->convertToBase64($data->firmaTecnico);
 
         $pdf = Pdf::loadView('pdf.revisionTecnica', compact('data'));
 
-        // Devolver el PDF como respuesta para visualizarlo en el navegador
         return $pdf->stream('carta.pdf');
     }
 
+    /**
+     * Generar Remisión PDF.
+     */
     public function generateRemision($id)
     {
         $data = Data::findOrFail($id);
 
-        // FIRMA DEL Líder de Proyecto e innovación
-        // Esta línea ya estaba bien, ya que usa storage_path
-        $path = storage_path('app/public/firmas/remision/santiago_firma.png');
-        
-        $firmaBase64 = base64_encode(file_get_contents($path));
+        // Firma fija del líder de proyecto
+        $path = 'firmas/remision/santiago_firma.png'; // Corregida la ruta
+        $data->firma = $this->convertToBase64($path);
 
-        $data->firma = 'data:image/png;base64,' . $firmaBase64;
-
-        // Obtener datos para el PDF (puedes ajustar esta consulta según tus necesidades)
+        // Cargar relación
         $data->load('detalleVisita.servicio');
 
-        // Generar el PDF usando la vista
-        $pdf = Pdf::loadView('pdf.remisionCotizacion',compact('data'));
+        $pdf = Pdf::loadView('pdf.remisionCotizacion', compact('data'));
 
-        // Devolver el PDF como respuesta para visualizarlo en el navegador
         return $pdf->stream('carta.pdf');
     }
 }

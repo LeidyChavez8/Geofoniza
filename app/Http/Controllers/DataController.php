@@ -317,6 +317,7 @@ class DataController extends Controller
 
     public function asignadosEdit($id)
     {
+
         $data = Data::findOrFail($id);
 
         $resultados = [
@@ -403,7 +404,7 @@ class DataController extends Controller
         // Subir la foto localmente
         $mesActual = date('F');
         $userFolder = auth()->user()->name;
-        $direccion = $data->direccion; 
+        $direccion = $data->direccion;
         $fotoFile = $validatedData['foto'];
         $fotoFileName = uniqid() . '.' . $fotoFile->getClientOriginalExtension();
         $fotoPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/evidencia/{$fotoFileName}";
@@ -420,7 +421,15 @@ class DataController extends Controller
                 $firmaUsuarioFileName = uniqid() . '.png';
                 $firmaUsuarioPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/firma del usuario/{$firmaUsuarioFileName}";
 
+                // Guardar la imagen en public
                 Storage::disk('public')->put($firmaUsuarioPath, $imageData);
+
+                // 1️⃣ Actualizar la firma en el perfil del usuario logueado
+                $user = auth()->user();
+                $user->firma_path = $firmaUsuarioPath; // ruta relativa
+                $user->save();
+
+                // 2️⃣ Copiar la ruta al registro actual ($data) para el PDF
                 $data->firmaUsuario = Storage::disk('public')->url($firmaUsuarioPath);
             }
         } catch (Exception $e) {
@@ -428,7 +437,8 @@ class DataController extends Controller
         }
 
         try {
-            $userFirmaPath = $data->user->firma_path;
+            // Usar la firma guardada en el perfil del usuario
+            $userFirmaPath = $data->user->firma_path; // ruta relativa en BD
             $localPath = Storage::disk('public')->path($userFirmaPath);
 
             if (file_exists($localPath)) {
