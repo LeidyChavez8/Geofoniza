@@ -382,7 +382,7 @@ class DataController extends Controller
 
             'observacion_inspeccion.required' => 'La observación es obligatoria.',
             'observacion_inspeccion.string' => 'La observación debe ser un texto válido.',
-            'observacion_inspeccion.max' => 'La observación no puede contener más de 350 caracteres.',
+            'observacion_inspeccion.max' => 'La observación no puede contener más de 800 caracteres.',
 
             'resultado.required' => 'El resultado es obligatorio.',
             'resultado.string' => 'El resultado debe ser un texto válido.',
@@ -398,7 +398,7 @@ class DataController extends Controller
             // 'firmaTecnico.required' => 'La firma del técnico es obligatoria.',
             // 'firmaTecnico.string' => 'La firma del técnico debe ser un texto válido.',
         ]);
-
+        
         $data->fill($validatedData);
 
         // Subir la foto localmente
@@ -409,8 +409,11 @@ class DataController extends Controller
         $fotoFileName = uniqid() . '.' . $fotoFile->getClientOriginalExtension();
         $fotoPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/evidencia/{$fotoFileName}";
 
+        // Guardamos el archivo en storage/app/public/...
         Storage::disk('public')->put($fotoPath, File::get($fotoFile));
-        $data->url_foto = Storage::disk('public')->url($fotoPath);
+
+        // Guardamos SOLO la ruta relativa en BD
+        $data->url_foto = $fotoPath;
 
         try {
             if ($request->has('firmaUsuario')) {
@@ -421,37 +424,18 @@ class DataController extends Controller
                 $firmaUsuarioFileName = uniqid() . '.png';
                 $firmaUsuarioPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/firma del usuario/{$firmaUsuarioFileName}";
 
-                // Guardar la imagen en public
                 Storage::disk('public')->put($firmaUsuarioPath, $imageData);
 
-                // 1️⃣ Actualizar la firma en el perfil del usuario logueado
-                $user = auth()->user();
-                $user->firma_path = $firmaUsuarioPath; // ruta relativa
-                $user->save();
+                //  Guardar en BD la ruta relativa
+                $data->firmaUsuario = $firmaUsuarioPath;
 
-                // 2️⃣ Copiar la ruta al registro actual ($data) para el PDF
-                $data->firmaUsuario = Storage::disk('public')->url($firmaUsuarioPath);
+                // Actualizar también en perfil del usuario
+                $user = auth()->user();
+                $user->firma_path = $firmaUsuarioPath;
+                $user->save();
             }
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Error al procesar la firma del usuario: ' . $e->getMessage());
-        }
-
-        try {
-            // Usar la firma guardada en el perfil del usuario
-            $userFirmaPath = $data->user->firma_path; // ruta relativa en BD
-            $localPath = Storage::disk('public')->path($userFirmaPath);
-
-            if (file_exists($localPath)) {
-                $firmaTecnicoFileName = uniqid() . '.png';
-                $firmaTecnicoPath = "Apptualiza/{$mesActual}/{$userFolder}/{$direccion}/firma del tecnico/{$firmaTecnicoFileName}";
-
-                Storage::disk('public')->put($firmaTecnicoPath, file_get_contents($localPath));
-                $data->firmaTecnico = Storage::disk('public')->url($firmaTecnicoPath);
-            } else {
-                return redirect()->back()->with('error', 'No se encontró la firma del técnico.');
-            }
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Error al subir la firma del técnico: ' . $e->getMessage());
         }
 
         $data->estado = 1;

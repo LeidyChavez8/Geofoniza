@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -9,15 +10,30 @@ use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {    
-        private function getFileContents($path)
+    /**
+     * Obtiene el contenido del archivo (firma/foto), ya sea ruta relativa o URL pública.
+     */
+    private function getFileContents($path)
     {
-        // Check if the path is a remote URL
+        if (empty($path)) {
+            return false;
+        }
+
+        // Si el campo guarda URL completa (ej: http://tusitio/storage/...)
         if (filter_var($path, FILTER_VALIDATE_URL)) {
-            // Read directly from the URL. Requires allow_url_fopen to be enabled.
+            // Convertir la URL pública de storage a la ruta relativa
+            $relativePath = str_replace(Storage::disk('public')->url(''), '', $path);
+            $localPath = Storage::disk('public')->path($relativePath);
+
+            if (file_exists($localPath)) {
+                return file_get_contents($localPath);
+            }
+
+            // Último intento: leer desde la URL (si está habilitado)
             return @file_get_contents($path);
         }
 
-        // It's a local path, so we use Laravel's Storage facade to handle it.
+        // Si es ruta relativa guardada en la BD
         if (Storage::disk('public')->exists($path)) {
             return Storage::disk('public')->get($path);
         }
@@ -33,11 +49,11 @@ class TicketController extends Controller
         try {
             $contenido = $this->getFileContents($path);
             if ($contenido === false) {
-                return ''; // Si el contenido no se puede leer, devuelve vacío
+                return '';
             }
             return 'data:image/png;base64,' . base64_encode($contenido);
         } catch (\Exception $e) {
-            return ''; // En caso de cualquier error, devolver vacío
+            return '';
         }
     }
 
@@ -58,9 +74,9 @@ class TicketController extends Controller
 
         // Firmas en Base64
         $data->firmaUsuario = $this->convertToBase64($data->firmaUsuario);
-        $data->firmaTecnico = $this->convertToBase64($data->firmaTecnico);
+        $path = 'firmas/juan_firma.png';
+        $data->firmaTecnico = $this->convertToBase64($path);
 
-        // Generar PDF
         $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
             ->setPaper([0, 0, 227, 830], 'portrait');
 
@@ -89,9 +105,9 @@ class TicketController extends Controller
     {
         $data = Data::findOrFail($id);
 
-        // Firmas
         $data->firmaUsuario = $this->convertToBase64($data->firmaUsuario);
-        $data->firmaTecnico = $this->convertToBase64($data->firmaTecnico);
+        $path = 'firmas/juan_firma.png';
+        $data->firmaTecnico = $this->convertToBase64($path);
 
         $pdf = Pdf::loadView('pdf.revisionTecnica', compact('data'));
 
@@ -106,10 +122,9 @@ class TicketController extends Controller
         $data = Data::findOrFail($id);
 
         // Firma fija del líder de proyecto
-        $path = 'firmas/remision/santiago_firma.png'; // Corregida la ruta
+        $path = 'firmas/remision/santiago_firma.png';
         $data->firma = $this->convertToBase64($path);
 
-        // Cargar relación
         $data->load('detalleVisita.servicio');
 
         $pdf = Pdf::loadView('pdf.remisionCotizacion', compact('data'));
