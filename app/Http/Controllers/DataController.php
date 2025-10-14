@@ -398,7 +398,7 @@ class DataController extends Controller
             // 'firmaTecnico.required' => 'La firma del técnico es obligatoria.',
             // 'firmaTecnico.string' => 'La firma del técnico debe ser un texto válido.',
         ]);
-        
+
         $data->fill($validatedData);
 
         // Subir la foto localmente
@@ -741,7 +741,7 @@ class DataController extends Controller
         ];
 
         $validatedData = $request->validate([
-            'nombres' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u',
+            'nombres' => 'required|string|max:255|regex:/^[\pL0-9\s\-]+$/u',
             'cedula' => 'required|numeric|digits_between:6,10',
             'direccion' => 'required|string|max:255|regex:/^[^#]+$/',
             'barrio' => 'required|string|max:100',
@@ -754,7 +754,7 @@ class DataController extends Controller
             'ciclo' => ['required', 'string', 'max:255', Rule::in($ciclos)],
         ], [
             'nombres.required' => 'El nombre es obligatorio.',
-            'nombres.regex' => 'El nombre solo puede contener letras, espacios y guiones.',
+            'nombres.regex' => 'El nombre solo puede contener letras mayusculas, minusculas, espacios, guiones y numeros.',
             'cedula.required' => 'La cédula es obligatoria.',
             'cedula.numeric' => 'La cédula solo puede contener números.',
             'cedula.digits_between' => 'La cédula debe tener entre 6 y 10 dígitos.',
@@ -1536,6 +1536,15 @@ class DataController extends Controller
         $data->save();
 
         return redirect()->route('ticket.options', ['id' => $data->id])->with('success', 'Datos actualizados correctamente');
+    }
+
+    public function completadosDestroy($dataId)
+    {
+        $deleted = DB::table('data')->where('id', $dataId)->delete();
+
+        return redirect()->route('completados.index')
+        ->with('success', 'Registro eliminado correctamente.');
+     
     }
 
     public function completadosFiltrar(Request $request)

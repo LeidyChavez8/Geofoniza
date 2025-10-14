@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificado de Revisión Extraordinaria</title>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <style>
         @font-face {
-        font-family: 'CenturyGothic';
-        src: url('{{ storage_path("fonts/CenturyGothic.ttf") }}') format('truetype');
-        font-weight: normal;
-        font-style: normal;
+            font-family: 'CenturyGothic';
+            src: url('{{ storage_path('fonts/CenturyGothic.ttf') }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
         }
 
         @font-face {
             font-family: 'CenturyGothic';
-            src: url('{{ storage_path("fonts/GOTHICB.TTF") }}') format('truetype');
+            src: url('{{ storage_path('fonts/GOTHICB.TTF') }}') format('truetype');
             font-weight: bold;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'CenturyGothic';
-            src: url('{{ storage_path("fonts/GOTHICI.TTF") }}') format('truetype');
+            src: url('{{ storage_path('fonts/GOTHICI.TTF') }}') format('truetype');
             font-weight: normal;
             font-style: italic;
         }
 
         @font-face {
             font-family: 'CenturyGothic';
-            src: url('{{ storage_path("fonts/GOTHICBI.TTF") }}') format('truetype');
+            src: url('{{ storage_path('fonts/GOTHICBI.TTF') }}') format('truetype');
             font-weight: bold;
             font-style: italic;
         }
@@ -47,6 +49,7 @@
             margin: 0;
             padding: 0;
         }
+
         p {
             margin: 0;
             padding: 0;
@@ -54,16 +57,19 @@
             line-height: 1.5;
             text-align: justify;
         }
+
         .header {
             display: table;
             width: 100%;
             margin-bottom: 10px;
         }
+
         .logo-cell {
             display: table-cell;
             width: 120px;
             vertical-align: middle;
         }
+
         .title-cell {
             display: table-cell;
             text-align: center;
@@ -71,22 +77,26 @@
             font-size: 20px;
             font-weight: bold;
         }
+
         .barcode-cell {
             display: table-cell;
             width: 100px;
             text-align: right;
             vertical-align: middle;
         }
+
         .logo-container {
             width: 110px;
             height: 60px;
             /* border: 1px solid #ccc; */
             text-align: center;
         }
+
         .logo {
-            width: 100px; 
+            width: 115%;
             height: 60px;
         }
+
         .section-title {
             background-color: #c92020;
             color: white;
@@ -95,18 +105,22 @@
             text-align: center;
             margin-bottom: 5px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 10px;
         }
+
         table td {
             padding: 3px;
             border: 1px solid #ddd;
         }
+
         .label {
             font-weight: bold;
         }
+
         .history-table th {
             background-color: #c92020;
             color: white;
@@ -114,9 +128,11 @@
             border: 1px solid #ddd;
             text-align: center;
         }
+
         .history-table td {
             text-align: center;
         }
+
         .barcode {
             font-family: "Courier New", monospace;
             font-size: 14px;
@@ -128,15 +144,14 @@
         $path = storage_path('app/public/img/LogoRib.png');
         $logoRib = file_get_contents($path);
 
-        $LogoRibBase64 = base64_encode($logoRib); 
+        $LogoRibBase64 = base64_encode($logoRib);
 
         $logoRib = 'data:image/png;base64,' . $LogoRibBase64;
-
 
         $path = storage_path('app/public/img/LogoAqualert.png');
         $logoAqualert = file_get_contents($path);
 
-        $LogoAqualertBase64 = base64_encode($logoAqualert); 
+        $LogoAqualertBase64 = base64_encode($logoAqualert);
 
         $logoAqualert = 'data:image/png;base64,' . $LogoAqualertBase64;
 
@@ -144,12 +159,13 @@
 
         $marcaAgua = file_get_contents($marcaAgua);
 
-        $marca = base64_encode($marcaAgua); 
+        $marca = base64_encode($marcaAgua);
 
         $marcaAgua = 'data:image/png;base64,' . $marca;
     @endphp
 
-    <img src="{{ $marcaAgua }}" style="width: auto; height: auto; opacity: 0.2; position: absolute; top: 18%; left: 50%; transform: translate(-50%, -50%);">
+    <img src="{{ $marcaAgua }}"
+        style="width: auto; height: auto; opacity: 0.2; position: absolute; top: 18%; left: 50%; transform: translate(-50%, -50%);">
 
     <div class="header">
         <div class="logo-cell">
@@ -160,7 +176,7 @@
         <div class="title-cell">CERTIFICADO DE REVISIÓN TECNICA</div>
         <div class="logo-cell">
             <div class="logo-container">
-                <img class="logo" src="{{ $logoAqualert }}" alt="Logo Aqualert"  >
+                <img class="logo" src="{{ $logoAqualert }}" alt="Logo Aqualert">
             </div>
         </div>
     </div>
@@ -169,31 +185,31 @@
     <table>
         <tr>
             <td width="15%" class="label">Orden:</td>
-            <td width="35%">{{$data->orden}}</td>
+            <td width="35%">{{ $data->orden }}</td>
             <td width="15%" class="label">Cliente:</td>
             <td width="35%">{{ ucwords(strtolower($data->nombres)) }}</td>
         </tr>
         <tr>
             <td class="label">Dirección:</td>
-            <td>{{$data->direccion}}</td>
+            <td>{{ $data->direccion }}</td>
             <td class="label">Barrio:</td>
-            <td>{{$data->barrio}}</td>
+            <td>{{ $data->barrio }}</td>
         </tr>
         <tr>
             <td class="label">Municipio:</td>
-            <td>{{ucwords(strtolower($data->municipio)) ?? 'Desconocido'}}</td>
+            <td>{{ ucwords(strtolower($data->municipio)) ?? 'Desconocido' }}</td>
             <td class="label">Técnico:</td>
-            <td>{{ucfirst($data->user->name)}}</td>
+            <td>{{ ucfirst($data->user->name) }}</td>
         </tr>
         <tr>
             <td class="label">Cédula/NIT:</td>
-            <td>{{$data->cedula}}</td>
+            <td>{{ $data->cedula }}</td>
             <td class="label">Teléfono:</td>
-            <td>{{$data->telefono}}</td>
+            <td>{{ $data->telefono }}</td>
         </tr>
         <tr>
             <td class="label">Correo:</td>
-            <td>{{$data->correo}}</td>
+            <td>{{ $data->correo }}</td>
             <td class="label">Categoría:</td>
             <td>{{ ucfirst($data->categoria) }}</td>
         </tr>
@@ -210,45 +226,45 @@
     <table>
         <tr>
             <td width="15%" class="label">No. Medidor:</td>
-            <td width="35%">{{$data->medidor}}</td>
+            <td width="35%">{{ $data->medidor }}</td>
             <td width="15%" class="label">Lectura:</td>
-            <td width="35%">{{$data->lectura}}</td>
+            <td width="35%">{{ $data->lectura }}</td>
         </tr>
         <tr>
             <td class="label">Aforo:</td>
-            <td>{{$data->aforo}}</td>
+            <td>{{ $data->aforo }}</td>
             <td width="40%" class="label">Puntos Hidráulicos:</td>
-            <td>{{$data->puntoHidraulico}}</td>
+            <td>{{ $data->puntoHidraulico }}</td>
         </tr>
         <tr>
             <td width="38%" class="label">Personas en predio:</td>
-            <td>{{$data->numeroPersonas}}</td>
+            <td>{{ $data->numeroPersonas }}</td>
             <td class="label">Resultado:</td>
-            <td>{{$data->resultado}}</td>
+            <td>{{ $data->resultado }}</td>
         </tr>
         <tr>
             <td class="label">Ciclo:</td>
-            <td>{{$data->ciclo}}</td>
+            <td>{{ $data->ciclo }}</td>
             <td class="label">Uso:</td>
             <td>{{ ucfirst($data->categoria) }}</td>
         </tr>
     </table>
 
     <div class="section-title">OBSERVACIONES</div>
-    <p>{{$data->observacion_inspeccion}}</p>
+    <p>{{ $data->observacion_inspeccion }}</p>
 
     <div class="section-title">FIRMAS</div>
     <table>
         <tr>
-            <td width="50%" class="label">Firma del cliente: <br>{{$data->nombres}} </td>
+            <td width="50%" class="label">Firma del cliente: <br>{{ $data->nombres }} </td>
 
-            <td width="50%" class="label">Firma del técnico: <br>{{$data->user->name}}</td>
+            <td width="50%" class="label">Firma del técnico: <br>{{ $data->user->name }}</td>
         </tr>
         <tr>
             <td height="60px" style="border: 1px solid #ddd;">
-                <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="120" height="60">            
+                <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="120" height="60">
             </td>
-            
+
             <td height="60px" style="border: 1px solid #ddd;">
                 <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Usuario" width="120" height="60">
             </td>
@@ -256,6 +272,10 @@
     </table>
 
     <div class="section-title">AVISOS DE PRIVACIDAD</div>
-    <p><strong>Aviso de Privacidad:</strong> RIB LOGÍSTICAS S.A.S. informa que con ocasión de las inspecciones y/o visitas relacionadas con el cumplimiento de las obligaciones vinculadas a la prestación de servicios se podrán recolectar datos personales, sin perjuicio de otras finalidades legítimas. Cualquier duda sobre el tratamiento de datos personales puede comunicarse a habeasdata@rib.com.co</p>
+    <p><strong>Aviso de Privacidad:</strong> RIB LOGÍSTICAS S.A.S. informa que con ocasión de las inspecciones y/o
+        visitas relacionadas con el cumplimiento de las obligaciones vinculadas a la prestación de servicios se podrán
+        recolectar datos personales, sin perjuicio de otras finalidades legítimas. Cualquier duda sobre el tratamiento
+        de datos personales puede comunicarse a habeasdata@rib.com.co</p>
 </body>
+
 </html>

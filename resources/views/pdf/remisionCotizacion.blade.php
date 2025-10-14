@@ -190,7 +190,7 @@
                 <br>
                 Carrera 60 #58 - 84<br>
                 (+57) (605) 343 0002 - Ext. 119<br>
-                <a href="mailto:geofono@rib.com.co">geofono@rib.com.co</a><br>
+                <a href="mailto:aqualert@rib.com.co">aqualert@rib.com.co</a><br>
                 <a href="http://rib.com.co">http://rib.com.co</a>
             </td>
             <td class="logo-center">

@@ -29,8 +29,8 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/asignar', [DataController::class, 'asignarIndex'])->name('asignar.index');
     Route::get('/asignar-filtrar', [DataController::class, 'asignarFiltrar'])->name('asignar.filtrar');
     Route::post('/asignar-operario', [DataController::class, 'asignarOperario'])->name('asignar.operario');
-    
-    
+
+
     //DATA
     Route::delete('/visita/eliminar/{id}', [DataController::class, 'destroy'])->name('data.destroy');
 
@@ -50,13 +50,15 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/agendar/{id}', [DataController::class, 'edit'])->name('schedule.edit'); // Formulario con datos existentes
     Route::post('/agendar', [DataController::class, 'store'])->name('schedule.store'); // Guardar nuevo
     Route::put('/agendar/{id}', [DataController::class, 'update'])->name('schedule.update'); // Actualizar existente
-    
+
     //COMPLETADOS
     Route::get('/completados', [DataController::class, 'completadosIndex'])->name('completados.index');
     Route::get('/completados-filtrar', [DataController::class, 'completadosFiltrar'])->name('completados.filtrar');
 
     Route::get('/completados-editar/{id}', [DataController::class, 'editCompletados'])->name('completados.edit');
     Route::put('/completados-editar/{id}', [DataController::class, 'updateCompletados'])->name('completados.update');
+
+    Route::delete('/completados-eliminar/{dataId}', [DataController::class, 'completadosDestroy'])->name('completados.destroy');
 
     //EXPORTAR EXCEL
     Route::get('/export', [DataController::class, 'exportarIndex'])->name('export');
@@ -87,7 +89,7 @@ Route::middleware(['auth', CheckRole::class . ':user'])->group(function () {
 Route::middleware('auth')->group(function () {
     //TICKETS 
     Route::get('/ticket-options/{id}', [TicketController::class, 'showTicketOptions'])->name('ticket.options');
-    
+
     Route::get('/ticket-generate/{id}', [TicketController::class, 'generateTicket'])->name('ticket.generate');
     Route::get('/ticket-download/{id}', [TicketController::class, 'generateTicket'])->name('ticket.download');
 
