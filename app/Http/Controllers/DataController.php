@@ -412,10 +412,11 @@ class DataController extends Controller
         // Guardamos el archivo en storage/app/public/...
         Storage::disk('public')->put($fotoPath, File::get($fotoFile));
 
-        // Guardamos SOLO la ruta relativa en BD
+        /// Guardamos SOLO la ruta relativa en BD
         $data->url_foto = $fotoPath;
 
         try {
+            //  Guardar firma del CLIENTE
             if ($request->has('firmaUsuario')) {
                 $image = $request->input('firmaUsuario');
                 $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
@@ -426,18 +427,21 @@ class DataController extends Controller
 
                 Storage::disk('public')->put($firmaUsuarioPath, $imageData);
 
-                //  Guardar en BD la ruta relativa
+                //  Guardar solo en la tabla `data`
                 $data->firmaUsuario = $firmaUsuarioPath;
-
-                // Actualizar también en perfil del usuario
-                $user = auth()->user();
-                $user->firma_path = $firmaUsuarioPath;
-                $user->save();
             }
+
+            //  Guardar la firma del técnico (ya creada al registrar su usuario)
+            $user = auth()->user();
+            if ($user && $user->firma_path) {
+                $data->firmaTecnico = $user->firma_path;
+            }
+
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Error al procesar la firma del usuario: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al procesar las firmas: ' . $e->getMessage());
         }
 
+        // Cambiar el estado y guardar todo
         $data->estado = 1;
         $data->save();
 
@@ -1543,8 +1547,8 @@ class DataController extends Controller
         $deleted = DB::table('data')->where('id', $dataId)->delete();
 
         return redirect()->route('completados.index')
-        ->with('success', 'Registro eliminado correctamente.');
-     
+            ->with('success', 'Registro eliminado correctamente.');
+
     }
 
     public function completadosFiltrar(Request $request)

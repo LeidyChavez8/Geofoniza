@@ -9,7 +9,7 @@ use App\Models\Data;
 use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
-{    
+{
     /**
      * Obtiene el contenido del archivo (firma/foto), ya sea ruta relativa o URL pública.
      */
@@ -72,12 +72,11 @@ class TicketController extends Controller
             abort(403, 'No tienes permiso para ver este ticket.');
         }
 
-        // Firmas en Base64
+        //  Cargar firmas correctas desde la BD
         $data->firmaUsuario = $this->convertToBase64($data->firmaUsuario);
-        $path = 'firmas/juan_firma.png';
-        $data->firmaTecnico = $this->convertToBase64($path);
+        $data->firmaTecnico = $this->convertToBase64($data->firmaTecnico);
 
-        $pdf = PDF::loadView('pdf.ticket', ['data' => $data])
+        $pdf = Pdf::loadView('pdf.ticket', ['data' => $data])
             ->setPaper([0, 0, 227, 830], 'portrait');
 
         $pdf->render();
@@ -88,6 +87,7 @@ class TicketController extends Controller
             return $pdf->download('ticket' . $data->orden . '.pdf');
         }
     }
+
 
     /**
      * Mostrar opciones de ticket.
@@ -105,13 +105,44 @@ class TicketController extends Controller
     {
         $data = Data::findOrFail($id);
 
-        $data->firmaUsuario = $this->convertToBase64($data->firmaUsuario);
-        $path = 'firmas/juan_firma.png';
-        $data->firmaTecnico = $this->convertToBase64($path);
+        // Firma del cliente (capturada en formulario)
+        $data->firmaUsuario = $this->getFirmaBase64($data->firmaUsuario);
+
+        // Firma del técnico (tomada de su carpeta)
+        $data->firmaTecnico = $this->getFirmaBase64($data->firmaTecnico);
 
         $pdf = Pdf::loadView('pdf.revisionTecnica', compact('data'));
 
         return $pdf->stream('carta.pdf');
+    }
+
+    private function getFirmaBase64($path)
+    {
+        if (!$path) {
+            return null;
+        }
+
+        // Si es URL (Google Drive, etc.)
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            try {
+                $imageData = @file_get_contents($path);
+                if ($imageData !== false) {
+                    return 'data:image/png;base64,' . base64_encode($imageData);
+                }
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        // Si es ruta local
+        if (Storage::disk('public')->exists($path)) {
+            $fullPath = Storage::disk('public')->path($path);
+            $type = pathinfo($fullPath, PATHINFO_EXTENSION);
+            $data = file_get_contents($fullPath);
+            return 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        return null;
     }
 
     /**

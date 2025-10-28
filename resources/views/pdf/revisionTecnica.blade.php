@@ -254,19 +254,23 @@
     <p>{{ $data->observacion_inspeccion }}</p>
 
     <div class="section-title">FIRMAS</div>
-    <table>
+    <table width="100%" style="text-align:center; margin-top:40px;">
         <tr>
-            <td width="50%" class="label">Firma del cliente: <br>{{ $data->nombres }} </td>
-
-            <td width="50%" class="label">Firma del técnico: <br>{{ $data->user->name }}</td>
-        </tr>
-        <tr>
-            <td height="60px" style="border: 1px solid #ddd;">
-                <img class="firma" src="{{ $data->firmaUsuario }}" alt="Firma Usuario" width="120" height="60">
+            <td>
+                @if ($data->firmaUsuario)
+                    <img src="{{ $data->firmaUsuario }}" alt="Firma del Cliente" width="150"><br>
+                    <strong>Firma del Cliente</strong>
+                @else
+                    <em>Firma del cliente no disponible</em>
+                @endif
             </td>
-
-            <td height="60px" style="border: 1px solid #ddd;">
-                <img class="firma" src="{{ $data->firmaTecnico }}" alt="Firma Usuario" width="120" height="60">
+            <td>
+                @if ($data->firmaTecnico)
+                    <img src="{{ $data->firmaTecnico }}" alt="Firma del Técnico" width="150"><br>
+                    <strong>Firma del Técnico</strong>
+                @else
+                    <em>Firma del técnico no disponible</em>
+                @endif
             </td>
         </tr>
     </table>

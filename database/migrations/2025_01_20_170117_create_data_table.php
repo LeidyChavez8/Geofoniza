@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -30,7 +29,10 @@ return new class extends Migration
             $table->text('firmaUsuario')->nullable();
             $table->text('firmaTecnico')->nullable();
             $table->string('ciclo')->nullable();
-            $table->foreignId('id_user')->nullable()->constrained('users');
+            $table->foreignId('id_user')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
             $table->integer('puntoHidraulico')->nullable();
             $table->integer('numeroPersonas')->nullable();
             $table->string('categoria')->nullable();
