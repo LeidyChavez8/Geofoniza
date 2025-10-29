@@ -78,7 +78,7 @@
     </div>
 
 
-    <br><br><br><br>
+    <br><br>
     
     <p class="parrafo">
         RIB Logísticas SAS utiliza y almacena sus datos personales,
