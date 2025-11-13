@@ -46,7 +46,7 @@
     }
     .header {
         width: 100%;
-        border-top: 7px solid #ad0000;
+        border-top: 7px solid #00b1dd;
         background-color: #E0E0E0;
         padding: 10px;
     }
@@ -99,11 +99,11 @@
         margin-top: 15px;
     }
     .factura-table th {
-        background-color: #ad0000;
+        background-color: #00b1dd;
         color: white;
         /* padding: 5px; */
         text-align: center;
-        border: 1px solid #ad0000;
+        border: 1px solid #00b1dd;
         font-size: 11px;
     }
     .factura-table td {
@@ -132,7 +132,7 @@
     }
     .totales-table .neto {
         font-weight: bold;
-        background-color: #ad0000;
+        background-color: #00b1dd;
         color: white;
     }
     .watermark {
@@ -154,9 +154,9 @@
 
 </head>
 
-<body style="border-bottom: 7px solid #ad0000;">
+<body style="border-bottom: 7px solid #00b1dd;">
     @php
-        $path = storage_path('app/public/img/LogoRib.png');
+        $path = storage_path('app/public/img/LogoAqualert.png');
         $logoRib = file_get_contents($path);
 
         $LogoRibBase64 = base64_encode($logoRib); 
@@ -191,7 +191,7 @@
                 Carrera 60 #58 - 84<br>
                 (+57) (605) 343 0002 - Ext. 119<br>
                 <a href="mailto:aqualert@rib.com.co">aqualert@rib.com.co</a><br>
-                <a href="http://rib.com.co">http://rib.com.co</a>
+                <a href="https://aqualert.com.co">https://aqualert.com.co</a>
             </td>
             <td class="logo-center">
                 <img class="logo" src="{{ $logoRib }}" alt="Logo RIB" width="200px" height="100px">

@@ -98,7 +98,7 @@
         }
 
         .section-title {
-            background-color: #c92020;
+            background-color: #00b1dd;
             color: white;
             padding: 5px;
             font-weight: bold;
@@ -122,7 +122,7 @@
         }
 
         .history-table th {
-            background-color: #c92020;
+            background-color: #00b1dd;
             color: white;
             padding: 5px;
             border: 1px solid #ddd;
@@ -141,7 +141,7 @@
     </style>
 
     @php
-        $path = storage_path('app/public/img/LogoRib.png');
+        $path = storage_path('app/public/img/LogoAqualert.png');
         $logoRib = file_get_contents($path);
 
         $LogoRibBase64 = base64_encode($logoRib);
