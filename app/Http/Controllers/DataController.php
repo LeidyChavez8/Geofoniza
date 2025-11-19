@@ -27,6 +27,9 @@ class DataController extends Controller
     {
         $visita = Data::findOrFail($id);
 
+        // Eliminar los detalles asociados
+        DetalleVisita::where('id_data', $visita->id)->delete();
+
         // Luego eliminar la visita
         $visita->delete();
 
@@ -590,9 +593,9 @@ class DataController extends Controller
             "TBR - R5",
             "USR - R1",
         ];
+        $servicios = Servicio::all();
 
-
-        return view('Data.Agendar.agendar', compact('ciclos',));
+        return view('Data.Agendar.agendar', compact('ciclos', 'servicios'));
     }
 
     // Guardar nuevo registro
@@ -925,6 +928,15 @@ class DataController extends Controller
             // Asignar municipio según el ciclo
             $data->municipio = $cicloMunicipios[$ciclo] ?? null;
             $data->save();
+
+            foreach ($cotizacion_items as $item) {
+                DetalleVisita::create([
+                    'id_servicio' => $item->servicio_id,
+                    'id_data' => $data->id,
+                    'descuento' => $item->descuento,
+                    'subtotal' => $item->subtotal,
+                ]);
+            }
 
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'El registro ha fallado.');

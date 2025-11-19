@@ -254,27 +254,15 @@
     <p>{{ $data->observacion_inspeccion }}</p>
 
     <div class="section-title">FIRMAS</div>
-<<<<<<< HEAD
     <table width="100%" style="text-align:center;">
         <tr>
             <td>
                 <strong>Firma del Cliente</strong><br>
                     <img src="{{ $data->firmaUsuario }}" alt="Firma del Cliente" width="150"><br><br><br>
-=======
-    <table style="text-align:center;">
-        <tr>
-            <td>
-                 <strong>Firma del Cliente</strong><br>
-                    <img src="{{ $data->firmaUsuario }}" alt="Firma del Cliente" width="150"><br><br><br><br>
->>>>>>> c7af074999058ee7716ba75338563d7bbe22e688
                     <strong>{{$data->nombres}}</strong>
             </td>
             <td>
                 <strong>Firma del Tecnico</strong><br>
-<<<<<<< HEAD
-=======
-                
->>>>>>> c7af074999058ee7716ba75338563d7bbe22e688
                 <br>
                     <img src="{{ $data->firmaTecnico }}" alt="Firma del Técnico" width="150"><br>
                 <strong>{{$data->user->name}}</strong>
