@@ -98,7 +98,7 @@
         }
 
         .section-title {
-            background-color: #c92020;
+            background-color: #00b1dd;
             color: white;
             padding: 5px;
             font-weight: bold;
@@ -122,7 +122,7 @@
         }
 
         .history-table th {
-            background-color: #c92020;
+            background-color: #00b1dd;
             color: white;
             padding: 5px;
             border: 1px solid #ddd;
@@ -141,7 +141,7 @@
     </style>
 
     @php
-        $path = storage_path('app/public/img/LogoRib.png');
+        $path = storage_path('app/public/img/LogoAqualert.png');
         $logoRib = file_get_contents($path);
 
         $LogoRibBase64 = base64_encode($logoRib);
@@ -254,23 +254,18 @@
     <p>{{ $data->observacion_inspeccion }}</p>
 
     <div class="section-title">FIRMAS</div>
-    <table width="100%" style="text-align:center; margin-top:40px;">
+    <table width="100%" style="text-align:center;">
         <tr>
             <td>
-                @if ($data->firmaUsuario)
-                    <img src="{{ $data->firmaUsuario }}" alt="Firma del Cliente" width="150"><br>
-                    <strong>Firma del Cliente</strong>
-                @else
-                    <em>Firma del cliente no disponible</em>
-                @endif
+                <strong>Firma del Cliente</strong><br>
+                    <img src="{{ $data->firmaUsuario }}" alt="Firma del Cliente" width="150"><br><br><br>
+                    <strong>{{$data->nombres}}</strong>
             </td>
             <td>
-                @if ($data->firmaTecnico)
+                <strong>Firma del Tecnico</strong><br>
+                <br>
                     <img src="{{ $data->firmaTecnico }}" alt="Firma del Técnico" width="150"><br>
-                    <strong>Firma del Técnico</strong>
-                @else
-                    <em>Firma del técnico no disponible</em>
-                @endif
+                <strong>{{$data->user->name}}</strong>
             </td>
         </tr>
     </table>

@@ -382,7 +382,7 @@ class DataController extends Controller
 
             'observacion_inspeccion.required' => 'La observación es obligatoria.',
             'observacion_inspeccion.string' => 'La observación debe ser un texto válido.',
-            'observacion_inspeccion.max' => 'La observación no puede contener más de 800 caracteres.',
+            'observacion_inspeccion.max' => 'La observación no puede contener más de 700 caracteres.',
 
             'resultado.required' => 'El resultado es obligatorio.',
             'resultado.string' => 'El resultado debe ser un texto válido.',
